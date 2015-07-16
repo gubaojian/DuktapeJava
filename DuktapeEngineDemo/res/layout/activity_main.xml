@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    
+    <ScrollView android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:id="@+id/container"
+	        android:orientation="vertical">
+	        
+	        
+			    <Button
+			        android:id="@+id/button4"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="JavaScript Try Demo"/>
+	        
+	        
+			    <Button
+			        android:id="@+id/button1"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="Number Convert" />
+	        
+			    <Button
+			        android:id="@+id/button2"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="JSRef Test" />
+    
+			    <Button
+			        android:id="@+id/button3"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="Intent Test"/>
+			    
+			    
+			    <Button
+			        android:id="@+id/button6"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="AsyncTask Not Implemation"
+			        android:visibility="gone" />
+			    
+    
+	        </LinearLayout>
+	        
+    </ScrollView>
+</LinearLayout>

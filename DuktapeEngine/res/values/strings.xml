@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">com.furture.react</string>
+    <string name="hello_world">执行</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sample_one">SampleOneActivity</string>
+    <string name="title_activity_async_task_test">AsyncTaskTestActivity</string>
+
+</resources>
