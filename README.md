@@ -1,9 +1,9 @@
 ### DuktapeJava
-A Java wrapper for duktape javascript engine on android platform, which is tiny small 200-300KB. you can use any java class by just small engine 200-300kb so and 1000 line java code, give you endless power integrating  javascript with java. 
+A Java jni wrapper for duktape javascript engine on android platform, which is tiny small 200-300KB. you can use any java method in javascript by just small engine 200-300kb so and 1000 line java code, give you endless power integrating  javascript with java. 
 
 ### Get start
 
-new DuktapeEngnine instance and init
+new DuktapeEngnine instance then init it.
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ duk.js javascript code
 		print("activity finish" + num);
 	}
 
-###Seamless Integrating Java and Javascript
+###Seamless Integrating Java with Javascript
  
  javascript can call any javamethod, and new java class instance and interface. 
  
