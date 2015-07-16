@@ -112,7 +112,7 @@ java can also call any method or get property on javascript object.
       
       }   
 
-### 参考资料
+### Reference
 
 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Scripting_Java">https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Scripting_Java</a>
 
