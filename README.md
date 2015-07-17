@@ -92,7 +92,7 @@ java can also call any method or get property on javascript object.
       
       var data = {};
       data.count =  10;
-      data.getItem = function(var index){
+      data.getItem = function(index){
              return "Javascript Data " + index;
       }
       
