@@ -1,10 +1,17 @@
 package com.furture.react;
 
+import java.util.Set;
+import java.util.Map.Entry;
 
+/**
+ * 
+ * Duktape Engine , JavaScript Must Be Execute In Main Thread
+ * 
+ * */
 public class DuktapeEngine {
     
 	static{
-	   System.loadLibrary("DuktapeEngine");
+	    System.loadLibrary("DuktapeEngine");
 	}
 	
 	private long  ptr;
@@ -14,6 +21,10 @@ public class DuktapeEngine {
         if (ptr == 0) {
 			throw new RuntimeException("NativeInit Pointer Convert Error");
 		}
+        Set<Entry<String, Object>> entries = JSApi.getJavaObjectMap().entrySet();
+        for(Entry<String, Object> entry : entries){
+        	      register(entry.getKey(), entry.getValue());
+        }
 	}
 	
 	public synchronized void register(String key, Object value){
@@ -42,7 +53,7 @@ public class DuktapeEngine {
     	    if(ptr != 0){
 		   return nativeCallJs(ptr, target, method, args);
     	     }else {
-				return null;
+		    return null;
 		}
 	}
 	

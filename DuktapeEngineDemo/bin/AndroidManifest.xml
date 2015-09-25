@@ -50,6 +50,10 @@
             android:name="com.furture.react.activity.AsyncTaskTestActivity"
             android:label="@string/title_activity_async_task_test" >
         </activity>
+        <activity
+            android:name=".HttpClientActivity"
+            android:label="@string/title_activity_http_client" >
+        </activity>
     </application>
 
 </manifest>

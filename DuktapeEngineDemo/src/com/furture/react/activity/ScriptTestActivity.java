@@ -1,6 +1,8 @@
 package com.furture.react.activity;
 
+
 import com.furture.react.DuktapeEngine;
+import com.furture.react.JSApi;
 import com.furture.react.demo.R;
 
 import android.app.Activity;
@@ -21,6 +23,7 @@ public class ScriptTestActivity extends Activity {
 		duktapeEngine = new DuktapeEngine();
 		duktapeEngine.init();
 		duktapeEngine.register("activity",this);
+		duktapeEngine.register("ui", new UIApi(this));
 		Object value = duktapeEngine.execute(AssetScript.toScript(getBaseContext(), getIntent().getStringExtra("file")));
 		if (value != null) {
 			((Button)findViewById(R.id.button1)).setText(value.toString());

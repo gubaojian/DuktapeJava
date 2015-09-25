@@ -730,7 +730,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 	}
 	jvm  = vm;
 	if (java_api_class == NULL) {
-		jclass cls = (*env)->FindClass(env, "com/furture/react/JSApi");
+		jclass cls = (*env)->FindClass(env, "com/furture/react/JavaUtils");
 		java_api_class = (*env)->NewGlobalRef(env, cls);
 		(*env)->DeleteLocalRef(env, cls);
 	}

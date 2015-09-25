@@ -6,26 +6,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import com.furture.react.DuktapeEngine;
-import com.furture.react.demo.R;
-import com.furture.react.demo.R.id;
-import com.furture.react.demo.R.layout;
-import com.furture.react.demo.R.menu;
-import com.furture.react.hybrid.HybridActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.furture.react.JSApi;
+import com.furture.react.demo.R;
 
 
 /**
@@ -80,11 +70,28 @@ public class MainActivity extends Activity {
 		   }
 	    });
        
-       findViewById(R.id.button4).setOnClickListener(new OnClickListener() {
-   		
+       
+       
+       findViewById(R.id.button5).setOnClickListener(new OnClickListener() {
+      		
 		   @Override
 		   public void onClick(View v) {
-			   Intent intent = new Intent(getBaseContext(), DukActivity.class);
+			   
+			   JSApi.registerJavaObject("http", new HttpApi());
+			   
+			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
+			   intent.putExtra("file", "http.js");
+			   startActivity(intent);
+		   }
+	    });
+       
+       
+       findViewById(R.id.button6).setOnClickListener(new OnClickListener() {
+     		
+		   @Override
+		   public void onClick(View v) {
+			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
+			   intent.putExtra("file", "ui.js");
 			   startActivity(intent);
 		   }
 	    });

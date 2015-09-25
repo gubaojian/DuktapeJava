@@ -14,8 +14,6 @@ public class JSInvocationHandler implements InvocationHandler {
 	}
 
 
-
-
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)throws Throwable {
 		if (method.getName().equals("toString")) { //art 模式，此句不能debug

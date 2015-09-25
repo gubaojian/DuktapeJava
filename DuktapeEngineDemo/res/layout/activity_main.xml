@@ -40,15 +40,17 @@
 			        android:layout_height="wrap_content"
 			        android:text="Intent Test"/>
 			    
-			    
+			      <Button
+			        android:id="@+id/button5"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="Ok Http JavaScript Http"/>
+			      
 			    <Button
 			        android:id="@+id/button6"
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
-			        android:text="AsyncTask Not Implemation"
-			        android:visibility="gone" />
-			    
-    
+			        android:text="UI Api"/>
 	        </LinearLayout>
 	        
     </ScrollView>

@@ -34,7 +34,7 @@ public class CodeTransformer {
 	
 	
 	public static void main(String[] args) throws IOException {
-	    String file = "/multi_args_method.js";
+	    String file = "/ui.js";
 	    InputStream inputStream = CodeTransformer.class.getResourceAsStream(file);
 	    Reader reader = new InputStreamReader(inputStream);
 	    System.out.println(parse(reader));

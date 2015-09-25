@@ -1,10 +1,9 @@
 package com.furture.react.activity;
 
-import com.furture.react.DuktapeEngine;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+
+import com.furture.react.DuktapeEngine;
 
 public class DukActivity  extends Activity{
 	
