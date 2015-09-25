@@ -27,6 +27,10 @@ public class DuktapeEngine {
         }
 	}
 	
+	public synchronized void importClass(Class<?> importClass){
+		nativeRegister(ptr, importClass.getSimpleName(), importClass);
+	}
+	
 	public synchronized void register(String key, Object value){
 		nativeRegister(ptr, key, value);
 	}
