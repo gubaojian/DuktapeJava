@@ -29,6 +29,13 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		  
+		 JSApi.registerJavaObject("http", new HttpApi());
+		 JSApi.registerJavaObject("map", new MapApi(getApplicationContext()));
+		
+		
+		
 		findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -77,8 +84,6 @@ public class MainActivity extends Activity {
 		   @Override
 		   public void onClick(View v) {
 			   
-			   JSApi.registerJavaObject("http", new HttpApi());
-			   
 			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
 			   intent.putExtra("file", "http.js");
 			   startActivity(intent);
@@ -92,6 +97,17 @@ public class MainActivity extends Activity {
 		   public void onClick(View v) {
 			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
 			   intent.putExtra("file", "ui.js");
+			   startActivity(intent);
+		   }
+	    });
+       
+       
+       findViewById(R.id.button7).setOnClickListener(new OnClickListener() {
+    		
+		   @Override
+		   public void onClick(View v) {
+			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
+			   intent.putExtra("file", "location.js");
 			   startActivity(intent);
 		   }
 	    });

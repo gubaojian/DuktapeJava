@@ -1,4 +1,8 @@
+
+
 LOCAL_PATH := $(call my-dir)
+
+APP_ABI := all
 
 include $(CLEAR_VARS)
 
@@ -26,4 +30,6 @@ LOCAL_CFLAGS := -g -std=c99
 
 
 include $(BUILD_SHARED_LIBRARY)
+
+
 

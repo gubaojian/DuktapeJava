@@ -2,9 +2,12 @@ package com.furture.react.activity;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
+
 import android.os.Handler;
 import android.os.Looper;
 
+import com.furture.react.DLog;
 import com.furture.react.JSRef;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
@@ -15,7 +18,9 @@ import com.squareup.okhttp.Response;
 
 public class HttpApi {
 	
-	
+	private static final JSONObject emptyJson = new JSONObject();
+	private static final String CALL_BACK_METHOD_NAME = "response";
+ 	
 	public void get(String url, JSRef callback){
 		Request request = new Request.Builder().get().url(url).build();
 		execute(request, callback);
@@ -33,13 +38,24 @@ public class HttpApi {
 			
 			@Override
 			public void onResponse(Response response) throws IOException {
-				final String json = response.body().string();
-				handler.post(new Runnable() {
-					@Override
-					public void run() {
-						callback.getEngine().callJSRef(callback, "response", json);
-					}
-				});
+				
+				try {
+					final JSONObject json = new JSONObject(response.body().string());
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							callback.getEngine().callJSRef(callback, CALL_BACK_METHOD_NAME, json);
+						}
+					});
+				} catch (Exception e) {
+					DLog.e("Http Client Parse JSON Error",  e.getMessage());
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							callback.getEngine().callJSRef(callback, CALL_BACK_METHOD_NAME, emptyJson);
+						}
+					});
+				}
 			}
 			
 			@Override
@@ -47,7 +63,7 @@ public class HttpApi {
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
-						callback.getEngine().callJSRef(callback, "response", "");
+						callback.getEngine().callJSRef(callback, CALL_BACK_METHOD_NAME, emptyJson);
 					}
 				});
 			}
