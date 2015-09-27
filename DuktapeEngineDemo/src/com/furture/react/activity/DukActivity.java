@@ -20,38 +20,38 @@ public class DukActivity  extends Activity{
 		duktapeEngine.init();
 		duktapeEngine.register("activity",this);
 		duktapeEngine.execute(AssetScript.toScript(getBaseContext(), "duk.js"));
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onCreate", savedInstanceState);
+		duktapeEngine.call(ACTIVITY_LISTENER, "onCreate", savedInstanceState);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onStart");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onStart");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onResume");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onResume");
 	}
 	
 	
 
 	@Override
 	protected void onPause() {
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onPause");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onPause");
 		super.onPause();
 	}
 
 	@Override
 	protected void onStop() {
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onStop");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onStop");
 		super.onStop();
 	}
 
 	@Override
 	public void finish() {
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "finish");
+		duktapeEngine.call(ACTIVITY_LISTENER, "finish");
 		super.finish();
 	}
 

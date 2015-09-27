@@ -37,10 +37,12 @@ public class DuktapeEngine {
 	
     
     /**
-     * 调用heapPtr中方法未methodName的方法。
-     * 如果heapPtr是函数，则直接调用此实现
+	 * @param jsRef        js对象
+	 * @param method       js对象的方法名
+	 * @param args         方法参数
+     * 若js对象无methodName的方法，且是函数，则直接调用js函数
      * */
-    public  synchronized Object callJSRef(JSRef jsRef, String methodName, Object... args){
+    public  synchronized Object call(JSRef jsRef, String methodName, Object... args){
     	     if(ptr != 0){
     	 		return nativeCallJSRef(ptr, jsRef.getRef(),  methodName, args);
     	     }else{
@@ -51,11 +53,14 @@ public class DuktapeEngine {
     
 
 	/**
+	 * @param objectName   js对象名字
+	 * @param method       js对象的方法名
+	 * @param args         方法参数
 	 * 直接调用js中的方法
 	 * */
-    public synchronized Object callJs(String target, String method, Object... args){
+    public synchronized Object call(String objectName, String method, Object... args){
     	    if(ptr != 0){
-		   return nativeCallJs(ptr, target, method, args);
+		   return nativeCallJs(ptr, objectName, method, args);
     	     }else {
 		    return null;
 		}

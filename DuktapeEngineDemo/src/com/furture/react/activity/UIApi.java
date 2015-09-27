@@ -35,7 +35,7 @@ public class UIApi {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						if(okClickListener != null){
-						       okClickListener.getEngine().callJSRef(okClickListener, "onClick");
+						       okClickListener.getEngine().call(okClickListener, "onClick");
 						}
 					}
 			 });
@@ -47,7 +47,7 @@ public class UIApi {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						if(cancelClickListener != null){
-						    cancelClickListener.getEngine().callJSRef(cancelClickListener, "onClick");
+						    cancelClickListener.getEngine().call(cancelClickListener, "onClick");
 						}
 					}
 			 });

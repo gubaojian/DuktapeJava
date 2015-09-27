@@ -80,11 +80,11 @@ public class HybridActivity extends Activity{
 					return;
 				}
 				duktapeEngine.execute(indexJS);
-				duktapeEngine.callJs(ACTIVITY_LISTENER, "onCreate", savedInstanceState);
+				duktapeEngine.call(ACTIVITY_LISTENER, "onCreate", savedInstanceState);
 			}
 		};
 		if (duktapeEngine != null) {
-			duktapeEngine.callJs(ACTIVITY_LISTENER, "unLoad");
+			duktapeEngine.call(ACTIVITY_LISTENER, "unLoad");
 			duktapeEngine.destory();
 		}
 		duktapeEngine = new DuktapeEngine();
@@ -97,7 +97,7 @@ public class HybridActivity extends Activity{
 	protected void onStart() {
 		super.onStart();
 		if(duktapeEngine != null){
-		    duktapeEngine.callJs(ACTIVITY_LISTENER, "onStart");
+		    duktapeEngine.call(ACTIVITY_LISTENER, "onStart");
 		}
 	}
 
@@ -115,7 +115,7 @@ public class HybridActivity extends Activity{
 	protected void onResume() {
 		super.onResume();
 		if(duktapeEngine != null){
-		    duktapeEngine.callJs(ACTIVITY_LISTENER, "onResume");
+		    duktapeEngine.call(ACTIVITY_LISTENER, "onResume");
 		}
 	}
 	
@@ -124,7 +124,7 @@ public class HybridActivity extends Activity{
 	@Override
 	protected void onPause() {
 		if(duktapeEngine != null){
-		     duktapeEngine.callJs(ACTIVITY_LISTENER, "onPause");
+		     duktapeEngine.call(ACTIVITY_LISTENER, "onPause");
 		}
 		super.onPause();
 	}
@@ -132,7 +132,7 @@ public class HybridActivity extends Activity{
 	@Override
 	protected void onStop() {
 		if(duktapeEngine != null){
-		    duktapeEngine.callJs(ACTIVITY_LISTENER, "onStop");
+		    duktapeEngine.call(ACTIVITY_LISTENER, "onStop");
 		}
 		super.onStop();
 	}
@@ -140,8 +140,8 @@ public class HybridActivity extends Activity{
 	@Override
 	public void finish() {
 		if(duktapeEngine != null){
-			duktapeEngine.callJs(ACTIVITY_LISTENER, "unLoad");
-		    duktapeEngine.callJs(ACTIVITY_LISTENER, "finish");
+			duktapeEngine.call(ACTIVITY_LISTENER, "unLoad");
+		    duktapeEngine.call(ACTIVITY_LISTENER, "finish");
 		}
 		super.finish();
 	}

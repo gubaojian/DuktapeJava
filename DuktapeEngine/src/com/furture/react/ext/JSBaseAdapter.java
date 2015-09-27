@@ -13,7 +13,7 @@ public class JSBaseAdapter extends BaseAdapter{
 	
 	@Override
 	public int getCount() {
-		Object count = jsRef.getEngine().callJSRef(jsRef, "getCount");
+		Object count = jsRef.getEngine().call(jsRef, "getCount");
 		if (count == null) {
 			return 0;
 		}
@@ -22,7 +22,7 @@ public class JSBaseAdapter extends BaseAdapter{
 
 	@Override
 	public Object getItem(int position) {
-		return jsRef.getEngine().callJSRef(jsRef, "getItem",  position);
+		return jsRef.getEngine().call(jsRef, "getItem",  position);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class JSBaseAdapter extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return (View) jsRef.getEngine().callJSRef(jsRef, "getView",  position, convertView, parent);
+		return (View) jsRef.getEngine().call(jsRef, "getView",  position, convertView, parent);
 	}
 
 }

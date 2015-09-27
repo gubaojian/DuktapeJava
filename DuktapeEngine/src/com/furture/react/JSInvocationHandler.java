@@ -21,7 +21,7 @@ public class JSInvocationHandler implements InvocationHandler {
 		}
 		if (targetRef instanceof JSRef) {
 			JSRef jsRef =  (JSRef) targetRef;
-			return jsRef.getEngine().callJSRef(jsRef, method.getName(), args);
+			return jsRef.getEngine().call(jsRef, method.getName(), args);
 		}else{
 			return method.invoke(targetRef, args);
 		}

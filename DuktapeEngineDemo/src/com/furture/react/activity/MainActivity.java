@@ -112,6 +112,16 @@ public class MainActivity extends Activity {
 		   }
 	    });
        
+       findViewById(R.id.button8).setOnClickListener(new OnClickListener() {
+   		
+		   @Override
+		   public void onClick(View v) {
+			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
+			   intent.putExtra("file", "camera.js");
+			   startActivity(intent);
+		   }
+	    });
+       
        /**
        findViewById(R.id.button5).setOnClickListener(new OnClickListener() {
    		

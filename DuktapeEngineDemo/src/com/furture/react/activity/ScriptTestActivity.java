@@ -6,13 +6,16 @@ import com.furture.react.JSApi;
 import com.furture.react.demo.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class ScriptTestActivity extends Activity {
+	
 	private DuktapeEngine duktapeEngine;
+	private MediaApi mediaApi;
 	private static final String ACTIVITY_LISTENER = "activityListener";
 	
 
@@ -24,6 +27,8 @@ public class ScriptTestActivity extends Activity {
 		duktapeEngine.init();
 		duktapeEngine.register("activity",this);
 		duktapeEngine.register("ui", new UIApi(this));
+		mediaApi = new MediaApi(this);
+		duktapeEngine.register("media", mediaApi);
 		Object value = duktapeEngine.execute(AssetScript.toScript(getBaseContext(), getIntent().getStringExtra("file")));
 		if (value != null) {
 			((Button)findViewById(R.id.button1)).setText(value.toString());
@@ -38,39 +43,54 @@ public class ScriptTestActivity extends Activity {
 			}
 		});
 		
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onCreate", savedInstanceState);
+		duktapeEngine.call(ACTIVITY_LISTENER, "onCreate", savedInstanceState);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onStart");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onStart");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onResume");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onResume");
 	}
 	
 	
 
 	@Override
 	protected void onPause() {
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onPause");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onPause");
 		super.onPause();
 	}
 
 	@Override
 	protected void onStop() {
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "onStop");
+		duktapeEngine.call(ACTIVITY_LISTENER, "onStop");
 		super.onStop();
 	}
+	
+	
+	
 
 	@Override
 	public void finish() {
-		duktapeEngine.callJs(ACTIVITY_LISTENER, "finish");
+		duktapeEngine.call(ACTIVITY_LISTENER, "finish");
 		super.finish();
+	}
+
+	
+	
+	
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == MediaApi.CAMERA_REQUEST_CODE){
+			mediaApi.onActivityResult(requestCode, resultCode, data);
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -81,4 +101,8 @@ public class ScriptTestActivity extends Activity {
 		}
 		super.onDestroy();
 	}
+	
+	
+	
+	
 }

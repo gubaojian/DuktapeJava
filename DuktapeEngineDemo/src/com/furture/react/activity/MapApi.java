@@ -49,7 +49,7 @@ public class MapApi {
 			
 			@Override
 			public void onReceiveLocation(BDLocation location) {
-				callback.getEngine().callJSRef(callback, "success", location);
+				callback.getEngine().call(callback, "success", location);
 	            StringBuffer sb = new StringBuffer(256);
 	            sb.append("time : ");
 	            sb.append(location.getTime());

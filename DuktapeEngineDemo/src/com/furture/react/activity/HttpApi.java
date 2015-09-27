@@ -44,7 +44,7 @@ public class HttpApi {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							callback.getEngine().callJSRef(callback, CALL_BACK_METHOD_NAME, json);
+							callback.getEngine().call(callback, CALL_BACK_METHOD_NAME, json);
 						}
 					});
 				} catch (Exception e) {
@@ -52,7 +52,7 @@ public class HttpApi {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
-							callback.getEngine().callJSRef(callback, CALL_BACK_METHOD_NAME, emptyJson);
+							callback.getEngine().call(callback, CALL_BACK_METHOD_NAME, emptyJson);
 						}
 					});
 				}
@@ -63,7 +63,7 @@ public class HttpApi {
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
-						callback.getEngine().callJSRef(callback, CALL_BACK_METHOD_NAME, emptyJson);
+						callback.getEngine().call(callback, CALL_BACK_METHOD_NAME, emptyJson);
 					}
 				});
 			}

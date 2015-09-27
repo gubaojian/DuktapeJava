@@ -21,7 +21,7 @@ public class JSRef {
 	
 	@Override
 	public String toString() {
-		Object value = engine.callJSRef(this, "toString");
+		Object value = engine.call(this, "toString");
 		if (value != null) {
 			return value.toString();
 		}
