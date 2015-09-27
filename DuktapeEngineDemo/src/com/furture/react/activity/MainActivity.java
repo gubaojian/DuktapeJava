@@ -15,7 +15,7 @@ import com.furture.react.demo.R;
 /**
  * 
  * https://github.com/svaarala/duktape/commit/99807ae89be300c3c2f7923043bbb2e2792e3c43
- * 
+ * http://docs.phonegap.com/plugin-apis/
  * */
 public class MainActivity extends Activity {
 
@@ -132,6 +132,16 @@ public class MainActivity extends Activity {
 		   public void onClick(View v) {
 			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
 			   intent.putExtra("file", "network.js");
+			   startActivity(intent);
+		   }
+	    });
+       
+       findViewById(R.id.button11).setOnClickListener(new OnClickListener() {
+    		
+		   @Override
+		   public void onClick(View v) {
+			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
+			   intent.putExtra("file", "video.js");
 			   startActivity(intent);
 		   }
 	    });
