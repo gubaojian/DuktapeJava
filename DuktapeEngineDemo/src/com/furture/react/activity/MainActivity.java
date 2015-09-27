@@ -122,6 +122,16 @@ public class MainActivity extends Activity {
 		   }
 	    });
        
+       findViewById(R.id.button9).setOnClickListener(new OnClickListener() {
+      		
+		   @Override
+		   public void onClick(View v) {
+			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
+			   intent.putExtra("file", "photo.js");
+			   startActivity(intent);
+		   }
+	    });
+       
        /**
        findViewById(R.id.button5).setOnClickListener(new OnClickListener() {
    		

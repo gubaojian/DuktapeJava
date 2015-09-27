@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,7 +15,7 @@ import com.furture.react.JSRef;
 public class MediaApi {
 
 	public static final int CAMERA_REQUEST_CODE = 100;
-	
+	public static final int GALLERY_REQUEST_CODE = 101;
 	
 	private Activity activity;
 
@@ -29,6 +30,10 @@ public class MediaApi {
 
 
 	public void takePicture(JSRef callback){
+		if(callback == null){
+			pictureCallback = null;
+			return;
+		}
 		try {
 			File file = File.createTempFile(System.currentTimeMillis() + "", ".jpg", getTempDirectoryPath());
 			pictureUri = Uri.fromFile(file);
@@ -40,6 +45,19 @@ public class MediaApi {
 			e.printStackTrace();
 			callback.getEngine().call(callback, "fail", "创建拍照文件失败");
 		}
+	}
+	
+	
+	public void choosePicture(JSRef callback){
+		if(callback == null){
+			pictureCallback = null;
+			return;
+		}
+		Intent intent = new Intent(Intent.ACTION_PICK,  android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		//intent.setType("image/*");
+		//intent.addCategory(Intent.CATEGORY_OPENABLE);
+		activity.startActivityForResult(intent, GALLERY_REQUEST_CODE);
+		pictureCallback = callback;
 	}
 	
 	
@@ -58,7 +76,29 @@ public class MediaApi {
 					return;
 				}
 			}
-			
+		}
+		if (requestCode == MediaApi.GALLERY_REQUEST_CODE) {
+			if(pictureCallback != null){
+				if (resultCode == Activity.RESULT_CANCELED || data == null) {
+					pictureCallback.getEngine().call(pictureCallback, "fail", "User Cancel");
+					pictureCallback = null;
+					return;
+				}
+				if (resultCode == Activity.RESULT_OK && data.getData() != null) {
+					Uri imageContentUri = data.getData();  
+		            String[] filePathColumn = { MediaStore.Images.Media.DATA };  
+		   
+		            Cursor cursor = activity.getContentResolver().query(imageContentUri,   filePathColumn, null, null, null);  
+		            cursor.moveToFirst();  
+		            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);  
+		            String picturePath = cursor.getString(columnIndex);  
+		            cursor.close();  
+		            Uri imageUri = Uri.fromFile(new File(picturePath));
+					pictureCallback.getEngine().call(pictureCallback, "success", imageUri.toString());
+					pictureCallback = null;
+					return;
+				}
+			}
 		}
 		
 	}

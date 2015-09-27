@@ -87,7 +87,8 @@ public class ScriptTestActivity extends Activity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == MediaApi.CAMERA_REQUEST_CODE){
+		if(requestCode == MediaApi.CAMERA_REQUEST_CODE 
+				|| requestCode == MediaApi.GALLERY_REQUEST_CODE){
 			mediaApi.onActivityResult(requestCode, resultCode, data);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
