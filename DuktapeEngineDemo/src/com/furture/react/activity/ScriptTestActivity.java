@@ -1,16 +1,15 @@
 package com.furture.react.activity;
 
 
-import com.furture.react.DuktapeEngine;
-import com.furture.react.JSApi;
-import com.furture.react.demo.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.furture.react.DuktapeEngine;
+import com.furture.react.demo.R;
 
 public class ScriptTestActivity extends Activity {
 	

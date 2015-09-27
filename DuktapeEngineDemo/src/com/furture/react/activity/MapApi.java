@@ -1,23 +1,12 @@
 package com.furture.react.activity;
 
-import java.util.List;
-
 import android.content.Context;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
-import com.baidu.location.Poi;
 import com.furture.react.JSRef;
 
 public class MapApi {
@@ -50,6 +39,9 @@ public class MapApi {
 			@Override
 			public void onReceiveLocation(BDLocation location) {
 				callback.getEngine().call(callback, "success", location);
+				locationClient.unRegisterLocationListener(this);
+	            locationClient.stop();
+	            /**
 	            StringBuffer sb = new StringBuffer(256);
 	            sb.append("time : ");
 	            sb.append(location.getTime());
@@ -108,8 +100,7 @@ public class MapApi {
 	                    }
 	                }
 	            Log.i("BaiduLocationApiDem", sb.toString());
-	            locationClient.unRegisterLocationListener(this);
-	            locationClient.stop();
+	            */
 			}
 		});
 		locationClient.start();

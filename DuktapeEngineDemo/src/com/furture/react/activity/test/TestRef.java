@@ -1,7 +1,5 @@
 package com.furture.react.activity.test;
 
-import android.util.Log;
-
 import com.furture.react.DLog;
 import com.furture.react.JSRef;
 

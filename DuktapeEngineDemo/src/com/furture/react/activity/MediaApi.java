@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import com.furture.react.DLog;
 import com.furture.react.JSRef;
 
 public class MediaApi {
@@ -29,33 +30,36 @@ public class MediaApi {
 	}
 
 
+	/**
+	 * 拍照
+	 * */
 	public void takePicture(JSRef callback){
 		if(callback == null){
 			pictureCallback = null;
 			return;
 		}
 		try {
-			File file = File.createTempFile(System.currentTimeMillis() + "", ".jpg", getTempDirectoryPath());
+			File file = File.createTempFile(System.currentTimeMillis() + "", ".jpg", getCachePath());
 			pictureUri = Uri.fromFile(file);
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, pictureUri);
 			activity.startActivityForResult(intent, CAMERA_REQUEST_CODE);
 			pictureCallback = callback;
         } catch (IOException e) {
-			e.printStackTrace();
+			DLog.e("MediaApi", "Create Temp File Exception " + e.getMessage());
 			callback.getEngine().call(callback, "fail", "创建拍照文件失败");
 		}
 	}
 	
-	
+	/**
+	 * 从相册选择图片
+	 * */
 	public void choosePicture(JSRef callback){
 		if(callback == null){
 			pictureCallback = null;
 			return;
 		}
 		Intent intent = new Intent(Intent.ACTION_PICK,  android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		//intent.setType("image/*");
-		//intent.addCategory(Intent.CATEGORY_OPENABLE);
 		activity.startActivityForResult(intent, GALLERY_REQUEST_CODE);
 		pictureCallback = callback;
 	}
@@ -100,22 +104,21 @@ public class MediaApi {
 				}
 			}
 		}
-		
 	}
 	
 	
-	private File getTempDirectoryPath() {
-        File cache = null;
+	private File getCachePath() {
+        File cacheDir = null;
         // SD Card Mounted
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            cache =  activity.getExternalCacheDir();
+            cacheDir =  activity.getExternalCacheDir();
         }else {
-            cache = activity.getCacheDir();
+            cacheDir = activity.getCacheDir();
         }
         // Create the cache directory if it doesn't exist
-        if(!cache.exists()){
-            cache.mkdirs();
+        if(!cacheDir.exists()){
+            cacheDir.mkdirs();
         }
-        return cache;
+        return cacheDir;
     }
 }

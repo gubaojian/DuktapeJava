@@ -69,6 +69,12 @@
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
 			        android:text="Gallery Api"/>
+			   
+			   <Button
+			        android:id="@+id/button10"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:text="Network Api"/>
 	        </LinearLayout>
 	        
     </ScrollView>

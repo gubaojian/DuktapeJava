@@ -1,11 +1,5 @@
 package com.furture.react.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +27,7 @@ public class MainActivity extends Activity {
 		  
 		 JSApi.registerJavaObject("http", new HttpApi());
 		 JSApi.registerJavaObject("map", new MapApi(getApplicationContext()));
-		
+		 JSApi.registerJavaObject("network", new NetworkApi(getApplicationContext()));
 		
 		
 		findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
@@ -132,16 +126,17 @@ public class MainActivity extends Activity {
 		   }
 	    });
        
-       /**
-       findViewById(R.id.button5).setOnClickListener(new OnClickListener() {
-   		
+       findViewById(R.id.button10).setOnClickListener(new OnClickListener() {
+     		
 		   @Override
 		   public void onClick(View v) {
 			   Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
-			   intent.putExtra("file", "asynctask.js");
+			   intent.putExtra("file", "network.js");
 			   startActivity(intent);
 		   }
-	    });*/
+	    });
+       
+      
 	}
 
 	@Override
@@ -151,12 +146,7 @@ public class MainActivity extends Activity {
 		return true;
 	}
 	
-	private Reader readerFromAsset(String fileName) throws IOException {
-		InputStream is = getAssets().open(fileName);
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		return br;
- 
-	}
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
