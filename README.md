@@ -12,7 +12,7 @@ new DuktapeEngnine instance then init it.
 		duktapeEngine.init();
 		duktapeEngine.register("activity",this);
 		duktapeEngine.execute(AssetScript.toScript(getBaseContext(), "duk.js"));
-		duktapeEngine.callJs("activityListener", "onCreate", savedInstanceState);
+		duktapeEngine.call("activityListener", "onCreate", savedInstanceState);
 	} 
     
     
@@ -104,9 +104,9 @@ java can also call any method or get property on javascript object.
       
          public static void showData(JSRef data){
              DuktapeEngine  engine =  data.getEngine();
-             int count = (Integer)engine.callJsRef(data, "count");
+             int count = (Integer)engine.call(data, "count");
              for(int i=0; i<count; i++){
-                 Log.d("DataUtils", " Get JavaScript Data Success :  " + engine.callJsRef(data, "getItem", i));
+                 Log.d("DataUtils", " Get JavaScript Data Success :  " + engine.call(data, "getItem", i));
              }
           }
       
