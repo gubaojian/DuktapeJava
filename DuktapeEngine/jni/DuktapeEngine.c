@@ -839,47 +839,53 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 		return;
 	}
 	if (java_api_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_api_class);
+		 (*env)->DeleteGlobalRef(env, java_api_class);
+		 java_api_class = NULL;
 	}
 
 	if (js_ref_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_api_class);
+		  (*env)->DeleteGlobalRef(env, java_api_class
+			js_ref_class = NULL;
 	}
 
 	if (java_boolean_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_api_class);
+		 (*env)->DeleteGlobalRef(env, java_api_class);
+		 java_boolean_class = NULL;
 	}
 
 	if (java_integer_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_integer_class);
+		 (*env)->DeleteGlobalRef(env, java_integer_class);
+		 java_integer_class = NULL;
 	}
 	if (java_long_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_long_class);
+		 (*env)->DeleteGlobalRef(env, java_long_class);
+		 java_long_class = NULL;
 	}
 
 	if (java_double_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_double_class);
+		 (*env)->DeleteGlobalRef(env, java_double_class);
+		 java_double_class = NULL;
 	}
 
 	if (java_float_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_float_class);
+		 (*env)->DeleteGlobalRef(env, java_float_class);
+		 java_float_class = NULL;
 	}
 
 	if (java_short_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_short_class);
+		 (*env)->DeleteGlobalRef(env, java_short_class);
+		 java_short_class = NULL;
 	}
 
 	if (java_byte_class != NULL) {
 		(*env)->DeleteGlobalRef(env, java_byte_class);
+		java_byte_class  = NULL;
 	}
 
 	if (java_number_class != NULL) {
 		(*env)->DeleteGlobalRef(env, java_number_class);
+		java_number_class = NULL;
 	}
 	jvm = NULL;
 	DEBUG_LOG("ScriptEngine","JNI_OnUnload Success");
 }
-
-
-
-
