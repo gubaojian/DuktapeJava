@@ -8,6 +8,12 @@
 
 defineClass("File")
 
+var ui = api.get("ui");
+var http = api.get("http");
+
+
+
+
 // "arguments[0]" refers to the first argument at the command line to the
 // script, if present. If not present, "arguments[0]" will be undefined,
 // which will cause f to read from System.in.

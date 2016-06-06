@@ -6,7 +6,7 @@ import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 
-public class CodeTransformer {
+public class CodeConvertor {
 	
 	
 	
@@ -35,19 +35,37 @@ public class CodeTransformer {
 			System.out.println("java -jar CodeConvertor.jar /ui.js ui.c.js");
 			return;
 		}
+		if(args.length <= 2){
+			String file = args[0];
 
-	    String file = args[0];
-		if(!file.startsWith("/")){
-			file = "/" + file;
+			InputStream inputStream = null;
+			try{
+				inputStream = new FileInputStream(file);
+			}catch (Exception e){
+				if(!file.startsWith("/")){
+					file = "/" + file;
+				}
+				inputStream = CodeConvertor.class.getResourceAsStream(file);
+			}
+
+			Reader reader = new InputStreamReader(inputStream);
+
+			if(args.length <= 1){
+				System.out.println(parse(reader));
+			}else{
+				System.out.println("convert " + file + " to " + args[1]);
+				File saveFile = new File(args[1]);
+				if(saveFile.getParentFile() != null){
+					if(!saveFile.getParentFile().exists()){
+						saveFile.getParentFile().mkdirs();
+					}
+				}
+				FileOutputStream outputStream = new FileOutputStream(saveFile);
+				outputStream.write(parse(reader).getBytes());
+				outputStream.close();
+			}
 		}
-	    InputStream inputStream = CodeTransformer.class.getResourceAsStream(file);
-	    Reader reader = new InputStreamReader(inputStream);
 
-		if(args.length <= 1){
-			System.out.println(parse(reader));
-		}else{
-
-		}
 	 }
 
 

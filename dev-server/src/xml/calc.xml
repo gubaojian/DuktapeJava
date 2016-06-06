@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View
+    width="320"
+    height="100%"
+    screenUnit="320">
+
+
+    <TextView
+        width="100%"
+        height="60"
+        background="#C60A0A"
+        text="height 60 "
+        textAlign="center"
+        textSize="20"
+        textColor="#FFFFFF">
+
+    </TextView>
+
+    <TextView
+    width="100%"
+    y="60"
+    height="calc(100% - 60)"
+    background="#DD2727"
+    text="calc(100% - 60)"
+    textAlign="center"
+    textSize="30"
+    textColor="#FFFFFF">
+
+    </TextView>
+
+
+</View>

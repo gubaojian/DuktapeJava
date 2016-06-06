@@ -1,0 +1,5 @@
+*.class
+DuktapeEngineDemo/.idea/
+*/.idea/
+*/.settings/
+dev-server/node_modules/
