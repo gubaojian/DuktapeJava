@@ -3,3 +3,15 @@ DuktapeEngineDemo/.idea/
 */.idea/
 */.settings/
 dev-server/node_modules/
+DuktapeEngineDemo/DuktapeEngineTest/build
+DuktapeEngineDemo/build/
+DuktapeEngineDemo/bin/
+DuktapeEngineDemo/obj/
+DuktapeEngineDemo/.settings/
+DuktapeEngineDemo/.gradle/
+DuktapeEngine/DuktapeJava/build/
+DuktapeEngine/DuktapeJava/.gradle/
+DuktapeEngine/build/
+DuktapeEngine/.gradle/
+DuktapeEngine/bin/
+DuktapeEngine/.settings/

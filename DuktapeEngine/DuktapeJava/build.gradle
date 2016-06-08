@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "23.0.3"
+
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 21
+    }
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
+        jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+    }
+
+
+    task buildJar(type:Jar) {
+        from "build/intermediates/classes/release/"
+        exclude{ it.name.equals("BuildConfig.class")}
+        exclude{ it.name.equals("R.class")}
+        exclude{ it.name.startsWith('R$');}
+        destinationDir = file('build/libs')
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+        debug {
+            debuggable false
+        }
+    }
+
+
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:19.1.0'
+}

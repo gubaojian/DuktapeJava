@@ -1,1 +1,0 @@
-javah -classpath bin/classes/ -d jni/ com.furture.react.DuktapeEngine
