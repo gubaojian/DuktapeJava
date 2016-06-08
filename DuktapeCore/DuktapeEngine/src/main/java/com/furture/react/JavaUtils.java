@@ -245,13 +245,24 @@ public class JavaUtils {
 					throw new RuntimeException("invoke set field method  for " + fieldName + " error on target " + target, e);
 				}
 			}
-			
+
 			if (notExistMethodCache.get(key) != MARK) {
 				try {
 					String methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-					method = targetClass.getMethod(methodName);
-					methodCache.put(key, method);
-					method.invoke(target, fieldValue);
+					if(fieldValue != null){
+						method = targetClass.getMethod(methodName, fieldValue.getClass());
+					}else {
+						Method[] classMethods = targetClass.getMethods();
+						for(Method classMethod : classMethods){
+							if(classMethod.getName().equals(methodName)){
+								method = classMethod;
+							}
+						}
+					}
+					if(method != null){
+						methodCache.put(key, method);
+						method.invoke(target, fieldValue);
+					}
 					return;
 				}catch (NoSuchMethodException notExistGetAccessError){
 					notExistMethodCache.put(key, MARK);
