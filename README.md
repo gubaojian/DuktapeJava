@@ -1,5 +1,5 @@
 ### DuktapeJava
-A Java NDK wrapper for duktape javascript engine on android platform, which is tiny 200-300KB so. you can use any java method in javascript by just small engine, give you endless power integrating javascript with java. 
+A Java NDK wrapper for duktape javascript engine on android platform, which is tiny, only 200-300KB so and 1000 line java code. you can use any java method in javascript by just small engine, give you endless power integrating javascript with java. 
 
 ### Get start
 
@@ -13,9 +13,9 @@ new DuktapeEngnine instance then init it.
 		duktapeEngine.register("activity",this);
 		duktapeEngine.execute(AssetScript.toScript(getBaseContext(), "duk.js"));
 		duktapeEngine.call("activityListener", "onCreate", savedInstanceState);
-	} 
-    
-    
+	}
+
+
     @Override
 	protected void onDestroy() {
 		if (duktapeEngine != null) {
@@ -24,7 +24,7 @@ new DuktapeEngnine instance then init it.
 		}
 		super.onDestroy();
 	}
-	
+
 
 duk.js javascript code
 
@@ -32,8 +32,8 @@ duk.js javascript code
 	importClass("android.view.View.OnClickListener")
 	importClass("android.widget.Toast")
 	importClass("java.lang.Runnable")
-	
-	
+
+
 	var activityListener = {};
 	activityListener.onCreate = function(){
 			print("activity onCreate onJavaScript");
@@ -44,44 +44,44 @@ duk.js javascript code
 				var intent = new Intent(activity, "com.furture.react.activity.DetailActivity");
 				activity.startActivity(intent);
 			}));
-		
+
 		button2 = activity.findViewById(R.id.button2);
 		button2.setOnClickListener(new OnClickListener({
-			onClick:function(){ 
+			onClick:function(){
 			   Toast.makeText(activity, "Button2 Clicked", Toast.LENGTH_SHORT).show();
 			}
 		}));
     }
 
-	activityListener.onStart = function(){ 
+	activityListener.onStart = function(){
 		print("activity onStart");
 	}
-	
-	activityListener.onResume = function(){ 
+
+	activityListener.onResume = function(){
 		print("activity onResume");
 	}
-	
-	
-	activityListener.onPause = function(){ 
+
+
+	activityListener.onPause = function(){
 		print("activity onPause");
 	}
-	
+
 	activityListener.onStop = function(){
 		print("activity onStop");
 	}
-	
+
 	activityListener.finish = function(){
 		print("activity finish" + num);
 	}
 
 ###Seamless Integrating Java with Javascript
- 
- javascript can call any javamethod, and new java class instance and interface. 
- 
- 
+
+ javascript can call any javamethod, and new java class instance and interface.
+
+
      importClass("android.widget.Toast")
-     
-     
+
+
      Toast.makeText(activity, "Javascript toast", Toast.LENGTH_SHORT).show();
 
 
@@ -89,19 +89,19 @@ java can also call any method or get property on javascript object.
 
 
       importClass("com.efurture.react.DataUtils")
-      
+
       var data = {};
       data.count =  10;
       data.getItem = function(index){
              return "Javascript Data " + index;
       }
-      
+
       DataUtils.showData(data);
-      
+
  DataUtils Java Code Sample   
-   
+
       public class DataUtils{
-      
+
          public static void showData(JSRef data){
              DuktapeEngine  engine =  data.getEngine();
              int count = (Integer)engine.call(data, "count");
@@ -109,7 +109,7 @@ java can also call any method or get property on javascript object.
                  Log.d("DataUtils", " Get JavaScript Data Success :  " + engine.call(data, "getItem", i));
              }
           }
-      
+
       }   
 
 ### Reference
@@ -120,11 +120,3 @@ java can also call any method or get property on javascript object.
 
 
 <a href="https://github.com/jasonsantos/luajava">https://github.com/jasonsantos/luajava</a>
- 
-
-
-
-
-
-
-    
