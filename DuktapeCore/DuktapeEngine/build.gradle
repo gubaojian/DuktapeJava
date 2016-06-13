@@ -14,7 +14,6 @@ android {
         jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
     }
 
-
     task buildJar(type:Jar) {
         from "build/intermediates/classes/release/"
         exclude{ it.name.equals("BuildConfig.class")}
@@ -22,6 +21,7 @@ android {
         exclude{ it.name.startsWith('R$');}
         destinationDir = file('build/libs')
     }
+    buildJar.dependsOn("compileReleaseSources");
 
     buildTypes {
         release {

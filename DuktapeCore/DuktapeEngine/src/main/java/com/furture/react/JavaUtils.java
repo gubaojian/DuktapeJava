@@ -262,8 +262,10 @@ public class JavaUtils {
 					if(method != null){
 						methodCache.put(key, method);
 						method.invoke(target, fieldValue);
+						return;
+					}else{
+						notExistMethodCache.put(key, MARK);
 					}
-					return;
 				}catch (NoSuchMethodException notExistGetAccessError){
 					notExistMethodCache.put(key, MARK);
 				}catch (Exception e) {

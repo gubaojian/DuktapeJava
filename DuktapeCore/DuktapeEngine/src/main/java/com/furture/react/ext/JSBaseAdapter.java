@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 
 public class JSBaseAdapter extends BaseAdapter{
 
-	private JSRef jsRef;
+	protected JSRef jsRef;
 
 	public JSBaseAdapter(JSRef jsRef) {
 		this.jsRef = jsRef;
@@ -21,7 +21,7 @@ public class JSBaseAdapter extends BaseAdapter{
 		if (count == null) {
 			return 0;
 		}
-		return (Integer) count;
+		return ((Number) count).intValue();
 	}
 
 	@Override
