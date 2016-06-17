@@ -1,12 +1,15 @@
 package com.furture.react;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.Set;
 import java.util.Map.Entry;
 
 /**
  * 
  * Duktape Engine , JavaScript Must Be Execute In Main Thread
- * 
+ *
  * */
 public class DuktapeEngine {
     
@@ -15,8 +18,13 @@ public class DuktapeEngine {
 	}
 	
 	private long  ptr;
+
+	private Handler handler;
 	
-	public synchronized void init(){
+	public void init(){
+		if(Thread.currentThread() != Looper.getMainLooper().getThread()){
+			throw new RuntimeException("DuktapeEngine Must Be Used On Main Thread");
+		}
 		ptr = nativeInit();
         if (ptr == 0) {
 			throw new RuntimeException("NativeInit Pointer Convert Error");
@@ -25,13 +33,14 @@ public class DuktapeEngine {
         for(Entry<String, Object> entry : entries){
         	      register(entry.getKey(), entry.getValue());
         }
+		handler = new Handler(Looper.getMainLooper());
 	}
 	
-	public synchronized void importClass(Class<?> importClass){
+	public  void importClass(Class<?> importClass){
 		nativeRegister(ptr, importClass.getSimpleName(), importClass);
 	}
 	
-	public synchronized void register(String key, Object value){
+	public void register(String key, Object value){
 		nativeRegister(ptr, key, value);
 	}
 	
@@ -42,7 +51,7 @@ public class DuktapeEngine {
 	 * @param args         方法参数
      * 若js对象无methodName的方法，且是函数，则直接调用js函数
      * */
-    public  synchronized Object call(JSRef jsRef, String methodName, Object... args){
+    public   Object call(JSRef jsRef, String methodName, Object... args){
     	     if(ptr != 0){
     	 		return nativeCallJSRef(ptr, jsRef.getRef(),  methodName, args);
     	     }else{
@@ -58,7 +67,7 @@ public class DuktapeEngine {
 	 * @param args         方法参数
 	 * 直接调用js中的方法
 	 * */
-    public synchronized Object call(String objectName, String method, Object... args){
+    public  Object call(String objectName, String method, Object... args){
     	    if(ptr != 0){
 		   return nativeCallJs(ptr, objectName, method, args);
     	     }else {
@@ -66,7 +75,7 @@ public class DuktapeEngine {
 		}
 	}
 	
-	public  synchronized Object execute(String script){
+	public Object execute(String script){
 		if(ptr != 0){
 		   return nativeExeclute(ptr, script);
 		}else{
@@ -76,21 +85,34 @@ public class DuktapeEngine {
 	
 	public void destory(){
 		if(ptr != 0){
-		   nativeDestory(ptr);
-		   ptr = 0;
+			if(Thread.currentThread() != Looper.getMainLooper().getThread()){
+				throw new RuntimeException("DuktapeEngine Must Be Used On Main Thread ");
+			}
+		    nativeDestory(ptr);
+		    ptr = 0;
 		}
 	}
 	
-   void finalizeJSRef(int jsRef){
+   void finalizeJSRef(final int jsRef){
 		if (ptr != 0 ) {
-		    nativeFinalizeJSRef(ptr, jsRef);
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					nativeFinalizeJSRef(ptr, jsRef);
+				}
+			});
 		}
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		if (ptr != 0 ) {
-			destory();
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					destory();
+				}
+			});
 		}
 		super.finalize();
 	}
