@@ -90,6 +90,7 @@ public class DuktapeEngine {
 			}
 		    nativeDestory(ptr);
 		    ptr = 0;
+			handler.removeCallbacksAndMessages(null);
 		}
 	}
 	
@@ -98,7 +99,9 @@ public class DuktapeEngine {
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
-					nativeFinalizeJSRef(ptr, jsRef);
+					if(ptr != 0){
+						nativeFinalizeJSRef(ptr, jsRef);
+					}
 				}
 			});
 		}
@@ -110,7 +113,9 @@ public class DuktapeEngine {
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
-					destory();
+					if (ptr != 0 ) {
+						destory();
+					}
 				}
 			});
 		}
