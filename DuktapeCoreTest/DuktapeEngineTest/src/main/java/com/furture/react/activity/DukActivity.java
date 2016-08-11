@@ -23,6 +23,13 @@ public class DukActivity  extends Activity{
 		duktapeEngine.execute(AssetScript.read(getBaseContext(), "convert/index.js"));
 		System.out.println("used " + (System.currentTimeMillis() - start) + "  ms ");
 		duktapeEngine.call(ACTIVITY_LISTENER, "onCreate", savedInstanceState);
+
+
+
+
+		System.currentTimeMillis();
+
+
 	}
 
 	@Override

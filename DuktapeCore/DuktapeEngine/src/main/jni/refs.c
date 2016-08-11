@@ -1,23 +1,32 @@
 
 #include "refs.h"
+#include <pthread.h>
+
+#define JS_REFS_KEY "__refs"
+
+unsigned int hash(unsigned int x) {
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = (x >> 16) ^ x;
+    return x;
+}
 
 // Create a global array refs in the heap stash.
 void duk_js_ref_setup(duk_context *ctx) {
-  duk_push_heap_stash(ctx);
-
+  duk_push_global_stash(ctx);
   // Create a new array with one `0` at index `0`.
   duk_push_array(ctx);
   duk_push_int(ctx, 0);
   duk_put_prop_index(ctx, -2, 0);
   // Store it as "refs" in the heap stash
-  duk_put_prop_string(ctx, -2, "refs");
+  duk_put_prop_string(ctx, -2, JS_REFS_KEY);
 
   duk_pop(ctx);
 }
 
 int duk_js_ref_size(duk_context *ctx){
-	 duk_push_heap_stash(ctx);
-	 duk_get_prop_string(ctx, -1, "refs");
+	 duk_push_global_stash(ctx);
+	 duk_get_prop_string(ctx, -1, JS_REFS_KEY);
 	 int length = duk_get_length(ctx, -1);
 	 duk_pop_2(ctx);
 	 return length;
@@ -31,71 +40,57 @@ int duk_js_ref(duk_context *ctx) {
     return 0;
   }
   // Get the "refs" array in the heap stash
-  duk_push_heap_stash(ctx);
-  duk_get_prop_string(ctx, -1, "refs");
+  duk_push_global_stash(ctx);
+  duk_get_prop_string(ctx, -1, JS_REFS_KEY);
   duk_remove(ctx, -2);
-
-  // ref = refs[0]
-  duk_get_prop_index(ctx, -1, 0);
-  ref = duk_get_int(ctx, -1);
-  duk_pop(ctx);
-
-  // If there was a free slot, remove it from the list
-  if (ref != 0) {
-    // refs[0] = refs[ref]
-    duk_get_prop_index(ctx, -1, ref);
-    duk_put_prop_index(ctx, -2, 0);
-  }
-  // Otherwise use the end of the list
-  else {
-    // ref = refs.length;
-    ref = duk_get_length(ctx, -1);
-  }
-
-  // swap the array and the user value in the stack
-  duk_insert(ctx, -2);
-
-  // refs[ref] = value
-  duk_put_prop_index(ctx, -2, ref);
-
-  // Remove the refs array from the stack.
-  duk_pop(ctx);
+ duk_insert(ctx, -2);
+ void* pointer = duk_get_heapptr(ctx, -1);
+ ref  = abs((intptr_t)pointer)&0x7fffffff;
+ DEBUG_LOG("ScriptEngine","duk_js_ref %d pointer %p", ref, pointer);
+ while(duk_get_prop_index(ctx, -2, ref)){
+     ref = hash(ref)&0x7fffffff;
+     duk_pop(ctx);
+ }
+ duk_pop(ctx);
+ duk_put_prop_index(ctx, -2, ref);
+ // Remove the refs array from the stack.
+ duk_pop(ctx);
 
   return ref;
 }
 
+void duk_js_unref(duk_context *ctx, int ref) {
+
+  if (ref == 0 || ctx == NULL) return;
+
+ DEBUG_LOG("ScriptEngine","duk_js_unref %d ", ref);
+
+  // Get the "refs" array in the heap stash
+  duk_push_global_stash(ctx);
+  duk_get_prop_string(ctx, -1, JS_REFS_KEY);
+  duk_remove(ctx, -2);
+  duk_del_prop_index(ctx, -1, ref);
+  duk_pop(ctx);
+}
+
 void duk_push_js_ref(duk_context *ctx, int ref) {
-  if (!ref) {
+  if(ctx == NULL){
+    return;
+  }
+  if (ref == 0) {
     duk_push_undefined(ctx);
     return;
   }
   // Get the "refs" array in the heap stash
-  duk_push_heap_stash(ctx);
-  duk_get_prop_string(ctx, -1, "refs");
+  duk_push_global_stash(ctx);
+  duk_get_prop_string(ctx, -1, JS_REFS_KEY);
   duk_remove(ctx, -2);
-
   duk_get_prop_index(ctx, -1, ref);
-
   duk_remove(ctx, -2);
 }
 
-void duk_js_unref(duk_context *ctx, int ref) {
-
-  if (!ref) return;
-
-  // Get the "refs" array in the heap stash
-  duk_push_heap_stash(ctx);
-  duk_get_prop_string(ctx, -1, "refs");
+void duk_push_js_refs(duk_context *ctx){
+  duk_push_global_stash(ctx);
+  duk_get_prop_string(ctx, -1, JS_REFS_KEY);
   duk_remove(ctx, -2);
-
-  // Insert a new link in the freelist
-
-  // refs[ref] = refs[0]
-  duk_get_prop_index(ctx, -1, 0);
-  duk_put_prop_index(ctx, -2, ref);
-  // refs[0] = ref
-  duk_push_int(ctx, ref);
-  duk_put_prop_index(ctx, -2, 0);
-
-  duk_pop(ctx);
 }

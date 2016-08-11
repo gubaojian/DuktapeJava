@@ -1,1 +1,1 @@
-include ':DuktapeEngine'
+include ':DuktapeEngine', ':duktapetest'

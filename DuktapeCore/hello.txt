@@ -1,0 +1,838 @@
+Incremental java compilation is an incubating feature.
+:tasks
+
+------------------------------------------------------------
+All tasks runnable from root project
+------------------------------------------------------------
+
+Android tasks
+-------------
+DuktapeEngine:androidDependencies - Displays the Android dependencies of the project.
+myapplication:androidDependencies - Displays the Android dependencies of the project.
+DuktapeEngine:signingReport - Displays the signing info for each variant.
+myapplication:signingReport - Displays the signing info for each variant.
+DuktapeEngine:sourceSets - Prints out all the source sets defined in this project.
+myapplication:sourceSets - Prints out all the source sets defined in this project.
+
+Build tasks
+-----------
+DuktapeEngine:assemble - Assembles all variants of all applications and secondary packages. [DuktapeEngine:assembleDebug, DuktapeEngine:assembleRelease]
+myapplication:assemble - Assembles all variants of all applications and secondary packages. [myapplication:assembleDebug, myapplication:assembleRelease]
+DuktapeEngine:assembleAndroidTest - Assembles all the Test applications. [DuktapeEngine:compileDebugAndroidTestSources]
+    DuktapeEngine:assembleDebugAndroidTest
+    DuktapeEngine:lintVitalDebugAndroidTest - Runs lint on just the fatal issues in the DebugAndroidTest build.
+    DuktapeEngine:mergeDebugAndroidTestJniLibFolders
+    DuktapeEngine:packageDebugAndroidTest
+    DuktapeEngine:prePackageMarkerForDebugAndroidTest
+    DuktapeEngine:processDebugAndroidTestJavaRes
+    DuktapeEngine:transformClassesWithDexForDebugAndroidTest
+    DuktapeEngine:transformNative_libsWithMergeJniLibsForDebugAndroidTest
+    DuktapeEngine:transformResourcesWithMergeJavaResForDebugAndroidTest
+    DuktapeEngine:validateDebugSigning
+myapplication:assembleAndroidTest - Assembles all the Test applications. [myapplication:compileDebugAndroidTestSources]
+    myapplication:assembleDebugAndroidTest
+    myapplication:mergeDebugAndroidTestJniLibFolders
+    myapplication:packageDebugAndroidTest
+    myapplication:prePackageMarkerForDebugAndroidTest
+    myapplication:processDebugAndroidTestJavaRes
+    myapplication:transformClassesWithDexForDebugAndroidTest
+    myapplication:transformNative_libsWithMergeJniLibsForDebugAndroidTest
+    myapplication:transformResourcesWithMergeJavaResForDebugAndroidTest
+    myapplication:validateDebugSigning
+DuktapeEngine:assembleDebug - Assembles all Debug builds. [DuktapeEngine:compileDebugSources, DuktapeEngine:extractDebugAnnotations]
+    DuktapeEngine:bundleDebug - Assembles a bundle containing the library in debug.
+    DuktapeEngine:compileLint
+    DuktapeEngine:copyDebugLint
+    DuktapeEngine:mergeDebugJniLibFolders
+    DuktapeEngine:mergeDebugProguardFiles
+    DuktapeEngine:packageDebugRenderscript
+    DuktapeEngine:packageDebugResources
+    DuktapeEngine:processDebugJavaRes
+    DuktapeEngine:transformClassesAndResourcesWithSyncLibJarsForDebug
+    DuktapeEngine:transformNative_libsWithMergeJniLibsForDebug
+    DuktapeEngine:transformNative_libsWithSyncJniLibsForDebug
+    DuktapeEngine:transformResourcesWithMergeJavaResForDebug
+myapplication:assembleDebug - Assembles all Debug builds. [DuktapeEngine:bundleRelease, myapplication:compileDebugSources]
+    myapplication:mergeDebugJniLibFolders
+    myapplication:packageDebug
+    myapplication:prePackageMarkerForDebug
+    myapplication:processDebugJavaRes
+    myapplication:transformClassesWithDexForDebug
+    myapplication:transformNative_libsWithMergeJniLibsForDebug
+    myapplication:transformResourcesWithMergeJavaResForDebug
+    myapplication:validateDebugSigning
+    myapplication:zipalignDebug
+DuktapeEngine:assembleRelease - Assembles all Release builds. [DuktapeEngine:compileReleaseSources, DuktapeEngine:extractReleaseAnnotations]
+    DuktapeEngine:bundleRelease - Assembles a bundle containing the library in release.
+    DuktapeEngine:compileLint
+    DuktapeEngine:copyReleaseLint
+    DuktapeEngine:mergeReleaseJniLibFolders
+    DuktapeEngine:mergeReleaseProguardFiles
+    DuktapeEngine:packageReleaseRenderscript
+    DuktapeEngine:packageReleaseResources
+    DuktapeEngine:processReleaseJavaRes
+    DuktapeEngine:transformClassesAndResourcesWithSyncLibJarsForRelease
+    DuktapeEngine:transformNative_libsWithMergeJniLibsForRelease
+    DuktapeEngine:transformNative_libsWithSyncJniLibsForRelease
+    DuktapeEngine:transformResourcesWithMergeJavaResForRelease
+myapplication:assembleRelease - Assembles all Release builds. [DuktapeEngine:bundleRelease, myapplication:compileReleaseSources]
+    myapplication:lintVitalRelease - Runs lint on just the fatal issues in the Release build.
+    myapplication:mergeReleaseJniLibFolders
+    myapplication:packageRelease
+    myapplication:prePackageMarkerForRelease
+    myapplication:processReleaseJavaRes
+    myapplication:transformClassesWithDexForRelease
+    myapplication:transformNative_libsWithMergeJniLibsForRelease
+    myapplication:transformResourcesWithMergeJavaResForRelease
+DuktapeEngine:build - Assembles and tests this project. [DuktapeEngine:assemble, DuktapeEngine:check]
+myapplication:build - Assembles and tests this project. [myapplication:assemble, myapplication:check]
+DuktapeEngine:buildDependents - Assembles and tests this project and all projects that depend on it. [DuktapeEngine:build, myapplication:buildDependents]
+myapplication:buildDependents - Assembles and tests this project and all projects that depend on it. [myapplication:build]
+DuktapeEngine:buildNeeded - Assembles and tests this project and all projects it depends on. [DuktapeEngine:build]
+myapplication:buildNeeded - Assembles and tests this project and all projects it depends on. [DuktapeEngine:buildNeeded, myapplication:build]
+DuktapeEngine:clean - Deletes the build directory.
+myapplication:clean - Deletes the build directory.
+DuktapeEngine:compileDebugAndroidTestSources [DuktapeEngine:assembleDebug]
+    DuktapeEngine:compileDebugAndroidTestAidl
+    DuktapeEngine:compileDebugAndroidTestJavaWithJavac
+    DuktapeEngine:compileDebugAndroidTestNdk
+    DuktapeEngine:compileDebugAndroidTestRenderscript
+    DuktapeEngine:compileDebugAndroidTestShaders
+    DuktapeEngine:generateDebugAndroidTestAssets
+    DuktapeEngine:generateDebugAndroidTestBuildConfig
+    DuktapeEngine:generateDebugAndroidTestResValues
+    DuktapeEngine:generateDebugAndroidTestResources
+    DuktapeEngine:generateDebugAndroidTestSources
+    DuktapeEngine:incrementalDebugAndroidTestJavaCompilationSafeguard
+    DuktapeEngine:mergeDebugAndroidTestAssets
+    DuktapeEngine:mergeDebugAndroidTestResources
+    DuktapeEngine:mergeDebugAndroidTestShaders
+    DuktapeEngine:prepareComAndroidSupportTestEspressoEspressoCore222Library - Prepare com.android.support.test.espresso:espresso-core:2.2.2
+    DuktapeEngine:prepareComAndroidSupportTestEspressoEspressoIdlingResource222Library - Prepare com.android.support.test.espresso:espresso-idling-resource:2.2.2
+    DuktapeEngine:prepareComAndroidSupportTestExposedInstrumentationApiPublish05Library - Prepare com.android.support.test:exposed-instrumentation-api-publish:0.5
+    DuktapeEngine:prepareComAndroidSupportTestRules05Library - Prepare com.android.support.test:rules:0.5
+    DuktapeEngine:prepareComAndroidSupportTestRunner05Library - Prepare com.android.support.test:runner:0.5
+    DuktapeEngine:prepareDebugAndroidTestDependencies
+    DuktapeEngine:processDebugAndroidTestManifest
+    DuktapeEngine:processDebugAndroidTestResources
+myapplication:compileDebugAndroidTestSources [DuktapeEngine:bundleRelease]
+    myapplication:checkDebugManifest
+    myapplication:compileDebugAidl
+    myapplication:compileDebugAndroidTestAidl
+    myapplication:compileDebugAndroidTestJavaWithJavac
+    myapplication:compileDebugAndroidTestNdk
+    myapplication:compileDebugAndroidTestRenderscript
+    myapplication:compileDebugAndroidTestShaders
+    myapplication:compileDebugJavaWithJavac
+    myapplication:compileDebugRenderscript
+    myapplication:compileDebugShaders
+    myapplication:generateDebugAndroidTestAssets
+    myapplication:generateDebugAndroidTestBuildConfig
+    myapplication:generateDebugAndroidTestResValues
+    myapplication:generateDebugAndroidTestResources
+    myapplication:generateDebugAndroidTestSources
+    myapplication:generateDebugAssets
+    myapplication:generateDebugBuildConfig
+    myapplication:generateDebugResValues
+    myapplication:generateDebugResources
+    myapplication:generateDebugSources
+    myapplication:incrementalDebugAndroidTestJavaCompilationSafeguard
+    myapplication:incrementalDebugJavaCompilationSafeguard
+    myapplication:mergeDebugAndroidTestAssets
+    myapplication:mergeDebugAndroidTestResources
+    myapplication:mergeDebugAndroidTestShaders
+    myapplication:mergeDebugAssets
+    myapplication:mergeDebugResources
+    myapplication:mergeDebugShaders
+    myapplication:preBuild
+    myapplication:preDebugAndroidTestBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDebugAndroidTestDependencies
+    myapplication:prepareDebugDependencies
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:processDebugAndroidTestManifest
+    myapplication:processDebugAndroidTestResources
+    myapplication:processDebugManifest
+    myapplication:processDebugResources
+DuktapeEngine:compileDebugSources
+    DuktapeEngine:checkDebugManifest
+    DuktapeEngine:compileDebugAidl
+    DuktapeEngine:compileDebugJavaWithJavac
+    DuktapeEngine:compileDebugNdk
+    DuktapeEngine:compileDebugRenderscript
+    DuktapeEngine:compileDebugShaders
+    DuktapeEngine:generateDebugAssets
+    DuktapeEngine:generateDebugBuildConfig
+    DuktapeEngine:generateDebugResValues
+    DuktapeEngine:generateDebugResources
+    DuktapeEngine:generateDebugSources
+    DuktapeEngine:incrementalDebugJavaCompilationSafeguard
+    DuktapeEngine:mergeDebugAssets
+    DuktapeEngine:mergeDebugResources
+    DuktapeEngine:mergeDebugShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareDebugDependencies
+    DuktapeEngine:processDebugManifest
+    DuktapeEngine:processDebugResources
+myapplication:compileDebugSources [DuktapeEngine:bundleRelease]
+    myapplication:checkDebugManifest
+    myapplication:compileDebugAidl
+    myapplication:compileDebugJavaWithJavac
+    myapplication:compileDebugNdk
+    myapplication:compileDebugRenderscript
+    myapplication:compileDebugShaders
+    myapplication:generateDebugAssets
+    myapplication:generateDebugBuildConfig
+    myapplication:generateDebugResValues
+    myapplication:generateDebugResources
+    myapplication:generateDebugSources
+    myapplication:incrementalDebugJavaCompilationSafeguard
+    myapplication:mergeDebugAssets
+    myapplication:mergeDebugResources
+    myapplication:mergeDebugShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDebugDependencies
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:processDebugManifest
+    myapplication:processDebugResources
+DuktapeEngine:compileDebugUnitTestSources
+    DuktapeEngine:checkDebugManifest
+    DuktapeEngine:compileDebugAidl
+    DuktapeEngine:compileDebugJavaWithJavac
+    DuktapeEngine:compileDebugRenderscript
+    DuktapeEngine:compileDebugShaders
+    DuktapeEngine:compileDebugUnitTestJavaWithJavac
+    DuktapeEngine:generateDebugAssets
+    DuktapeEngine:generateDebugBuildConfig
+    DuktapeEngine:generateDebugResValues
+    DuktapeEngine:generateDebugResources
+    DuktapeEngine:generateDebugSources
+    DuktapeEngine:incrementalDebugJavaCompilationSafeguard
+    DuktapeEngine:incrementalDebugUnitTestJavaCompilationSafeguard
+    DuktapeEngine:mergeDebugAssets
+    DuktapeEngine:mergeDebugResources
+    DuktapeEngine:mergeDebugShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareDebugDependencies
+    DuktapeEngine:prepareDebugUnitTestDependencies
+    DuktapeEngine:processDebugJavaRes
+    DuktapeEngine:processDebugManifest
+    DuktapeEngine:processDebugResources
+    DuktapeEngine:processDebugUnitTestJavaRes
+myapplication:compileDebugUnitTestSources [DuktapeEngine:bundleRelease]
+    myapplication:checkDebugManifest
+    myapplication:compileDebugAidl
+    myapplication:compileDebugJavaWithJavac
+    myapplication:compileDebugRenderscript
+    myapplication:compileDebugShaders
+    myapplication:compileDebugUnitTestJavaWithJavac
+    myapplication:generateDebugAssets
+    myapplication:generateDebugBuildConfig
+    myapplication:generateDebugResValues
+    myapplication:generateDebugResources
+    myapplication:generateDebugSources
+    myapplication:incrementalDebugJavaCompilationSafeguard
+    myapplication:incrementalDebugUnitTestJavaCompilationSafeguard
+    myapplication:mergeDebugAssets
+    myapplication:mergeDebugResources
+    myapplication:mergeDebugShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preDebugUnitTestBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDebugDependencies
+    myapplication:prepareDebugUnitTestDependencies
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:processDebugJavaRes
+    myapplication:processDebugManifest
+    myapplication:processDebugResources
+    myapplication:processDebugUnitTestJavaRes
+DuktapeEngine:compileReleaseSources
+    DuktapeEngine:checkReleaseManifest
+    DuktapeEngine:compileReleaseAidl
+    DuktapeEngine:compileReleaseJavaWithJavac
+    DuktapeEngine:compileReleaseNdk
+    DuktapeEngine:compileReleaseRenderscript
+    DuktapeEngine:compileReleaseShaders
+    DuktapeEngine:generateReleaseAssets
+    DuktapeEngine:generateReleaseBuildConfig
+    DuktapeEngine:generateReleaseResValues
+    DuktapeEngine:generateReleaseResources
+    DuktapeEngine:generateReleaseSources
+    DuktapeEngine:incrementalReleaseJavaCompilationSafeguard
+    DuktapeEngine:mergeReleaseAssets
+    DuktapeEngine:mergeReleaseResources
+    DuktapeEngine:mergeReleaseShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareReleaseDependencies
+    DuktapeEngine:processReleaseManifest
+    DuktapeEngine:processReleaseResources
+myapplication:compileReleaseSources [DuktapeEngine:bundleRelease]
+    myapplication:checkReleaseManifest
+    myapplication:compileReleaseAidl
+    myapplication:compileReleaseJavaWithJavac
+    myapplication:compileReleaseNdk
+    myapplication:compileReleaseRenderscript
+    myapplication:compileReleaseShaders
+    myapplication:generateReleaseAssets
+    myapplication:generateReleaseBuildConfig
+    myapplication:generateReleaseResValues
+    myapplication:generateReleaseResources
+    myapplication:generateReleaseSources
+    myapplication:incrementalReleaseJavaCompilationSafeguard
+    myapplication:mergeReleaseAssets
+    myapplication:mergeReleaseResources
+    myapplication:mergeReleaseShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:prepareReleaseDependencies
+    myapplication:processReleaseManifest
+    myapplication:processReleaseResources
+DuktapeEngine:compileReleaseUnitTestSources
+    DuktapeEngine:checkReleaseManifest
+    DuktapeEngine:compileReleaseAidl
+    DuktapeEngine:compileReleaseJavaWithJavac
+    DuktapeEngine:compileReleaseRenderscript
+    DuktapeEngine:compileReleaseShaders
+    DuktapeEngine:compileReleaseUnitTestJavaWithJavac
+    DuktapeEngine:generateReleaseAssets
+    DuktapeEngine:generateReleaseBuildConfig
+    DuktapeEngine:generateReleaseResValues
+    DuktapeEngine:generateReleaseResources
+    DuktapeEngine:generateReleaseSources
+    DuktapeEngine:incrementalReleaseJavaCompilationSafeguard
+    DuktapeEngine:incrementalReleaseUnitTestJavaCompilationSafeguard
+    DuktapeEngine:mergeReleaseAssets
+    DuktapeEngine:mergeReleaseResources
+    DuktapeEngine:mergeReleaseShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareReleaseDependencies
+    DuktapeEngine:prepareReleaseUnitTestDependencies
+    DuktapeEngine:processReleaseJavaRes
+    DuktapeEngine:processReleaseManifest
+    DuktapeEngine:processReleaseResources
+    DuktapeEngine:processReleaseUnitTestJavaRes
+myapplication:compileReleaseUnitTestSources [DuktapeEngine:bundleRelease]
+    myapplication:checkReleaseManifest
+    myapplication:compileReleaseAidl
+    myapplication:compileReleaseJavaWithJavac
+    myapplication:compileReleaseRenderscript
+    myapplication:compileReleaseShaders
+    myapplication:compileReleaseUnitTestJavaWithJavac
+    myapplication:generateReleaseAssets
+    myapplication:generateReleaseBuildConfig
+    myapplication:generateReleaseResValues
+    myapplication:generateReleaseResources
+    myapplication:generateReleaseSources
+    myapplication:incrementalReleaseJavaCompilationSafeguard
+    myapplication:incrementalReleaseUnitTestJavaCompilationSafeguard
+    myapplication:mergeReleaseAssets
+    myapplication:mergeReleaseResources
+    myapplication:mergeReleaseShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:preReleaseUnitTestBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:prepareReleaseDependencies
+    myapplication:prepareReleaseUnitTestDependencies
+    myapplication:processReleaseJavaRes
+    myapplication:processReleaseManifest
+    myapplication:processReleaseResources
+    myapplication:processReleaseUnitTestJavaRes
+DuktapeEngine:extractDebugAnnotations - Extracts Android annotations for the debug variant into the archive file
+    DuktapeEngine:checkDebugManifest
+    DuktapeEngine:compileDebugAidl
+    DuktapeEngine:compileDebugJavaWithJavac
+    DuktapeEngine:compileDebugRenderscript
+    DuktapeEngine:compileDebugShaders
+    DuktapeEngine:generateDebugAssets
+    DuktapeEngine:generateDebugBuildConfig
+    DuktapeEngine:generateDebugResValues
+    DuktapeEngine:generateDebugResources
+    DuktapeEngine:generateDebugSources
+    DuktapeEngine:incrementalDebugJavaCompilationSafeguard
+    DuktapeEngine:mergeDebugAssets
+    DuktapeEngine:mergeDebugResources
+    DuktapeEngine:mergeDebugShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareDebugDependencies
+    DuktapeEngine:processDebugManifest
+    DuktapeEngine:processDebugResources
+DuktapeEngine:extractReleaseAnnotations - Extracts Android annotations for the release variant into the archive file
+    DuktapeEngine:checkReleaseManifest
+    DuktapeEngine:compileReleaseAidl
+    DuktapeEngine:compileReleaseJavaWithJavac
+    DuktapeEngine:compileReleaseRenderscript
+    DuktapeEngine:compileReleaseShaders
+    DuktapeEngine:generateReleaseAssets
+    DuktapeEngine:generateReleaseBuildConfig
+    DuktapeEngine:generateReleaseResValues
+    DuktapeEngine:generateReleaseResources
+    DuktapeEngine:generateReleaseSources
+    DuktapeEngine:incrementalReleaseJavaCompilationSafeguard
+    DuktapeEngine:mergeReleaseAssets
+    DuktapeEngine:mergeReleaseResources
+    DuktapeEngine:mergeReleaseShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareReleaseDependencies
+    DuktapeEngine:processReleaseManifest
+    DuktapeEngine:processReleaseResources
+DuktapeEngine:mockableAndroidJar - Creates a version of android.jar that's suitable for unit tests.
+myapplication:mockableAndroidJar - Creates a version of android.jar that's suitable for unit tests.
+
+Build Setup tasks
+-----------------
+init - Initializes a new Gradle build. [incubating]
+wrapper - Generates Gradle wrapper files. [incubating]
+
+Help tasks
+----------
+buildEnvironment - Displays all buildscript dependencies declared in root project 'DuktapeCore'.
+DuktapeEngine:buildEnvironment - Displays all buildscript dependencies declared in project ':DuktapeEngine'.
+myapplication:buildEnvironment - Displays all buildscript dependencies declared in project ':myapplication'.
+components - Displays the components produced by root project 'DuktapeCore'. [incubating]
+DuktapeEngine:components - Displays the components produced by project ':DuktapeEngine'. [incubating]
+myapplication:components - Displays the components produced by project ':myapplication'. [incubating]
+dependencies - Displays all dependencies declared in root project 'DuktapeCore'.
+DuktapeEngine:dependencies - Displays all dependencies declared in project ':DuktapeEngine'.
+myapplication:dependencies - Displays all dependencies declared in project ':myapplication'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'DuktapeCore'.
+DuktapeEngine:dependencyInsight - Displays the insight into a specific dependency in project ':DuktapeEngine'.
+myapplication:dependencyInsight - Displays the insight into a specific dependency in project ':myapplication'.
+help - Displays a help message.
+DuktapeEngine:help - Displays a help message.
+myapplication:help - Displays a help message.
+model - Displays the configuration model of root project 'DuktapeCore'. [incubating]
+DuktapeEngine:model - Displays the configuration model of project ':DuktapeEngine'. [incubating]
+myapplication:model - Displays the configuration model of project ':myapplication'. [incubating]
+projects - Displays the sub-projects of root project 'DuktapeCore'.
+DuktapeEngine:projects - Displays the sub-projects of project ':DuktapeEngine'.
+myapplication:projects - Displays the sub-projects of project ':myapplication'.
+properties - Displays the properties of root project 'DuktapeCore'.
+DuktapeEngine:properties - Displays the properties of project ':DuktapeEngine'.
+myapplication:properties - Displays the properties of project ':myapplication'.
+tasks - Displays the tasks runnable from root project 'DuktapeCore' (some of the displayed tasks may belong to subprojects).
+DuktapeEngine:tasks - Displays the tasks runnable from project ':DuktapeEngine'.
+myapplication:tasks - Displays the tasks runnable from project ':myapplication'.
+
+Install tasks
+-------------
+myapplication:installDebug - Installs the Debug build. [myapplication:assembleDebug]
+DuktapeEngine:installDebugAndroidTest - Installs the android (on device) tests for the Debug build. [DuktapeEngine:compileDebugAndroidTestSources]
+    DuktapeEngine:assembleDebugAndroidTest
+    DuktapeEngine:lintVitalDebugAndroidTest - Runs lint on just the fatal issues in the DebugAndroidTest build.
+    DuktapeEngine:mergeDebugAndroidTestJniLibFolders
+    DuktapeEngine:packageDebugAndroidTest
+    DuktapeEngine:prePackageMarkerForDebugAndroidTest
+    DuktapeEngine:processDebugAndroidTestJavaRes
+    DuktapeEngine:transformClassesWithDexForDebugAndroidTest
+    DuktapeEngine:transformNative_libsWithMergeJniLibsForDebugAndroidTest
+    DuktapeEngine:transformResourcesWithMergeJavaResForDebugAndroidTest
+    DuktapeEngine:validateDebugSigning
+myapplication:installDebugAndroidTest - Installs the android (on device) tests for the Debug build. [myapplication:compileDebugAndroidTestSources]
+    myapplication:assembleDebugAndroidTest
+    myapplication:mergeDebugAndroidTestJniLibFolders
+    myapplication:packageDebugAndroidTest
+    myapplication:prePackageMarkerForDebugAndroidTest
+    myapplication:processDebugAndroidTestJavaRes
+    myapplication:transformClassesWithDexForDebugAndroidTest
+    myapplication:transformNative_libsWithMergeJniLibsForDebugAndroidTest
+    myapplication:transformResourcesWithMergeJavaResForDebugAndroidTest
+    myapplication:validateDebugSigning
+DuktapeEngine:uninstallAll - Uninstall all applications. [DuktapeEngine:uninstallDebugAndroidTest]
+myapplication:uninstallAll - Uninstall all applications. [myapplication:uninstallDebug, myapplication:uninstallDebugAndroidTest, myapplication:uninstallRelease]
+myapplication:uninstallDebug - Uninstalls the Debug build.
+DuktapeEngine:uninstallDebugAndroidTest - Uninstalls the android (on device) tests for the Debug build.
+myapplication:uninstallDebugAndroidTest - Uninstalls the android (on device) tests for the Debug build.
+myapplication:uninstallRelease - Uninstalls the Release build.
+
+Verification tasks
+------------------
+DuktapeEngine:check - Runs all checks. [DuktapeEngine:lint, DuktapeEngine:test]
+myapplication:check - Runs all checks. [myapplication:lint, myapplication:test]
+DuktapeEngine:connectedAndroidTest - Installs and runs instrumentation tests for all flavors on connected devices. [DuktapeEngine:connectedDebugAndroidTest]
+myapplication:connectedAndroidTest - Installs and runs instrumentation tests for all flavors on connected devices. [myapplication:connectedDebugAndroidTest]
+DuktapeEngine:connectedCheck - Runs all device checks on currently connected devices. [DuktapeEngine:connectedAndroidTest]
+myapplication:connectedCheck - Runs all device checks on currently connected devices. [myapplication:connectedAndroidTest]
+DuktapeEngine:connectedDebugAndroidTest - Installs and runs the tests for debug on connected devices. [DuktapeEngine:assembleDebug, DuktapeEngine:compileDebugAndroidTestSources]
+    DuktapeEngine:assembleDebugAndroidTest
+    DuktapeEngine:lintVitalDebugAndroidTest - Runs lint on just the fatal issues in the DebugAndroidTest build.
+    DuktapeEngine:mergeDebugAndroidTestJniLibFolders
+    DuktapeEngine:packageDebugAndroidTest
+    DuktapeEngine:prePackageMarkerForDebugAndroidTest
+    DuktapeEngine:processDebugAndroidTestJavaRes
+    DuktapeEngine:transformClassesWithDexForDebugAndroidTest
+    DuktapeEngine:transformNative_libsWithMergeJniLibsForDebugAndroidTest
+    DuktapeEngine:transformResourcesWithMergeJavaResForDebugAndroidTest
+    DuktapeEngine:validateDebugSigning
+myapplication:connectedDebugAndroidTest - Installs and runs the tests for debug on connected devices. [myapplication:assembleDebug, myapplication:compileDebugAndroidTestSources]
+    myapplication:assembleDebugAndroidTest
+    myapplication:mergeDebugAndroidTestJniLibFolders
+    myapplication:packageDebugAndroidTest
+    myapplication:prePackageMarkerForDebugAndroidTest
+    myapplication:processDebugAndroidTestJavaRes
+    myapplication:transformClassesWithDexForDebugAndroidTest
+    myapplication:transformNative_libsWithMergeJniLibsForDebugAndroidTest
+    myapplication:transformResourcesWithMergeJavaResForDebugAndroidTest
+DuktapeEngine:deviceAndroidTest - Installs and runs instrumentation tests using all Device Providers.
+myapplication:deviceAndroidTest - Installs and runs instrumentation tests using all Device Providers.
+DuktapeEngine:deviceCheck - Runs all device checks using Device Providers and Test Servers. [DuktapeEngine:deviceAndroidTest]
+myapplication:deviceCheck - Runs all device checks using Device Providers and Test Servers. [myapplication:deviceAndroidTest]
+DuktapeEngine:lint - Runs lint on all variants.
+    DuktapeEngine:checkDebugManifest
+    DuktapeEngine:checkReleaseManifest
+    DuktapeEngine:compileDebugAidl
+    DuktapeEngine:compileDebugJavaWithJavac
+    DuktapeEngine:compileDebugRenderscript
+    DuktapeEngine:compileDebugShaders
+    DuktapeEngine:compileLint
+    DuktapeEngine:compileReleaseAidl
+    DuktapeEngine:compileReleaseJavaWithJavac
+    DuktapeEngine:compileReleaseRenderscript
+    DuktapeEngine:compileReleaseShaders
+    DuktapeEngine:generateDebugAssets
+    DuktapeEngine:generateDebugBuildConfig
+    DuktapeEngine:generateDebugResValues
+    DuktapeEngine:generateDebugResources
+    DuktapeEngine:generateDebugSources
+    DuktapeEngine:generateReleaseAssets
+    DuktapeEngine:generateReleaseBuildConfig
+    DuktapeEngine:generateReleaseResValues
+    DuktapeEngine:generateReleaseResources
+    DuktapeEngine:generateReleaseSources
+    DuktapeEngine:incrementalDebugJavaCompilationSafeguard
+    DuktapeEngine:incrementalReleaseJavaCompilationSafeguard
+    DuktapeEngine:mergeDebugAssets
+    DuktapeEngine:mergeDebugResources
+    DuktapeEngine:mergeDebugShaders
+    DuktapeEngine:mergeReleaseAssets
+    DuktapeEngine:mergeReleaseResources
+    DuktapeEngine:mergeReleaseShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareDebugDependencies
+    DuktapeEngine:prepareReleaseDependencies
+    DuktapeEngine:processDebugManifest
+    DuktapeEngine:processDebugResources
+    DuktapeEngine:processReleaseManifest
+    DuktapeEngine:processReleaseResources
+myapplication:lint - Runs lint on all variants. [DuktapeEngine:bundleRelease]
+    myapplication:checkDebugManifest
+    myapplication:checkReleaseManifest
+    myapplication:compileDebugAidl
+    myapplication:compileDebugJavaWithJavac
+    myapplication:compileDebugRenderscript
+    myapplication:compileDebugShaders
+    myapplication:compileLint
+    myapplication:compileReleaseAidl
+    myapplication:compileReleaseJavaWithJavac
+    myapplication:compileReleaseRenderscript
+    myapplication:compileReleaseShaders
+    myapplication:generateDebugAssets
+    myapplication:generateDebugBuildConfig
+    myapplication:generateDebugResValues
+    myapplication:generateDebugResources
+    myapplication:generateDebugSources
+    myapplication:generateReleaseAssets
+    myapplication:generateReleaseBuildConfig
+    myapplication:generateReleaseResValues
+    myapplication:generateReleaseResources
+    myapplication:generateReleaseSources
+    myapplication:incrementalDebugJavaCompilationSafeguard
+    myapplication:incrementalReleaseJavaCompilationSafeguard
+    myapplication:mergeDebugAssets
+    myapplication:mergeDebugResources
+    myapplication:mergeDebugShaders
+    myapplication:mergeReleaseAssets
+    myapplication:mergeReleaseResources
+    myapplication:mergeReleaseShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDebugDependencies
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:prepareReleaseDependencies
+    myapplication:processDebugManifest
+    myapplication:processDebugResources
+    myapplication:processReleaseManifest
+    myapplication:processReleaseResources
+DuktapeEngine:lintDebug - Runs lint on the Debug build.
+    DuktapeEngine:checkDebugManifest
+    DuktapeEngine:compileDebugAidl
+    DuktapeEngine:compileDebugJavaWithJavac
+    DuktapeEngine:compileDebugRenderscript
+    DuktapeEngine:compileDebugShaders
+    DuktapeEngine:compileLint
+    DuktapeEngine:generateDebugAssets
+    DuktapeEngine:generateDebugBuildConfig
+    DuktapeEngine:generateDebugResValues
+    DuktapeEngine:generateDebugResources
+    DuktapeEngine:generateDebugSources
+    DuktapeEngine:incrementalDebugJavaCompilationSafeguard
+    DuktapeEngine:mergeDebugAssets
+    DuktapeEngine:mergeDebugResources
+    DuktapeEngine:mergeDebugShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareDebugDependencies
+    DuktapeEngine:processDebugManifest
+    DuktapeEngine:processDebugResources
+myapplication:lintDebug - Runs lint on the Debug build. [DuktapeEngine:bundleRelease]
+    myapplication:checkDebugManifest
+    myapplication:compileDebugAidl
+    myapplication:compileDebugJavaWithJavac
+    myapplication:compileDebugRenderscript
+    myapplication:compileDebugShaders
+    myapplication:compileLint
+    myapplication:generateDebugAssets
+    myapplication:generateDebugBuildConfig
+    myapplication:generateDebugResValues
+    myapplication:generateDebugResources
+    myapplication:generateDebugSources
+    myapplication:incrementalDebugJavaCompilationSafeguard
+    myapplication:mergeDebugAssets
+    myapplication:mergeDebugResources
+    myapplication:mergeDebugShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDebugDependencies
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:processDebugManifest
+    myapplication:processDebugResources
+DuktapeEngine:lintRelease - Runs lint on the Release build.
+    DuktapeEngine:checkReleaseManifest
+    DuktapeEngine:compileLint
+    DuktapeEngine:compileReleaseAidl
+    DuktapeEngine:compileReleaseJavaWithJavac
+    DuktapeEngine:compileReleaseRenderscript
+    DuktapeEngine:compileReleaseShaders
+    DuktapeEngine:generateReleaseAssets
+    DuktapeEngine:generateReleaseBuildConfig
+    DuktapeEngine:generateReleaseResValues
+    DuktapeEngine:generateReleaseResources
+    DuktapeEngine:generateReleaseSources
+    DuktapeEngine:incrementalReleaseJavaCompilationSafeguard
+    DuktapeEngine:mergeReleaseAssets
+    DuktapeEngine:mergeReleaseResources
+    DuktapeEngine:mergeReleaseShaders
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareReleaseDependencies
+    DuktapeEngine:processReleaseManifest
+    DuktapeEngine:processReleaseResources
+myapplication:lintRelease - Runs lint on the Release build. [DuktapeEngine:bundleRelease]
+    myapplication:checkReleaseManifest
+    myapplication:compileLint
+    myapplication:compileReleaseAidl
+    myapplication:compileReleaseJavaWithJavac
+    myapplication:compileReleaseRenderscript
+    myapplication:compileReleaseShaders
+    myapplication:generateReleaseAssets
+    myapplication:generateReleaseBuildConfig
+    myapplication:generateReleaseResValues
+    myapplication:generateReleaseResources
+    myapplication:generateReleaseSources
+    myapplication:incrementalReleaseJavaCompilationSafeguard
+    myapplication:mergeReleaseAssets
+    myapplication:mergeReleaseResources
+    myapplication:mergeReleaseShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:prepareReleaseDependencies
+    myapplication:processReleaseManifest
+    myapplication:processReleaseResources
+DuktapeEngine:test - Run unit tests for all variants. [DuktapeEngine:testDebugUnitTest, DuktapeEngine:testReleaseUnitTest]
+myapplication:test - Run unit tests for all variants. [myapplication:testDebugUnitTest, myapplication:testReleaseUnitTest]
+DuktapeEngine:testDebugUnitTest - Run unit tests for the debug build. [DuktapeEngine:compileDebugUnitTestSources, DuktapeEngine:mockableAndroidJar]
+    DuktapeEngine:assembleDebugUnitTest
+myapplication:testDebugUnitTest - Run unit tests for the debug build. [myapplication:compileDebugUnitTestSources, myapplication:mockableAndroidJar]
+    myapplication:assembleDebugUnitTest
+DuktapeEngine:testReleaseUnitTest - Run unit tests for the release build. [DuktapeEngine:compileReleaseUnitTestSources, DuktapeEngine:mockableAndroidJar]
+    DuktapeEngine:assembleReleaseUnitTest
+myapplication:testReleaseUnitTest - Run unit tests for the release build. [myapplication:compileReleaseUnitTestSources, myapplication:mockableAndroidJar]
+    myapplication:assembleReleaseUnitTest
+
+Other tasks
+-----------
+DuktapeEngine:assembleDefault [DuktapeEngine:assembleRelease]
+DuktapeEngine:buildJar [DuktapeEngine:compileReleaseSources]
+myapplication:jarDebugClasses [DuktapeEngine:bundleRelease]
+    myapplication:checkDebugManifest
+    myapplication:compileDebugAidl
+    myapplication:compileDebugJavaWithJavac
+    myapplication:compileDebugRenderscript
+    myapplication:compileDebugShaders
+    myapplication:generateDebugAssets
+    myapplication:generateDebugBuildConfig
+    myapplication:generateDebugResValues
+    myapplication:generateDebugResources
+    myapplication:generateDebugSources
+    myapplication:incrementalDebugJavaCompilationSafeguard
+    myapplication:mergeDebugAssets
+    myapplication:mergeDebugResources
+    myapplication:mergeDebugShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDebugDependencies
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:processDebugManifest
+    myapplication:processDebugResources
+myapplication:jarReleaseClasses [DuktapeEngine:bundleRelease]
+    myapplication:checkReleaseManifest
+    myapplication:compileReleaseAidl
+    myapplication:compileReleaseJavaWithJavac
+    myapplication:compileReleaseRenderscript
+    myapplication:compileReleaseShaders
+    myapplication:generateReleaseAssets
+    myapplication:generateReleaseBuildConfig
+    myapplication:generateReleaseResValues
+    myapplication:generateReleaseResources
+    myapplication:generateReleaseSources
+    myapplication:incrementalReleaseJavaCompilationSafeguard
+    myapplication:mergeReleaseAssets
+    myapplication:mergeReleaseResources
+    myapplication:mergeReleaseShaders
+    myapplication:preBuild
+    myapplication:preDebugBuild
+    myapplication:preReleaseBuild
+    myapplication:prepareComAndroidSupportAnimatedVectorDrawable2340Library - Prepare com.android.support:animated-vector-drawable:23.4.0
+    myapplication:prepareComAndroidSupportAppcompatV72340Library - Prepare com.android.support:appcompat-v7:23.4.0
+    myapplication:prepareComAndroidSupportSupportV42340Library - Prepare com.android.support:support-v4:23.4.0
+    myapplication:prepareComAndroidSupportSupportVectorDrawable2340Library - Prepare com.android.support:support-vector-drawable:23.4.0
+    myapplication:prepareDuktapeCoreDuktapeEngineUnspecifiedLibrary - Prepare DuktapeCore:DuktapeEngine:unspecified
+    myapplication:prepareReleaseDependencies
+    myapplication:processReleaseManifest
+    myapplication:processReleaseResources
+DuktapeEngine:transformResourcesWithMergeJavaResForDebugUnitTest
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareDebugUnitTestDependencies
+    DuktapeEngine:processDebugUnitTestJavaRes
+myapplication:transformResourcesWithMergeJavaResForDebugUnitTest
+    myapplication:preBuild
+    myapplication:preDebugUnitTestBuild
+    myapplication:prepareDebugUnitTestDependencies
+    myapplication:processDebugUnitTestJavaRes
+DuktapeEngine:transformResourcesWithMergeJavaResForReleaseUnitTest
+    DuktapeEngine:preBuild
+    DuktapeEngine:preDebugAndroidTestBuild
+    DuktapeEngine:preDebugBuild
+    DuktapeEngine:preDebugUnitTestBuild
+    DuktapeEngine:preReleaseBuild
+    DuktapeEngine:preReleaseUnitTestBuild
+    DuktapeEngine:prepareComAndroidSupportSupportV42100Library - Prepare com.android.support:support-v4:21.0.0
+    DuktapeEngine:prepareReleaseUnitTestDependencies
+    DuktapeEngine:processReleaseUnitTestJavaRes
+myapplication:transformResourcesWithMergeJavaResForReleaseUnitTest
+    myapplication:preBuild
+    myapplication:preReleaseUnitTestBuild
+    myapplication:prepareReleaseUnitTestDependencies
+    myapplication:processReleaseUnitTestJavaRes
+
+BUILD SUCCESSFUL
+
+Total time: 4.813 secs
+
+This build could be faster, please consider using the Gradle Daemon: https://docs.gradle.org/2.13/userguide/gradle_daemon.html

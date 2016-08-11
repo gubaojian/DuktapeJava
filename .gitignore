@@ -15,3 +15,5 @@ DuktapeCore/build/
 DuktapeCore/.gradle/
 DuktapeCore/bin/
 DuktapeCore/.settings/
+DuktapeCore/captures/
+DuktapeCoreTest/captures/

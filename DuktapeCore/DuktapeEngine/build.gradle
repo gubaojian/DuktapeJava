@@ -5,13 +5,19 @@ android {
     buildToolsVersion "23.0.3"
 
 
+
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 15
         targetSdkVersion 21
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
         jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+    }
+
+    sourceSets.test {
+        java.srcDirs = ['tests']
     }
 
     task buildJar(type:Jar) {
@@ -36,6 +42,9 @@ android {
 
 }
 
+
 dependencies {
-    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:support-v4:21.0.0'
+    testCompile 'com.uphyca:android-junit4:0.5'
+    testCompile 'junit:junit:4.12'
 }

@@ -1,0 +1,1 @@
+adb logcat | $NDK/ndk-stack -sym /Users/furture/code/DuktapeJava/DuktapeCore/DuktapeEngine/src/main/obj/local/x86

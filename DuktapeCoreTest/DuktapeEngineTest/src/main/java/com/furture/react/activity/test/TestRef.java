@@ -13,7 +13,13 @@ public class TestRef {
 		if(jsRef != args){
 			throw new RuntimeException("TestRef Failed Must Same ref");
 		}
-		DLog.e("ScriptEngine", "ScriptEngine TestRef " + args.getRef());
+		DLog.e("ScriptEngine", "ScriptEngine JSRef " + args.getRef());
 		return jsRef;
+	}
+
+
+	public Object javaRef(){
+		DLog.e("ScriptEngine", "ScriptEngine  javaRef ");
+		return this;
 	}
 }

@@ -3,6 +3,10 @@ package com.furture.react;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+
+/**
+ * Java接口代理，通过代理把接口的调用转发到JavaScript对象上。
+ * */
 public class JSInvocationHandler implements InvocationHandler {
 
 	private Object  targetRef;
@@ -16,9 +20,6 @@ public class JSInvocationHandler implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)throws Throwable {
-		if (method.getName().equals("toString")) { //art 模式，此句不能debug
-			return toString();
-		}
 		if (targetRef instanceof JSRef) {
 			JSRef jsRef =  (JSRef) targetRef;
 			return jsRef.getEngine().call(jsRef, method.getName(), args);
@@ -26,5 +27,7 @@ public class JSInvocationHandler implements InvocationHandler {
 			return method.invoke(targetRef, args);
 		}
 	}
+
+
 
 }

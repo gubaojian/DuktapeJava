@@ -135,7 +135,7 @@ public class MainActivity extends Activity {
 			   startActivity(intent);
 		   }
 	    });
-       
+
        findViewById(R.id.button11).setOnClickListener(new OnClickListener() {
     		
 		   @Override
@@ -151,6 +151,16 @@ public class MainActivity extends Activity {
 			public void onClick(View view) {
 				Intent intent = new Intent(getBaseContext(), DukActivity.class);
 				intent.putExtra("file", "convert/index.js");
+				startActivity(intent);
+			}
+		});
+
+
+		findViewById(R.id.button13).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(getBaseContext(), ScriptTestActivity.class);
+				intent.putExtra("file", "performance.js");
 				startActivity(intent);
 			}
 		});

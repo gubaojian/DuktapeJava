@@ -18,5 +18,9 @@ b.say();
 a.say();
 print(a == b)
 
+for(var i=0; i< 10; i++){
+     testRef.javaRef();
+}
+
 
 true;

@@ -8,9 +8,11 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+
 #include <android/log.h>
 
-// #define DEBUG
+
+//#define DEBUG
 
 #define LOGV(TAG,...) __android_log_print(ANDROID_LOG_VERBOSE, TAG,__VA_ARGS__)
 #define LOGD(TAG,...) __android_log_print(ANDROID_LOG_DEBUG, TAG,__VA_ARGS__)
