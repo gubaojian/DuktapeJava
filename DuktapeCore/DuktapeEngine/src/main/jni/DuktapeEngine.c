@@ -479,9 +479,10 @@ int duk_new_java_class(duk_context *ctx){
 		const char*  className = duk_to_string(ctx, -1);
 		JNIEnv*  env =  get_java_jni_env();
 		jstring  fullClassName = (*env)->NewStringUTF(env, className);
+		//FIXME  和invoke统一
     jobject  instance =  NULL;
     if(num == 0){
-       	instance = (*env)->CallStaticObjectMethod(env, java_api_class, java_new_instance_method, fullClassName, NULL);
+       	  instance = (*env)->CallStaticObjectMethod(env, java_api_class, java_new_instance_method, fullClassName, NULL);
     }else{
     	    jobjectArray args = duk_to_java_object_array(ctx, 0, num, env);
     	    instance  = (*env)->CallStaticObjectMethod(env, java_api_class, java_new_instance_method, fullClassName, args, NULL);

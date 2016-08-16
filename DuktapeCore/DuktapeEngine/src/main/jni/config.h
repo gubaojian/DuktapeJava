@@ -7,12 +7,12 @@
 
 #ifndef CONFIG_H_
 #define CONFIG_H_
-
-
 #include <android/log.h>
 
+#define DUK_OPT_AUGMENT_ERRORS
 
-#define DEBUG
+
+//#define DEBUG
 
 #define LOGV(TAG,...) __android_log_print(ANDROID_LOG_VERBOSE, TAG,__VA_ARGS__)
 #define LOGD(TAG,...) __android_log_print(ANDROID_LOG_DEBUG, TAG,__VA_ARGS__)
@@ -28,5 +28,3 @@
 
 #endif /* UTILS_H_ */
 
-
-//#define DUK_OPT_AUGMENT_ERRORS

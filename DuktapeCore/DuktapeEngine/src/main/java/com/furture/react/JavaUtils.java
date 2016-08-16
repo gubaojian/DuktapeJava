@@ -27,13 +27,13 @@ import org.json.JSONObject;
  * */
 public class JavaUtils {
 
+	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
 
 	private static final Pattern CALL_METHOD_SIGN_SPLIT_PATTERN = Pattern.compile("\\(|\\)");
-	private static final Pattern CALL_TYPES_SPLIT_PATTERN = Pattern.compile(",");;
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
+	private static final Pattern CALL_TYPES_SPLIT_PATTERN = Pattern.compile(",");
 
 	/**
-	 *  call方法，支持多态的方法调用。增加一个多态的类型。支持关键字
+	 *  call方法，支持多态的方法调用。对于多态的类型方法，可通过制定类名的关键字指定特定的调用方法
 	 *  示例：
 	 *  如Java中：
 	 *
@@ -46,6 +46,9 @@ public class JavaUtils {
 	 * */
 
 	public static final Object call(Object target, String methodNameWithSign, Object... args) throws Exception {
+		 if(args == null){
+		 	 args = EMPTY_OBJECT_ARRAY;
+		 }
 		 Class<?> targetClass = null;
 		 if (target  instanceof Class<?>) {
 			 targetClass = (Class<?>) target;
@@ -73,6 +76,9 @@ public class JavaUtils {
 	 * 此方法不支持多态，如果需要调用多态方法，请调用call方法
 	 * */
 	public static final Object invoke(Object target, String methodName, Object ...args) throws Exception{
+		if(args == null){
+			args = EMPTY_OBJECT_ARRAY;
+		}
 		Class<?> targetClass = null;
 		if (target  instanceof Class<?>) {
 			targetClass = (Class<?>) target;
@@ -91,7 +97,6 @@ public class JavaUtils {
 		if(!method.isAccessible()){
 			method.setAccessible(true);
 		}
-		Object valueObject = null;
 		Class<?>[] parameterTypes =  method.getParameterTypes();
 		if (args.length == parameterTypes.length) {
 			return method.invoke(target, args);
@@ -112,6 +117,7 @@ public class JavaUtils {
 			lastArgs = Array.newInstance(parameterTypes[parameterTypes.length -1].getComponentType(), 0);
 		}
 		int length = parameterTypes.length;
+		Object valueObject = null;
 		switch (length){
 			case 0 :
 			case 1 :{
@@ -148,7 +154,7 @@ public class JavaUtils {
 		}
 		return valueObject;
 	}
-	
+
 
 
 	/**
@@ -157,6 +163,9 @@ public class JavaUtils {
 	 * 创建指定名字的类的实例
 	 * */
 	public static Object newInstance(String className, Object ...args) throws Exception{
+		  if(args == null){
+			  args = EMPTY_OBJECT_ARRAY;
+		  }
 		  return  newInstanceClass(loadClass(className), args);
 	}
 
@@ -177,13 +186,61 @@ public class JavaUtils {
 			}
 			targetClass = sourceClass;
 		}
-		if (args == null || args.length == 0) {
-			return targetClass.newInstance();
-		}
 		Constructor<?> constructor =  getClassConstructor(targetClass, args);
-		return constructor.newInstance(args);
+		if (constructor == null){
+			throw new RuntimeException("Cann't find constructor with args " + Arrays.toString(args) + " on class " + targetClass);
+		}
+
+		Class<?>[] parameterTypes = constructor.getParameterTypes();
+		if(args.length == parameterTypes.length){
+			return constructor.newInstance(args);
+		}
+
+		if (!(parameterTypes.length > 0 && parameterTypes[parameterTypes.length -1].isArray())
+				|| (parameterTypes.length - 1) > args.length) {
+			throw new RuntimeException("Cann't find constructor with args " + args + " on class " + targetClass);
+		}
+
+
+		/**
+		 *  处理可变参数列表的调用情况
+		 * */
+		Object lastArgs = null;
+		if(args.length >= parameterTypes.length){
+			lastArgs = args[parameterTypes.length -1];
+		}else{
+			lastArgs = Array.newInstance(parameterTypes[parameterTypes.length -1].getComponentType(), 0);
+		}
+		int length = parameterTypes.length;
+		switch (length){
+			case 0 :
+			case 1 :{
+				return  constructor.newInstance(lastArgs);
+			}
+			case 2 : {
+				return  constructor.newInstance(args[0], lastArgs);
+			}
+			case 3 : {
+				return  constructor.newInstance(args[0], args[1], lastArgs);
+			}
+			case 4 : {
+				return  constructor.newInstance(args[0], args[1], args[2], lastArgs);
+			}
+			case 5 : {
+				return  constructor.newInstance(args[0], args[1], args[2], args[3], lastArgs);
+			}
+			case 6 : {
+				return  constructor.newInstance(args[0], args[1], args[2], args[3], args[4], lastArgs);
+			}
+			case 7 : {
+				return  constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], lastArgs);
+			}
+			default:{
+				throw new RuntimeException(constructor  + " constructor on class " + targetClass + " has too many arguments " + args.length);
+			}
+		}
 	}
-	  
+
 
 	/**
 	 * @param  target  对象
@@ -231,12 +288,12 @@ public class JavaUtils {
 					throw new RuntimeException("invalid array index " + fieldName + " on target " + target, e);
 			  }
 		  }
-		   
+
 
 		  if (target instanceof Class<?>) {
 			  targetClass = (Class<?>) target;
 		  }
-		  
+
 		   String key = targetClass.getName() +  "@get@" + fieldName;
 		   Method method = getMethodCache.get(key);
 		   if (method != null) {
@@ -249,7 +306,7 @@ public class JavaUtils {
 					throw new RuntimeException("invoke get field method " + fieldName + " error on target " + target, e);
 				}
 			}
-			
+
 			Field field = fieldCache.get(key);
 			if (field != null) {
 				try {
@@ -262,7 +319,7 @@ public class JavaUtils {
 					throw new RuntimeException("invoke field get for " + fieldName + " error on target " + target, e);
 				}
 			}
-			
+
 			if (notExistMethodCache.get(key) != MARK) {
 				try {
 					String methodName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
@@ -286,7 +343,7 @@ public class JavaUtils {
 						notExistMethodCache.put(key, MARK);
 					}catch (Exception invokeError) {
 						throw new RuntimeException("invoke is field  method for " + fieldName + " error on target " + target, invokeError);
-						
+
 					}
 				}catch (Exception e) {
 					throw new RuntimeException("invoke get field method " + fieldName + " error on target " + target, e);
@@ -362,7 +419,7 @@ public class JavaUtils {
 				  throw new RuntimeException( "set property '" + fieldName + "'" + "  on target " + target, e);
 			  }
 		  }
-		  
+
 		  Class<?> targetClass = target.getClass();
 		  if (targetClass.isArray()) {
 			  try {
@@ -374,12 +431,12 @@ public class JavaUtils {
 					throw new RuntimeException("set property '" + fieldName + "'" + " invalid array index " + fieldName + " on target " + target, e);
 			  }
 		  }
-		   
+
 
 		  if (target instanceof Class<?>) {
 			  targetClass = (Class<?>) target;
 		  }
-		  
+
 		   String key = targetClass.getName() +  "@set@" + fieldName;
 		   Method method = setMethodCache.get(key);
 		   if (method != null) {
@@ -393,7 +450,7 @@ public class JavaUtils {
 					throw new RuntimeException("invoke set method " + fieldName + " error on target " + target, e);
 				}
 			}
-			
+
 			Field field = fieldCache.get(key);
 			if (field != null) {
 				try {
@@ -447,7 +504,7 @@ public class JavaUtils {
 
 
 
-	
+
     /**
 	 *  @param  className 类名字
 	 *  JavaScript中importClass对应的实现，对于需要自定义ClassLoader的，
@@ -469,7 +526,7 @@ public class JavaUtils {
 		     DLog.e("ScriptEngine", "ScriptEngine JavaScript call Java Error", throwable);
 		     return throwable.getMessage();
 	 }
-	  
+
 	  private static Class<?>  loadClass(String className) throws ClassNotFoundException{
 		  Class<?> targetClass = classCache.get(className);
 		  if(targetClass != null){
@@ -477,7 +534,7 @@ public class JavaUtils {
 		  }
 		  try {
 			  targetClass = Class.forName(className);
-		  } catch (ClassNotFoundException e) { 
+		  } catch (ClassNotFoundException e) {
 			   int index = className.lastIndexOf('.');
 			   if (index <= 0) {
 				   throw e;
@@ -509,41 +566,106 @@ public class JavaUtils {
 			  Constructor<?> classConstructor  = classConstructors[m];
 			  Class<?>[] parameterTypes = classConstructor.getParameterTypes();
 			  if (parameterTypes.length != args.length){
-		           continue;
+				  if(!(parameterTypes.length > 0
+						  && parameterTypes[parameterTypes.length -1].isArray())){
+					  continue;
+				  }
+				  continue;
 		      }
 			  boolean okConstructor =  true;
-	    	      for (int i = 0; i < parameterTypes.length; i++){
-	    	    	        Class<?> parameterType = parameterTypes[i];
-	    	    	        Object arg = args[i];
-	    	    	        if (arg == null && !parameterType.isPrimitive()) {
+			  int i = 0;
+			  for (; i < parameterTypes.length; i++){
+					Class<?> parameterType = parameterTypes[i];
+					  if (args.length < parameterTypes.length) {
+						  okConstructor = false;
+						  break;
+					  }
+					Object arg = args[i];
+					if (arg == null) {
+					   if(parameterType.isPrimitive()){
+						   okConstructor = false;
+						  break;
+					   }
 					   continue;
-				    }
-	    	    	        Class<?> argsClass = arg.getClass();
-	    	    	        if (argsClass == parameterType) {
-					    continue;
-	    	    	        }
-	    	    	        okConstructor = false;
-	    	    	        break;
-	    	      }
-	    	      if (okConstructor){
-	    	    	      constructor = classConstructor;
-	    		      break;
-	    		  }
+					}
+					Class<?> argsClass = arg.getClass();
+					if (argsClass == parameterType) {
+						continue;
+					}
+					  if (parameterType.isPrimitive()) {
+						  if (parameterType == Integer.TYPE && argsClass == Integer.class) {
+							  continue;
+						  }
+						  if (parameterType == Boolean.TYPE && argsClass == Boolean.class) {
+							  continue;
+						  }
+						  if (parameterType == Double.TYPE && argsClass == Double.class) {
+							  continue;
+						  }
+
+						  if (parameterType == Long.TYPE && argsClass == Long.class) {
+							  continue;
+						  }
+
+						  if (parameterType == Float.TYPE && argsClass == Float.class) {
+							  continue;
+						  }
+
+						  if (parameterType == Short.TYPE && argsClass == Short.class) {
+							  continue;
+						  }
+
+						  if (parameterType == Byte.TYPE && argsClass == Byte.class) {
+							  continue;
+						  }
+
+						  if (parameterType == Character.TYPE && argsClass == Character.class) {
+							  continue;
+						  }
+					  }
+					okConstructor = false;
+					break;
+			  }
+			  if (okConstructor){
+				  constructor = classConstructor;
+				  break;
+			  }
+			  //可变参数方法
+			  if(i == parameterTypes.length -1){
+				  Class<?>  parameterType = parameterTypes[i];
+				  if(parameterType.isArray()){
+					  if(convertLastToVarArgs(parameterTypes, args)){
+						  constructor = classConstructor;
+						  break;
+					  }
+				  }
+
+			  }
+
 		  }
+
 		  if (constructor != null) {
 			 return constructor;
 		  }
-		  
+
 		  for (int m = 0; m < classConstructors.length; m++){
 			  Constructor<?> classConstructor  = classConstructors[m];
-		      Class<?>[] parameters = classConstructor.getParameterTypes();
-		      if (parameters.length != args.length){
-		           continue;
+		      Class<?>[] parameterTypes = classConstructor.getParameterTypes();
+		      if (parameterTypes.length != args.length){
+				  if(!(parameterTypes.length > 0
+						  && parameterTypes[parameterTypes.length -1].isArray())){
+					  continue;
+				  }
 		      }
 		      boolean okConstructor = true;
-		      for (int j = 0; j < parameters.length; j++){
+			  int i = 0;
+		      for (; i < parameterTypes.length; i++){
+				  if (i >= args.length) {
+					  okConstructor = false;
+					  break;
+				  }
 		        try{
-		           	args[j] = compareTypes(parameters[j], args[j]);
+		           	args[i] = compareTypes(parameterTypes[i], args[i]);
 		        }catch (Exception e){
 		          okConstructor = false;
 		          break;
@@ -553,6 +675,16 @@ public class JavaUtils {
 		        constructor = classConstructor;
 		        break;
 		      }
+
+			  /**
+			   * 处理可变参数的情况，如object... args
+			   * */
+			  if(i == parameterTypes.length - 1 && parameterTypes[i].isArray()){
+				  if(convertLastToVarArgs(parameterTypes, args)){
+					  constructor = classConstructor;
+					  break;
+				  }
+			  }
 		  }
 		  return constructor;
 	  }
@@ -806,7 +938,7 @@ public class JavaUtils {
 			}
 		}
 		if (method != null) {
-			return method;
+			 return method;
 		}
 		return method;
 	}
@@ -852,7 +984,7 @@ public class JavaUtils {
 	private static Object compareTypes(Class<?> parameterType, Object value) throws Exception {
 		     if (value == null) {
 				 if (parameterType.isPrimitive()) {
-					if (Integer.TYPE == parameterType 
+					if (Integer.TYPE == parameterType
 							|| Double.TYPE == parameterType
 							|| Long.TYPE == parameterType
 							|| Short.TYPE == parameterType
@@ -1016,11 +1148,9 @@ public class JavaUtils {
 		}
 	    private static final LruCache<String, Method> getMethodCache = new LruCache<String, Method>(64);
 	    private static final LruCache<String, Method> setMethodCache = new LruCache<String, Method>(64);
-		private static final LruCache<String, Field> fieldCache = new LruCache<String, Field>(32);
+		  private static final LruCache<String, Field> fieldCache = new LruCache<String, Field>(32);
 	    private static final LruCache<String, String> notExistMethodCache = new LruCache<String, String>(16);
-		private static final LruCache<String, String> notExistFieldCache = new LruCache<String, String>(16);
-		private static final String MARK = "";
+		  private static final LruCache<String, String> notExistFieldCache = new LruCache<String, String>(16);
+		  private static final String MARK = "";
 	    private static final LruCache<String, Class<?>> classCache = new LruCache<String, Class<?>>(64);
-
-
 }

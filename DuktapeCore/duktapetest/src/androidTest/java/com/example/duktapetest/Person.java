@@ -60,4 +60,13 @@ public class Person {
     public void setSites(Map<String, String> sites) {
         this.sites = sites;
     }
+
+
+    public  Person(){
+
+    }
+
+
+
+
 }

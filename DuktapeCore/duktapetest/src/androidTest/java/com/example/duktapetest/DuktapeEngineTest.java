@@ -82,4 +82,14 @@ public class DuktapeEngineTest extends ActivityInstrumentationTestCase2<MainActi
         Assert.assertEquals(result.toString(), "true");
         engine.destory();
     }
+
+
+    @Test
+    public void testNewInstance(){
+        DuktapeEngine engine = new DuktapeEngine();
+        Object result = engine.execute(AssetScript.toScript(getActivity(), "NewInstanceTest.js"));
+        Assert.assertNotNull("script run error, please see logcat",result);
+        Assert.assertEquals(result.toString(), "true");
+        engine.destory();
+    }
 }
