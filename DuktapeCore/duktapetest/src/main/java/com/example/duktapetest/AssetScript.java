@@ -3,7 +3,7 @@ package com.example.duktapetest;
 import android.content.Context;
 import android.util.Log;
 
-import com.efurture.script.CodeTransformer;
+import com.efurture.script.CodeConvertor;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -39,7 +39,7 @@ public class AssetScript {
 		try {
 			InputStream is = context.getAssets().open(fileName);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String script = CodeTransformer.parse(br);
+			String script = CodeConvertor.parse(br);
 			Log.e("ScriptEngine", script);
 			return script;
 		} catch (Exception e) {
@@ -52,7 +52,7 @@ public class AssetScript {
 		try {
 			InputStream is = new FileInputStream(fileName);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String script =  CodeTransformer.parse(br);
+			String script =  CodeConvertor.parse(br);
 			Log.e("ScriptEngine", script);
 			return script;
 		} catch (Exception e) {
@@ -64,7 +64,7 @@ public class AssetScript {
 	public static String toScript(InputStream is){
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String script =  CodeTransformer.parse(br);
+			String script =  CodeConvertor.parse(br);
 			Log.e("ScriptEngine", script);
 			return script;
 		} catch (Exception e) {

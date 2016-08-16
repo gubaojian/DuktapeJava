@@ -92,12 +92,22 @@ jobject get_engine_from_context(duk_context *ctx){
 
 const char * duk_js_error_to_string(duk_context *ctx, int index){
 	if(!duk_is_error(ctx, index)){
-	    return duk_to_string(ctx, index);
+		   DEBUG_LOG("ScriptEngine","duk_js_error_to_string is not error object");
+	    return duk_js_error_to_string(ctx, index);
 	}
-	if(duk_get_prop_string(ctx, -1, "stack")){
+
+	if(duk_get_prop_string(ctx, index, "stack")){
+		 DEBUG_LOG("ScriptEngine","duk_js_error_to_string stack");
+		 duk_get_prop_string(ctx, index - 1, "lineNumber");
+		 int lineNumber = duk_get_int(ctx, -1);
+		 duk_pop(ctx);
+		 duk_push_sprintf(ctx, "javascript source %d line %s", lineNumber, duk_safe_to_string(ctx, -1));
+		 duk_replace(ctx, index-2);
+		 duk_pop(ctx);
 		 return duk_safe_to_string(ctx, -1);
 	}
 	duk_pop(ctx);
+
 	if(duk_get_prop_string(ctx, index, "lineNumber")){
          int lineNumber = duk_get_int(ctx, -1);
          duk_pop(ctx);
@@ -169,7 +179,9 @@ jobject duk_to_java_object(duk_context *ctx, JNIEnv*  env, int i){
 			jobject numberObject = (*env)->NewObject(env, java_double_class, java_boolean_constructor_method, value);
 			DEBUG_LOG("ScriptEngine","invoke_java_method call, convert %d args to number %f", i, value);
 			return numberObject;
-	 }
+	 }else if(type == DUK_TYPE_NULL || type == DUK_TYPE_UNDEFINED){
+ 			return NULL;
+ 	 }
 	 LOGW("ScriptEngine","ScriptEngine duk_to_java_object call, unhandled type convert %d args %s to null", i, duk_to_string(ctx, i));
 	 return NULL;
 }
@@ -193,7 +205,7 @@ int invoke_java_method_call(duk_context *ctx) {
 										jstring exceptionMessage = (*env)->CallStaticObjectMethod(env, java_api_class, java_exception_get_stack_trace_method, exp);
 									 jboolean isCopy = JNI_FALSE;
 										const char* cstrMessage = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
-										duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR, "invoke java method  %s exception \n %s",  method, cstrMessage);
+										duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR | 0x01000000L , "invoke java method  %s exception \n %s",  method, cstrMessage);
 										(*env)->ReleaseStringUTFChars(env, exceptionMessage, cstrMessage);
 										( *env)->DeleteLocalRef(env , exceptionMessage);
 										(*env)->DeleteLocalRef(env, args);
@@ -413,12 +425,25 @@ int duk_import_java_class(duk_context *ctx){
 		}
 		DEBUG_LOG("DuktapeEngine", "duk_import_java_class className %s  shorName %s",className, shortName);
 
-		duk_push_global_object(ctx);
-		duk_push_c_function(ctx, duk_new_java_class,  DUK_VARARGS);
 
 		JNIEnv *env = get_java_jni_env();
 		jstring  fullClassName = (*env)->NewStringUTF(env, className);
 	  jclass   importClass =  (*env)->CallStaticObjectMethod(env, java_api_class, java_import_class_method, fullClassName);
+			if((*env)->ExceptionCheck(env)){
+	 			 jthrowable exp = ( *env)->ExceptionOccurred(env);
+	 			 if(exp != NULL){
+	 								 ( *env)->ExceptionClear(env);
+	 								 jstring exceptionMessage = (*env)->CallStaticObjectMethod(env, java_api_class, java_exception_get_stack_trace_method, exp);
+	 								 jboolean isCopy = JNI_FALSE;
+	 								 const char* cstrMessage = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
+	 								 duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR, "importClass exception \n %s", cstrMessage);
+	 								 (*env)->DeleteLocalRef(env, fullClassName);
+	 								 duk_throw(ctx);
+	 								 return 0;
+	 			 }
+	 	 }
+		duk_push_global_object(ctx);
+		duk_push_c_function(ctx, duk_new_java_class,  DUK_VARARGS);
 		duk_mark_jsobject_to_java_object(ctx, -1, env, importClass);
 	  (*env)->DeleteLocalRef(env, importClass);
 		(*env)->DeleteLocalRef(env, fullClassName);
@@ -602,7 +627,7 @@ JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeExeclute
 	jboolean iscopy = JNI_FALSE;
 	const char* src = ((*env)->GetStringUTFChars(env, script, &iscopy));
 	if(duk_peval_string(ctx, src) != DUK_EXEC_SUCCESS){
-		     LOGE("ScriptEngine", "ScriptEngine eval_string error %s\n", duk_js_error_to_string(ctx, -1));
+		    LOGE("ScriptEngine", "ScriptEngine eval_string error %s\n", duk_js_error_to_string(ctx, -1));
 			  if(src != NULL){
 				  	env = get_java_jni_env();
 		 	     (*env)->ReleaseStringUTFChars(env, script, src);
@@ -624,21 +649,34 @@ JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeCallJs
     DEBUG_LOG("ScriptEngine","Java_com_furture_react_DuktapeEngine_nativeCallJs call on %s", targetName);
 	  duk_push_global_object(ctx);
     if(duk_get_prop_string(ctx, -1, targetName)){
-    	const char* methodName = ((*env)->GetStringUTFChars(env, jsMethod, &iscopy));
-	    duk_push_string(ctx, methodName);
-	    jsize length = duk_push_java_object_array(ctx, env, args);
-	    DEBUG_LOG("ScriptEngine","Java_com_furture_react_DuktapeEngine_nativeCallJs call  Function %d", length);
-	    if(duk_pcall_prop(ctx, -2 - length, length) != DUK_EXEC_SUCCESS){
-				 //FIXME 通过duk_throw处理。
-	     	 LOGE("ScriptEngine","ScriptEngine CallJS %s.%s() method %s", targetName, methodName, duk_js_error_to_string(ctx, -1));
-	        duk_pop(ctx);
-	        duk_push_null(ctx);
-	    }
- 	    (*env)->ReleaseStringUTFChars(env, jsTarget, targetName);
-	    (*env)->ReleaseStringUTFChars(env, jsMethod, methodName);
-	    jobject  value =  duk_to_java_object(ctx, env, -1);
-	    duk_pop_2(ctx);
-	    return value;
+			if(duk_is_function(ctx, -1)){
+				jsize length = duk_push_java_object_array(ctx, env, args);
+				DEBUG_LOG("ScriptEngine","Java_com_furture_react_DuktapeEngine_nativeCallJs call  Function %d", length);
+				if(duk_pcall(ctx, length) != DUK_EXEC_SUCCESS){
+					  LOGE("ScriptEngine","ScriptEngine CallJS function %s  %s", targetName, duk_js_error_to_string(ctx, -1));
+						duk_pop(ctx);
+						duk_push_null(ctx);
+				}
+				(*env)->ReleaseStringUTFChars(env, jsTarget, targetName);
+				jobject  value =  duk_to_java_object(ctx, env, -1);
+				duk_pop_2(ctx);
+				return value;
+			}else{
+				const char* methodName = ((*env)->GetStringUTFChars(env, jsMethod, &iscopy));
+				duk_push_string(ctx, methodName);
+				jsize length = duk_push_java_object_array(ctx, env, args);
+				DEBUG_LOG("ScriptEngine","Java_com_furture_react_DuktapeEngine_nativeCallJs call  Function %d", length);
+				if(duk_pcall_prop(ctx, -2 - length, length) != DUK_EXEC_SUCCESS){
+					  LOGE("ScriptEngine","ScriptEngine CallJS %s.%s() method %s", targetName, methodName, duk_js_error_to_string(ctx, -1));
+						duk_pop(ctx);
+						duk_push_null(ctx);
+				}
+				(*env)->ReleaseStringUTFChars(env, jsTarget, targetName);
+				(*env)->ReleaseStringUTFChars(env, jsMethod, methodName);
+				jobject  value =  duk_to_java_object(ctx, env, -1);
+				duk_pop_2(ctx);
+				return value;
+			}
     }
     (*env)->ReleaseStringUTFChars(env, jsTarget, targetName);
     duk_pop_2(ctx);
@@ -982,7 +1020,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
    if(java_lang_to_string_method != NULL){
  		  java_lang_to_string_method = NULL;
  	 }
-	 
+
    pthread_setspecific(jni_env_key, NULL);
 	 jvm = NULL;
 	 DEBUG_LOG("ScriptEngine","JNI_OnUnload Success");

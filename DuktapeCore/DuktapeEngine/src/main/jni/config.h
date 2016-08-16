@@ -12,7 +12,7 @@
 #include <android/log.h>
 
 
-//#define DEBUG
+#define DEBUG
 
 #define LOGV(TAG,...) __android_log_print(ANDROID_LOG_VERBOSE, TAG,__VA_ARGS__)
 #define LOGD(TAG,...) __android_log_print(ANDROID_LOG_DEBUG, TAG,__VA_ARGS__)
@@ -27,3 +27,6 @@
 #endif
 
 #endif /* UTILS_H_ */
+
+
+//#define DUK_OPT_AUGMENT_ERRORS

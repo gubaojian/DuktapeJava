@@ -31,6 +31,7 @@ public class CodeConvertor {
 	
 	
 	public static void main(String[] args) throws IOException {
+		args = new String[]{"/Users/furture/code/DuktapeJava/CodeConvertor/js/index.js"};
 		if(args.length <= 0){
 			System.out.println("java -jar CodeConvertor.jar /ui.js ui.c.js");
 			return;
@@ -70,7 +71,7 @@ public class CodeConvertor {
 
 
 	public static void log(String msg){
-		//System.out.println(msg);
+		System.out.println(msg);
 	}
 
 

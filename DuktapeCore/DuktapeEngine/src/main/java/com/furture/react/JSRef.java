@@ -32,13 +32,17 @@ public class JSRef {
 
 
 	public  Object call(String methodName, Object... args){
-		getEngine().call(this, methodName, args);
-		return  ref;
+		return  getEngine().call(this, methodName, args);
 	}
-	
+
+
 	
 	@Override
 	public String toString() {
+		Object result = getEngine().call(this, "toString");
+		if(result != null){
+			return result.toString();
+		}
 		return "JSRef@" + ref;
 	}
 

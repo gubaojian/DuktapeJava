@@ -3,18 +3,7 @@ package com.efurture.script;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mozilla.javascript.ast.Assignment;
-import org.mozilla.javascript.ast.AstNode;
-import org.mozilla.javascript.ast.ElementGet;
-import org.mozilla.javascript.ast.ExpressionStatement;
-import org.mozilla.javascript.ast.FunctionCall;
-import org.mozilla.javascript.ast.InfixExpression;
-import org.mozilla.javascript.ast.Name;
-import org.mozilla.javascript.ast.NewExpression;
-import org.mozilla.javascript.ast.NodeVisitor;
-import org.mozilla.javascript.ast.PropertyGet;
-import org.mozilla.javascript.ast.StringLiteral;
-import org.mozilla.javascript.ast.VariableInitializer;
+import org.mozilla.javascript.ast.*;
 
 public class CodeTransformVisitor implements NodeVisitor {
 	
@@ -171,7 +160,60 @@ public class CodeTransformVisitor implements NodeVisitor {
 		    	 int index = parentArguments.indexOf(get);
 		    	 parentArguments.set(index, call);
 		    	 parent.setArguments(parentArguments);
-			}
+			}else if (node.getParent() instanceof  ExpressionStatement){
+				 FunctionCall call = new FunctionCall();
+				 ArrayList<AstNode>  arguments = new ArrayList<AstNode>();
+				 arguments.add(get.getElement());
+				 call.setArguments(arguments);
+				 PropertyGet target = new PropertyGet();
+				 Name name = new Name();
+				 name.setIdentifier("__g");
+				 target.setLeft(get.getTarget());
+				 target.setRight(name);
+				 call.setTarget(target);
+				 ExpressionStatement parent = (ExpressionStatement) node.getParent();
+				 parent.setExpression(call);
+			 }else if (node.getParent() instanceof  VariableInitializer){
+				 FunctionCall call = new FunctionCall();
+				 ArrayList<AstNode>  arguments = new ArrayList<AstNode>();
+				 arguments.add(get.getElement());
+				 call.setArguments(arguments);
+				 PropertyGet target = new PropertyGet();
+				 Name name = new Name();
+				 name.setIdentifier("__g");
+				 target.setLeft(get.getTarget());
+				 target.setRight(name);
+				 call.setTarget(target);
+
+				 VariableInitializer parent = (VariableInitializer) node.getParent();
+				 parent.setInitializer(call);
+			 }else if(get.getParent() instanceof  FunctionCall){
+				 FunctionCall call = new FunctionCall();
+				 ArrayList<AstNode>  arguments = new ArrayList<AstNode>();
+				 arguments.add(get.getElement());
+				 call.setArguments(arguments);
+				 PropertyGet target = new PropertyGet();
+				 Name name = new Name();
+				 name.setIdentifier("__g");
+				 target.setLeft(get.getTarget());
+				 target.setRight(name);
+				 call.setTarget(target);
+
+
+
+				 FunctionCall  parent = (FunctionCall) get.getParent();
+				 ArrayList<AstNode>  parentArguments = new ArrayList<AstNode>();
+				 parentArguments.addAll(parent.getArguments());
+				 int index = parentArguments.indexOf(get);
+				 parentArguments.set(index, call);
+				 parent.setArguments(parentArguments);
+			 }
+
+
+
+
+
+
 		 }else if(node instanceof Assignment){
 			  Assignment  assignment =  (Assignment) node;
 			  if (assignment.getLeft() instanceof PropertyGet) {

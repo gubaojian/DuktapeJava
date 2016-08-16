@@ -40,7 +40,7 @@ public class JSApi {
 	  * 所有引擎共享的全局对象以及Java对象。
 	  * 对象会在DuktapeEngine初始化时放入到全局对象中供JavaScript调用
 	  * */
-	 public static void putContext(String name, Object object){
+	 public static void put(String name, Object object){
 		 globalContextMap.put(name, object);
 	 }
 

@@ -143,7 +143,7 @@ public class JavaUtils {
 			}
 			break;
 			default:{
-				throw new RuntimeException( method.getName() + " method has too many arguments" + args.length);
+				throw new RuntimeException(target  + " method " + method.getName() + " has too many arguments " + args.length);
 			}
 		}
 		return valueObject;
@@ -159,6 +159,8 @@ public class JavaUtils {
 	public static Object newInstance(String className, Object ...args) throws Exception{
 		  return  newInstanceClass(loadClass(className), args);
 	}
+
+
 	public static Object newInstanceClass(Class<?> targetClass, Object ...args) throws Exception{
 		int modifiers = getClassModifiers(targetClass);
 		if (Modifier.isInterface(modifiers)) {
@@ -171,7 +173,7 @@ public class JavaUtils {
 		if(Modifier.isAbstract(modifiers)){
 			Class<?> sourceClass  = JSApi.getAbstractClassMap().get(targetClass);
 			if (sourceClass == null) {
-				throw new RuntimeException(" Cannot find abstract class implemation, please putContext implelation to javaClassMap. class name " + targetClass.getName());
+				throw new RuntimeException(" Cannot find abstract class implemation, please registerAbstractClass to JSApi. class name " + targetClass.getName());
 			}
 			targetClass = sourceClass;
 		}
@@ -211,7 +213,7 @@ public class JavaUtils {
 		  }
 
 		  if(target instanceof JSONObject){
-			  return  ((JSONObject) target).optJSONObject(fieldName);
+			  return  ((JSONObject) target).opt(fieldName);
 		  }
 
 		  if(target instanceof JSONArray){
@@ -409,16 +411,7 @@ public class JavaUtils {
 			if (notExistMethodCache.get(key) != MARK) {
 				try {
 					String methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-					if(fieldValue != null){
-						method = targetClass.getMethod(methodName, fieldValue.getClass());
-					}else {
-						Method[] classMethods = targetClass.getMethods();
-						for(Method classMethod : classMethods){
-							if(classMethod.getName().equals(methodName)){
-								method = classMethod;
-							}
-						}
-					}
+					method = getInvokeMethod(targetClass, methodName, fieldValue);
 					if(method != null){
 						if(!method.isAccessible()){
 							method.setAccessible(true);
@@ -429,8 +422,6 @@ public class JavaUtils {
 					}else{
 						notExistMethodCache.put(key, MARK);
 					}
-				}catch (NoSuchMethodException notExistGetAccessError){
-					notExistMethodCache.put(key, MARK);
 				}catch (Exception e) {
 					throw new RuntimeException("invoke set field method " + fieldName + " error on target " + target, e);
 				}
@@ -705,7 +696,11 @@ public class JavaUtils {
 					break;
 				}
 				Object arg = args[i];
-				if (arg == null && !parameterType.isPrimitive()) {
+				if (arg == null) {
+					if(parameterType.isPrimitive()){
+						okMethod = false;
+						break;
+					}
 					continue;
 				}
 				Class<?> argsClass = arg.getClass();
@@ -773,6 +768,12 @@ public class JavaUtils {
 		 * */
 		for (Method targetMethod : targetMethods) {
 			Class<?>[] parameterTypes = targetMethod.getParameterTypes();
+			if(parameterTypes.length != args.length){
+				if(!(parameterTypes.length > 0
+						&& parameterTypes[parameterTypes.length -1].isArray())){
+					continue;
+				}
+			}
 			boolean okMethod = true;
 			int i=0;
 			for (; i < parameterTypes.length; i++) {
@@ -797,7 +798,7 @@ public class JavaUtils {
 			/**
 			 * 处理可变参数的情况，如object... args
 			 * */
-			if(i == parameterTypes.length -1 && parameterTypes[i].isArray()){
+			if(i == parameterTypes.length - 1 && parameterTypes[i].isArray()){
 				if(convertLastToVarArgs(parameterTypes, args)){
 					method = targetMethod;
 					break;

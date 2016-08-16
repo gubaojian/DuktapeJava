@@ -2,7 +2,11 @@ importClass('com.furture.react.JavaUtils');
 importClass("android.content.Intent");
 importClass("junit.framework.Assert");
 importClass("java.lang.String");
-
+importClass("com.example.duktapetest.Person");
+importClass("java.util.HashMap");
+importClass("java.util.ArrayList");
+importClass("org.json.JSONObject");
+importClass("java.lang.reflect.Array");
 
 /**
  * 测试自动类型转换
@@ -68,16 +72,134 @@ testCallWithType();
   testVarArgsWithCall();
 
 
-// TODO
   /**
    *  测试访问Bean表达式
    *  Map  List， Object JSONObject Array等
    */
-  function testSetMethod(){
+   /**
+    * 测试访问get set 以及 is方法， 其中is方法包含自动装箱
+    */
+  function testBeanSetGetMethod(){
+    var person = new Person();
+    person.name = "setNameVia.Name";
+    Assert.assertEquals(person.name, "setNameVia.Name");
+    Assert.assertEquals(person.getName(), "setNameVia.Name");
 
+    person.setName("setNameViaSetName");
+    Assert.assertEquals(person.name, "setNameViaSetName");
+    Assert.assertEquals(person.getName(), "setNameViaSetName");
+    Assert.assertEquals(person['name'], "setNameViaSetName");
+
+    Assert.assertEquals(person.china, false);
+    person.china  = true;
+    Assert.assertEquals(person.china, true);
+    Assert.assertEquals(person.isChina(), true);
   }
+  testBeanSetGetMethod();
+
+
+
+   /**
+   *  map类型测试
+   */
+   function testMapSetGetMethod(){
+       var map = new HashMap();
+       Assert.assertEquals(map.keyA, null);
+       map.put("keyA", "HikeyAViaPut");
+       Assert.assertEquals(map.keyA, "HikeyAViaPut");
+       Assert.assertEquals(map.get("keyA"), "HikeyAViaPut");
+       Assert.assertEquals(map['keyA'], "HikeyAViaPut");
+
+
+       map.keyA = "KeyAViaSet";
+       Assert.assertEquals(map.keyA, "KeyAViaSet");
+       Assert.assertEquals(map.get("keyA"), "KeyAViaSet");
+       Assert.assertEquals(map['keyA'], "KeyAViaSet");
+
+
+       var person = new Person();
+       Assert.assertNull("person sites is null", person.sites);
+       person.sites = map;
+       Assert.assertEquals(person.sites.keyA, "KeyAViaSet");
+    }
+    testMapSetGetMethod();
+
+
+
+  /**
+   *  list类型测试
+   */
+   function testListSetGetMethod(){
+       var list = new ArrayList();
+       for(var i=0;i<10; i++){
+         list.add("item" + i);
+       }
+       Assert.assertEquals(10, list.size());
+       Assert.assertEquals(list.get(0), "item0");
+       Assert.assertEquals(list.get(1), "item1");
+
+      //支持这种方式访问未
+      Assert.assertEquals(list[0], "item0");
+      Assert.assertEquals(list[1], "item1");
+
+      var person = new Person();
+      Assert.assertNull("person sites is null", person.loves);
+      person.loves = list;
+      Assert.assertEquals(person.loves.get(0), "item0");
+
+
+    }
+    testListSetGetMethod();
+
+
+  /**
+   *  json类型测试
+   */
+   function testJSONSetGetMethod(){
+       var json = new JSONObject();
+       for(var i=0;i<10; i++){
+         json.put(i, "item" + i);
+       }
+
+       Assert.assertEquals(json.opt(0), "item0");
+       Assert.assertEquals(json.opt(1), "item1");
+
+       //未转化为javascript的array,但支持此种方式访问
+       //double  用0 取不到
+       Assert.assertEquals(json[0], null);
+       Assert.assertEquals(json['0.0'], 'item0');
+    }
+    testJSONSetGetMethod();
+
+
+
+  /**
+   *  array类型测试
+   */
+   function testArraySetGetMethod(){
+       var years = ['item0', 'item1'];
+       var array = Array.newInstance(String, 2);
+       Array.set(array, 0, "item0");
+       Array.set(array, 1, "item1");
+       var person = new Person();
+       Assert.assertNull("person sites is null", person.years);
+       person.years = array;
+       Assert.assertEquals(person.years[0], "item0");
+
+
+    }
+    testArraySetGetMethod();
+
+
+
+ /**
+  *
+  *  FIXME 测试getInvokeMethod方法
+  */
 
 
 
 
-true;
+
+   true;
+

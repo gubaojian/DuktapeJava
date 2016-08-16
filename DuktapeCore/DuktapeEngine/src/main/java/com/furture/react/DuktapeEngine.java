@@ -83,7 +83,7 @@ public class DuktapeEngine {
 	 * @param jsRef        javascript对象
 	 * @param methodName       js对象的方法名
 	 * @param args          方法参数
-     * 若javascript对象为function，忽略methodName，直接调用该function。
+     * 若javascript对象为function，忽略methodName，直接调用该function。对于直接function的调用，methodName可以传null
 	 * 若javascript对象为object，则调用object中的methodName对应的function方法或者属性。
 	 * 这样在javascript 通过两种方式书写回调。 如要写一个setOnClickListener(new OnClickListener())的回调。
 	 * 在javascript中可以通过一下两种方式书写：
@@ -107,8 +107,12 @@ public class DuktapeEngine {
 				return null;
 			}
 	}
-    
-    
+
+
+
+
+
+
 
 	/**
 	 * @param objectName   js对象名字
@@ -123,6 +127,8 @@ public class DuktapeEngine {
 			return null;
 		}
 	}
+
+
 	
 
 	/**

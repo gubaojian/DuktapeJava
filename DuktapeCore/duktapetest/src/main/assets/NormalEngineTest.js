@@ -8,7 +8,9 @@ importClass("android.view.View")
 importClass("android.view.View.OnClickListener")
 
 
-
+/**
+ * 测试New
+ */
 function testNew(){
     var intent = new Intent();
     var view = new View(activity);
