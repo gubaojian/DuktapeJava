@@ -18,38 +18,6 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         >
-        <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.DukActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".activity.ScriptTestActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".activity.SampleOneActivity"
-            android:label="@string/title_activity_sample_one" >
-        </activity>
-        <activity
-            android:name=".activity.CommonOneActivity"
-            android:label="@string/title_activity_sample_one" >
-        </activity>
-        <activity
-            android:name=".hybrid.HybridActivity"
-            android:label="@string/title_activity_sample_one"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="com.furture.react.activity.AsyncTaskTestActivity"
-            android:label="@string/title_activity_async_task_test" >
-        </activity>
     </application>
 
 </manifest>

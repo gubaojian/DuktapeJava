@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
                 PerformanceTest performanceTest = new PerformanceTest();
                 performanceTest.start(MainActivity.this, 4, script);
 
-                Toast.makeText(MainActivity.this, "ececute end", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "start run", Toast.LENGTH_SHORT).show();
             }
         });
     }

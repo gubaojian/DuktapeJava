@@ -153,15 +153,18 @@ jobject duk_to_java_object(duk_context *ctx, JNIEnv*  env, int i){
 				  DEBUG_LOG("ScriptEngine","convert javascript object to JSRef Ref Value %d ", ref);
 				  jobject engine = get_engine_from_context(ctx);
 				  jobject jsRefObject = (*env)->NewObject(env, js_ref_class, js_ref_new_method, engine, ref);
-					if(jsRefObject){
-						//FIXME 内存紧张时问题处理
+				  if(jsRefObject != NULL){
 					  jweak jsWeakRef = (*env)->NewWeakGlobalRef(env, jsRefObject);
-					  duk_dup(ctx, i);
-					  duk_push_pointer(ctx, jsWeakRef);
-					  duk_put_prop_string(ctx, -2, JS_REF_MARK);
-					  duk_pop(ctx);
-					  return jsRefObject;
-					}
+					  if(jsWeakRef != NULL){
+                         duk_dup(ctx, i);
+                         duk_push_pointer(ctx, jsWeakRef);
+                         duk_put_prop_string(ctx, -2, JS_REF_MARK);
+                         duk_pop(ctx);
+                         return jsRefObject;
+					  }else{
+							 LOGE("ScriptEngine","ScriptEngine failed make JSRef weak reference  on low memory jvm, please release some memory");
+					  }
+				 }
 			  }
 			  return NULL;
 		  }

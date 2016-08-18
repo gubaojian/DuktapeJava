@@ -27,4 +27,3 @@
 #endif
 
 #endif /* UTILS_H_ */
-

@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 /**
  *
- * java工具类，封装公共方法，共JNI以及JavaScript调用。
+ * java工具类，封装公共方法，供JNI以及JavaScript调用。
  * */
 public class JavaUtils {
 

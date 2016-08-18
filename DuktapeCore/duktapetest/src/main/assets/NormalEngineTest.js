@@ -25,12 +25,29 @@ testNew();
 function testMethod(){
     var intent = new Intent();
     var view = new View(activity);
+    var func = function(){
+    };
     view.setOnClickListener(new OnClickListener(func));
     view.setOnClickListener(func);
-    intent.putExtra('string' + i,  i);
+    intent.putExtra('key',  'value');
 }
 
 testMethod();
+
+
+
+/**
+ *  测试print 方法
+ */
+ function testPrint(){
+   print("engineprint");
+   try{
+      throw new Error("TestPrintError");
+   }catch(e){
+      print("engineprint",e, e.lineNumber, e.name, e.message);
+   }
+ }
+ testPrint();
 
 
 

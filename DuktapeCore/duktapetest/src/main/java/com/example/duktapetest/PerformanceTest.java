@@ -13,19 +13,17 @@ public class PerformanceTest {
 
 
     public void start(final Activity activity, int num, final String script){
-        for(int i=0; i<num; i++){
-            new Thread(new Runnable(){
+        new Thread(new Runnable(){
 
-                @Override
-                public void run() {
-                    DuktapeEngine engine;
-                    engine = new DuktapeEngine();
-                    engine.put("activity", activity);
-                    Object object = engine.execute(script);
-                    Log.e("duktape", "result " + object);
-                    engine.destory();
-                }
-            }).start();
-        }
+            @Override
+            public void run() {
+                DuktapeEngine engine;
+                engine = new DuktapeEngine();
+                engine.put("activity", activity);
+                Object object = engine.execute(script);
+                Log.e("duktape", "result " + object);
+                engine.destory();
+            }
+        }).start();
     }
 }

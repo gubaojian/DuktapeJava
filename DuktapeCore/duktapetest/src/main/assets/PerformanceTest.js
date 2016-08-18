@@ -5,8 +5,13 @@ importClass("android.view.View.OnClickListener")
 
 
 /**
- * 目前性能 10000次循环调用 3000-4000ms
-*/
+ * 目前性能
+ * 模拟器 Nexus5
+ * 10000次块调用 3000-4000ms
+ *
+ * 华为CL100 真机  13500ms
+ *
+ */
 
 var times = 10000;
 

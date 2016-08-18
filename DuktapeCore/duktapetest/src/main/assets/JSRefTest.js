@@ -19,12 +19,14 @@ importClass("junit.framework.Assert");
 
      Assert.assertSame("jsRef should be same", a, b);
      Assert.assertTrue("jsRef should be same", a === b);
-      for(var i=0; i<10; i++){
+     for(var i=0; i<10; i++){
  	    var c =  testRef.callJsRef(a);
  	    var d = testRef.callJsRef(b);
  	    Assert.assertSame("jsRef should be same c a", c, a);
  	    Assert.assertSame("jsRef should be same c d", c, d);
-    }
+     }
+
+     b.toString();
  }
  testJSRef();
 

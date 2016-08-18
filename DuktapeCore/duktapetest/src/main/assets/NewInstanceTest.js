@@ -3,9 +3,8 @@ importClass("com.example.duktapetest.VarPerson");
 importClass("junit.framework.Assert");
 
 /**
- *  测试创建类的实例
+ *  测试正常的创建类的实例
  */
-
 function testNormalNew(){
     var person = new Person();
     Assert.assertNotNull("new person success", person);
