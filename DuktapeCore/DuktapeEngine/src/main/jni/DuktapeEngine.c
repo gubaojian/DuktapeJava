@@ -14,7 +14,7 @@
 
 #define  JAVA_OBJECT_MARK    "__j"
 
-#define  JS_REF_MARK    "__jm"
+#define  JS_REF_MARK    "__jr"
 
 #define  JAVA_METHOD_MARK    "__c"
 

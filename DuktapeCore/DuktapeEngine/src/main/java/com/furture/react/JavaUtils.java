@@ -1146,11 +1146,13 @@ public class JavaUtils {
 			  * */
 		     throw new RuntimeException(String.format("Invalid Parameters. %s cann't cast to class %s", value, parameterType.getName()));
 		}
+
+
 	    private static final LruCache<String, Method> getMethodCache = new LruCache<String, Method>(64);
 	    private static final LruCache<String, Method> setMethodCache = new LruCache<String, Method>(64);
-		  private static final LruCache<String, Field> fieldCache = new LruCache<String, Field>(32);
+	    private static final LruCache<String, Field> fieldCache = new LruCache<String, Field>(32);
 	    private static final LruCache<String, String> notExistMethodCache = new LruCache<String, String>(16);
-		  private static final LruCache<String, String> notExistFieldCache = new LruCache<String, String>(16);
-		  private static final String MARK = "";
+	    private static final LruCache<String, String> notExistFieldCache = new LruCache<String, String>(16);
+	    private static final String MARK = "";
 	    private static final LruCache<String, Class<?>> classCache = new LruCache<String, Class<?>>(64);
 }

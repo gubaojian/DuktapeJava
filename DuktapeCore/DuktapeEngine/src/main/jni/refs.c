@@ -63,7 +63,7 @@ void duk_js_unref(duk_context *ctx, int ref) {
 
   if (ref == 0 || ctx == NULL) return;
 
- DEBUG_LOG("ScriptEngine","duk_js_unref %d ", ref);
+  DEBUG_LOG("ScriptEngine","duk_js_unref %d ", ref);
 
   // Get the "refs" array in the heap stash
   duk_push_global_stash(ctx);

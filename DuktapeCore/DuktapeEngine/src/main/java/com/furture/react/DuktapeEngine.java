@@ -7,23 +7,11 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
- *
- * 1、支持多态
- *
- * 补充功能测试用例
- * 补充性能测试用例
- *
- *
- *
- *
- * 2、支持多线程,
- * 多线程仅支持的执行
- *
- * DuktapeEngine 支持支持多线程，但单个实例同时仅支持一个线程执行。
- * 如果需要完全并发，建议利用Java层实现并发，然后把并发结果转交给DuktapeEngine。
+ * DuktapeEngine 支持多线程，但单个实例同时仅支持一个线程执行，相当于一个实例仅同时仅支持一个线程执行。
+ * 如果需要完全并发，建议利用Java层实现并发，然后把并发结果通过Handler转交给DuktapeEngine。
  * 或者在调用的地方用synchronized (engine){
  *
- * }控制
+ * }控制线程并发，但请注意避免死锁。
  * */
 public class DuktapeEngine {
 
@@ -31,12 +19,16 @@ public class DuktapeEngine {
 	    System.loadLibrary("DuktapeEngine");
 	}
 
-
-	private static  final int FINALIZE_SIZE = 8;
-	
+	/**
+	 * 引擎的JNI指针地址
+	 * */
 	private long  ptr;
 
+	/**
+	 * 引擎的中JSRef批量回收队列，以及批量回收触发阀值的大小。
+	 * */
 	private List<Integer> finalizedJSRefList;
+	private static  final int FINALIZE_SIZE = 8;
 
 
 
@@ -81,8 +73,8 @@ public class DuktapeEngine {
 
 	/**
 	 * @param jsRef        javascript对象
-	 * @param methodName       js对象的方法名
-	 * @param args          方法参数
+	 * @param methodName   js对象的方法名
+	 * @param args         方法参数
      * 若javascript对象为function，忽略methodName，直接调用该function。对于直接function的调用，methodName可以传null
 	 * 若javascript对象为object，则调用object中的methodName对应的function方法或者属性。
 	 * 这样在javascript 通过两种方式书写回调。 如要写一个setOnClickListener(new OnClickListener())的回调。
@@ -172,7 +164,9 @@ public class DuktapeEngine {
 	   }
 	}
 
-
+    /**
+	 * JNI函数接口
+	 * */
 	private  native long nativeInit();
 	private  native void nativeRegister(long ptr, String key, Object value);
 	private  native Object nativeExeclute(long ptr, String script);
