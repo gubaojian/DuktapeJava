@@ -31,9 +31,9 @@ function performanceTest(){
         intent.putExtra('string' + i,  i);
         intent.putExtra('string' + i,  i);
         intent.putExtra('string' + i,  i);
-        intent.putExtra('string' + i,   view); //放到Intent中一直, 测试内存压力下的表现
+        intent.putExtra('string' + i,   view); //放到Intent中一直, 测试10000个View内存压力下的表现
         json.data = json.data + 1;
-        //intent.putExtra('string' + i,  json);
+        intent.putExtra('string' + i,  json);
     }
 
     print("performance test "+ times + " times used " + (System.currentTimeMillis() - start) + " ms ");
