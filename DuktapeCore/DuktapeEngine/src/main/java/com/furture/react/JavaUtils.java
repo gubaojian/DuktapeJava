@@ -707,12 +707,10 @@ public class JavaUtils {
 					  okConstructor = false;
 					  break;
 				  }
-		        try{
-		           	args[i] = compareTypes(parameterTypes[i], args[i]);
-		        }catch (Exception e){
-		          okConstructor = false;
-		          break;
-		        }
+				  if(!compareTypes(parameterTypes[i], args, i)){
+					  okConstructor = false;
+					  break;
+				  }
 		      }
 		      if (okConstructor){
 		        constructor = classConstructor;
@@ -775,12 +773,11 @@ public class JavaUtils {
 		Class<?>[] parameterTypes = constructor.getParameterTypes();
 		for (int i = 0; i < parameterTypes.length; i++) {
 			Class<?> parameterType = parameterTypes[i];
-			try {
-				Object arg = args[i];
-				Object valueObject = compareTypes(parameterType, arg);
-				args[i] = valueObject;
-			} catch (Exception e) {
-				if(i == parameterTypes.length -1 && parameterType.isArray()){
+			if (!compareTypes(parameterType,args, i)){
+				//可变参数列表
+				if(i == parameterTypes.length -1
+						&& parameterType.isArray()
+						&& constructor.isVarArgs()){
 					convertLastToVarArgs(parameterTypes,args);
 				}
 			}
@@ -833,12 +830,12 @@ public class JavaUtils {
 		Class<?>[] parameterTypes = method.getParameterTypes();
 		for (int i = 0; i < parameterTypes.length; i++) {
 			Class<?> parameterType = parameterTypes[i];
-			try {
-				Object arg = args[i];
-				Object valueObject = compareTypes(parameterType, arg);
-				args[i] = valueObject;
-			} catch (Exception e) {
-				if(i == parameterTypes.length -1 && parameterType.isArray()){
+			boolean okType = compareTypes(parameterType,args, i);
+			if (!okType){
+				//可变参数列表
+				if(i == parameterTypes.length -1
+						&& parameterType.isArray()
+						&& method.isVarArgs()){
 					convertLastToVarArgs(parameterTypes,args);
 				}
 			}
@@ -1014,11 +1011,7 @@ public class JavaUtils {
 					break;
 				}
 				Class<?> parameterType = parameterTypes[i];
-				Object arg = args[i];
-				try {
-					Object valueObject = compareTypes(parameterType, arg);
-					args[i] = valueObject;
-				} catch (Exception e) {
+				if(!compareTypes(parameterType, args, i)){
 					okMethod = false;
 					break;
 				}
@@ -1053,8 +1046,12 @@ public class JavaUtils {
 			Class<?> componentType = parameterTypes[i].getComponentType();
 			Object arrays = Array.newInstance(componentType, size);
 			for(int m=0; m<size; m++){
-				Object valueObject = compareTypes(componentType, args[m + i]);
-				Array.set(arrays, m, valueObject);
+				boolean okType = compareTypes(componentType, args, m + i);
+				if(okType){
+					Array.set(arrays, m, args[m + i]);
+				}else {
+					return  false;
+				}
 			}
 			args[i] = arrays;
 			return  true;
@@ -1081,192 +1078,179 @@ public class JavaUtils {
 	 * 比较类型，并尝试进行类型的转换。
 	 * value为null， 对于基本类型，则转换成0或false，
 	 * */
-	private static Object compareTypes(Class<?> parameterType, Object value) throws Exception {
-		     if (value == null) {
-				 if (parameterType.isPrimitive()) {
-					if (Integer.TYPE == parameterType
-							|| Double.TYPE == parameterType
-							|| Long.TYPE == parameterType
-							|| Short.TYPE == parameterType
-							|| Float.TYPE == parameterType
-							|| Byte.TYPE == parameterType) {
-						return 0;
-					}else if (parameterType == Boolean.TYPE) {
-						return false;
+	public static boolean compareTypes(Class<?> parameterType, Object[] args, int index){
+			try{
+				Object value = args[index];
+				if (value == null) {
+					if (parameterType.isPrimitive()) {
+						if (Integer.TYPE == parameterType
+								|| Double.TYPE == parameterType
+								|| Long.TYPE == parameterType
+								|| Short.TYPE == parameterType
+								|| Float.TYPE == parameterType
+								|| Byte.TYPE == parameterType
+								|| Character.TYPE == parameterType) {
+							args[index] =  0;
+							return  true;
+						}else if (parameterType == Boolean.TYPE) {
+							args[index] = false;
+							return true;
+						}
 					}
+					args[index] = null;
+					return true;
 				}
-				return value;
-			}
-		    Class<?> valueClass = value.getClass();
-		    if (valueClass == parameterType) {
-				return value;
-			}
 
-		    if (parameterType.isAssignableFrom(valueClass)) {
-				return value;
-			}
+				Class<?> valueClass = value.getClass();
+				if (valueClass == parameterType) {
+					args[index] = value;
+					return true;
+				}else if (parameterType.isAssignableFrom(valueClass)) {
+					args[index] = value;
+					return true;
+				}else if (CharSequence.class.isAssignableFrom(parameterType)) {
+					args[index] = value.toString();
+					return true;
+				}else if(parameterType.isPrimitive() || Number.class.isAssignableFrom(parameterType)){
+					Object convertValue = null;
+					if (parameterType == Integer.TYPE
+							|| parameterType == Integer.class) {
+						if (value instanceof Integer) {
+							convertValue = value;
+						}else if (value instanceof Number) {
+							convertValue = Integer.valueOf(((Number)value).intValue());
+						}else if (value instanceof Boolean) {
+							convertValue =  Integer.valueOf((Boolean)value ? 1 : 0);
+						}else{
+							Double number = toNumber(value.toString());
+							if(number != null){
+								convertValue = number.intValue();
+							}
+						}
+					}else  if (parameterType == Float.TYPE || parameterType == Float.class) {
+						if (value instanceof Float) {
+							convertValue = value;
+						}else if (value instanceof Number) {
+							convertValue = Float.valueOf(((Number)value).floatValue());
+						}else if (value instanceof Boolean) {
+							convertValue = Float.valueOf((Boolean)value ? 1 : 0);
+						}else{
+							Double number = toNumber(value.toString());
+							if(number != null){
+								convertValue = number.floatValue();
+							}
+						}
+					}else if (parameterType == Double.TYPE || parameterType == Double.class) {
+						if (value instanceof Double) {
+							convertValue = value;
+						}else if (value instanceof Number) {
+							convertValue = ((Number) value).doubleValue();
+						}
+						else if (value instanceof Boolean) {
+							convertValue = Double.valueOf((Boolean)value ? 1 : 0);
+						}else{
+							Double number = toNumber(value.toString());
+							convertValue = number;
+						}
+					}else if (parameterType == Long.TYPE || parameterType == Long.class) {
+						if (value instanceof Long) {
+							convertValue = value;
+						}else if (value instanceof Number) {
+							convertValue = Long.valueOf(((Number)value).longValue());
+						}else if (value instanceof Boolean) {
+							convertValue = Long.valueOf((Boolean)value ? 1 : 0);
+						}else{
+							Double number = toNumber(value.toString());
+							if(number != null){
+								convertValue = number.longValue();
+							}
+						}
+					}else if (parameterType == Byte.TYPE || parameterType == Byte.class) {
+						if (value instanceof Byte) {
+							convertValue = value;
+						}else if (value instanceof Number) {
+							convertValue = Byte.valueOf(((Number)value).byteValue());
+						}
+						else if (value instanceof Boolean) {
+							convertValue = Byte.valueOf((byte)((Boolean)value ? 1 : 0));
+						}else{
+							Double number = toNumber(value.toString());
+							if(number != null){
+								convertValue = number.byteValue();
+							}
+						}
+					}
 
-			if (CharSequence.class.isAssignableFrom(parameterType)) {
-				return value.toString();
-			}
+					if(convertValue != null){
+						args[index] = convertValue;
+						return  true;
+					}
+					return  false;
+				}
 
 
-		    if(parameterType.isPrimitive() || Number.class.isAssignableFrom(parameterType)){
-				if (parameterType == Integer.TYPE
-						|| parameterType == Integer.class) {
-					if (value instanceof Integer) {
-						return value;
+
+
+				Object convertValue = null;
+				if (parameterType == Boolean.TYPE || parameterType == Boolean.class) {
+					if (value instanceof Boolean) {
+						convertValue = value;
 					}else if (value instanceof Number) {
-						return Integer.valueOf(((Number)value).intValue());
+						convertValue = Boolean.valueOf(((Number)value).intValue() != 0);
+					}else{
+						convertValue = Boolean.valueOf(value != null);
+					}
+				}else if (parameterType.isArray()) {
+					if(valueClass.isArray()){
+						if(parameterType.getComponentType().isAssignableFrom(valueClass.getComponentType())){
+							convertValue = value;
+						}
+					}
+				}else if (parameterType == Character.TYPE || parameterType == Character.class) {
+					if (value instanceof Character) {
+						convertValue = value;
+					}else if (value instanceof Number) {
+						convertValue = Character.valueOf((char) (((Number)value).intValue()));
 					}else if (value instanceof Boolean) {
-						return Integer.valueOf((Boolean)value ? 1 : 0);
+						convertValue = Character.valueOf((char)((Boolean)value ? 1 : 0));
 					}else{
-						if (value == null) {
-							return Integer.valueOf(0);
+						Double number = toNumber(value.toString());
+						if(number != null){
+							convertValue = Character.valueOf((char)number.intValue());
 						}
-						String valueString =  value.toString();
-						if(valueString.length() == 0){
-							return Integer.valueOf(0);
-						}
-						return Double.valueOf(valueString).intValue();
+					}
+				}else if(value.getClass() == JSRef.class){
+					/**
+					 * 如果传入参数是JSRef，且方法参数是接口或者抽象类，自动转换成对应的实例。
+					 * 方便事件监听或者方法调用
+					 * */
+					int modifiers = getClassModifiers(parameterType);
+					if(Modifier.isInterface(modifiers) || Modifier.isAbstract(modifiers)){
+						convertValue = newInstanceClass(parameterType, value);
 					}
 				}
 
-				if (parameterType == Float.TYPE || parameterType == Float.class) {
-					if (value instanceof Float) {
-						return  value;
-					}else if (value instanceof Number) {
-						return Float.valueOf(((Number)value).floatValue());
-					}else if (value instanceof Boolean) {
-						return Float.valueOf((Boolean)value ? 1 : 0);
-					}else{
-						if (value == null) {
-							return Float.valueOf(0);
-						}
-						String valueString =  value.toString();
-						if(valueString.length() == 0){
-							return Float.valueOf(0);
-						}
-						return Float.valueOf(valueString);
-					}
+				if(convertValue != null){
+					args[index] = convertValue;
+					return  true;
 				}
+				return  false;
 
-				if (parameterType == Double.TYPE || parameterType == Double.class) {
-					if (value instanceof Double) {
-						return  value;
-					}else if (value instanceof Number) {
-						return ((Number) value).doubleValue();
-					}
-					else if (value instanceof Boolean) {
-						return Double.valueOf((Boolean)value ? 1 : 0);
-					}else{
-						if (value == null) {
-							return Double.valueOf(0);
-						}
-						String valueString =  value.toString();
-						if(valueString.length() == 0){
-							return Double.valueOf(0);
-						}
-						return Double.valueOf(valueString);
-					}
-				}
-
-
-
-
-				if (parameterType == Long.TYPE || parameterType == Long.class) {
-					if (value instanceof Long) {
-						return value;
-					}else if (value instanceof Number) {
-						return Long.valueOf(((Number)value).longValue());
-					}else if (value instanceof Boolean) {
-						return Long.valueOf((Boolean)value ? 1 : 0);
-					}else{
-						if (value == null || value.toString().length() == 0) {
-							return Long.valueOf(0);
-						}
-						return Double.valueOf(value.toString()).longValue();
-					}
-				}
-
-				if (parameterType == Byte.TYPE || parameterType == Byte.class) {
-					if (value instanceof Byte) {
-						return value;
-					}else if (value instanceof Number) {
-						return Byte.valueOf(((Number)value).byteValue());
-					}
-					else if (value instanceof Boolean) {
-						return Byte.valueOf((byte)((Boolean)value ? 1 : 0));
-					}else{
-						if (value == null) {
-							return Byte.valueOf((byte)0);
-						}
-						String valueString =  value.toString();
-						if(valueString.length() == 0){
-							return Byte.valueOf((byte)0);
-						}
-						return Double.valueOf(valueString).byteValue();
-					}
-				}
+			}catch (Exception convertE){
+				return  false;
 			}
-
-
-			if (parameterType == Boolean.TYPE || parameterType == Boolean.class) {
-				if (value instanceof Boolean) {
-					return value;
-				}else if (value instanceof Number) {
-					return Boolean.valueOf(((Number)value).doubleValue() != 0);
-				}else{
-					return Boolean.valueOf(value != null);
-				}
-			}
-
-			if (parameterType.isArray()) {
-				if(valueClass.isArray()){
-					if(parameterType.getComponentType().isAssignableFrom(valueClass.getComponentType())){
-						return value;
-					}
-				}
-
-			}
-
-            if (parameterType == Character.TYPE || parameterType == Character.class) {
-                 if (value instanceof Character) {
-					  return value;
-				 }else if (value instanceof Number) {
-					 return Character.valueOf((char) (((Number)value).intValue()));
-				 }
-				 else if (value instanceof Boolean) {
-					  return Character.valueOf((char)((Boolean)value ? 1 : 0));
-				 }else{
-					 if (value == null) {
-						return Character.valueOf((char)0);
-					 }
-					 String valueString =  value.toString();
-					 if(valueString.length() == 0){
-						 return Character.valueOf((char) 0);
-					 }
-					 return  Character.valueOf((char) Double.valueOf(valueString).intValue());
-				 }
-			 }
-
-			 /**
-			 * 如果传入参数是JSRef，且方法参数是接口或者抽象类，自动转换成对应的实例。
-			 * 方便事件监听或者方法调用
-			 * */
-			 if(value.getClass() == JSRef.class){
-				 int modifiers = getClassModifiers(parameterType);
-				 if(Modifier.isInterface(modifiers) || Modifier.isAbstract(modifiers)){
-					 return  newInstanceClass(parameterType, value);
-				 }
-			 }
-
-		     /**
-			  * 无法找到参数转换的类型
-			  * */
-		     throw new RuntimeException(String.format("Invalid Parameters. %s cann't cast to class %s", value, parameterType.getName()));
 		}
 
+	    private static  Double toNumber(String value){
+			if(value.length() == 0){
+				return  Double.valueOf(0);
+			}
+			char ch = value.charAt(0);
+			if(ch >= '0' && ch <= '9'){
+				return  Double.valueOf(value);
+			}
+			return  null;
+		}
 
 	    private static final LruCache<String, Method> getMethodCache = new LruCache<String, Method>(64);
 	    private static final LruCache<String, Method> setMethodCache = new LruCache<String, Method>(64);
