@@ -19,7 +19,7 @@ public class JSRef {
 		super();
 		this.engine = engine;
 		this.ref = ref;
-		engine.releaseFinalizedJSRefs();
+		engine.releaseFinalizedJSRefs(ref);
 	}
 
 	public DuktapeEngine getEngine() {
@@ -40,9 +40,11 @@ public class JSRef {
 	
 	@Override
 	public String toString() {
-		Object result = getEngine().call(this, "toString");
-		if(result != null){
-			return result.toString();
+		if(ref != 0){
+			Object result = getEngine().call(this, "toString");
+			if(result != null){
+				return result.toString();
+			}
 		}
 		return "JSRef@" + ref;
 	}

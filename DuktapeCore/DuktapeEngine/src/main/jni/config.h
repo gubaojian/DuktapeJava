@@ -9,6 +9,7 @@
 #define CONFIG_H_
 #include <android/log.h>
 
+/** show error in javascript line code */
 #define DUK_OPT_AUGMENT_ERRORS
 
 

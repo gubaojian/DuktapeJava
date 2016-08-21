@@ -28,12 +28,50 @@ import org.json.JSONObject;
 public class JavaUtils {
 
 	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
-
 	private static final Pattern CALL_METHOD_SIGN_SPLIT_PATTERN = Pattern.compile("\\(|\\)");
-	private static final Pattern CALL_TYPES_SPLIT_PATTERN = Pattern.compile(",");
+	private static final Pattern TYPES_SPLIT_PATTERN = Pattern.compile(",");
 
 	/**
-	 *  call方法，支持多态的方法调用。对于多态的类型方法，可通过制定类名的关键字指定特定的调用方法
+	 *  callNew方法用于支持多态的类实例构建以及强制指定方法调用。对于多态的类型方法，可通过指定类名的关键字区分多态构建函数。
+	 *  示例：
+	 *  如Java中：
+	 *
+	 *   new People(person);
+	 *
+	 *  JavaScript:
+	 *
+	 *  JavaUtils.callNew(People, 'Person', person);
+	 *
+	 * */
+	public static final Object callNew(Object target, String constructorTypes, Object... args) throws Exception {
+		if(args == null){
+			args = EMPTY_OBJECT_ARRAY;
+		}
+		Class<?> targetClass = null;
+		if (target  instanceof Class<?>) {
+			targetClass = (Class<?>) target;
+		}else{
+			targetClass = target.getClass();
+		}
+		String[] types = TYPES_SPLIT_PATTERN.split(constructorTypes, -1);
+		Constructor<?> constructor =  getCallNewConstructor(targetClass, types, args);
+		if (constructor == null){
+			throw new RuntimeException("Cann't find constructor with types "  + constructorTypes + " on class " + targetClass);
+		}
+		return  newConstructorWithArgs(targetClass, constructor, args);
+	}
+
+	public static final Object callNewClassName(String className, String constructorTypes, Object... args) throws Exception {
+	    return callNew(importClass(className), constructorTypes, args);
+	}
+
+
+
+
+
+
+	/**
+	 *  call方法用于支持多态的方法调用。对于多态的类型方法，可通过指定类名的关键字指定特定的调用方法
 	 *  示例：
 	 *  如Java中：
 	 *
@@ -60,7 +98,7 @@ public class JavaUtils {
 			 throw new RuntimeException(methodNameWithSign +  " is illegal method sign, method sign sample putExtra(String,String)");
 		 }
 		 String methodName = methodSign[0];
-		 String[] types = CALL_TYPES_SPLIT_PATTERN.split(methodSign[1], -1);
+		 String[] types = TYPES_SPLIT_PATTERN.split(methodSign[1], -1);
 		 Method method =  getCallMethod(targetClass, methodName, types, args);
          if (method == null) {
 			 throw new RuntimeException("Cann't find method " + methodNameWithSign + " on target " + target);
@@ -73,7 +111,7 @@ public class JavaUtils {
 	 * @param  target 对象
 	 * @param  methodName 方法名字
 	 * @param  args 方法调用参数
-	 * 此方法不支持多态，如果需要调用多态方法，请调用call方法
+	 * 仅找到匹配方法，此方法不严格区分多态调用，如果需要区分调用多态方法，请使用call方法
 	 * */
 	public static final Object invoke(Object target, String methodName, Object ...args) throws Exception{
 		if(args == null){
@@ -186,11 +224,15 @@ public class JavaUtils {
 			}
 			targetClass = sourceClass;
 		}
-		Constructor<?> constructor =  getClassConstructor(targetClass, args);
+		Constructor<?> constructor =  getNewConstructor(targetClass, args);
 		if (constructor == null){
 			throw new RuntimeException("Cann't find constructor with args " + Arrays.toString(args) + " on class " + targetClass);
 		}
+		return  newConstructorWithArgs(targetClass, constructor, args);
+	}
 
+
+	private  static Object newConstructorWithArgs(Class<?> targetClass, Constructor<?> constructor,Object ...args) throws IllegalAccessException, InvocationTargetException, InstantiationException {
 		Class<?>[] parameterTypes = constructor.getParameterTypes();
 		if(args.length == parameterTypes.length){
 			return constructor.newInstance(args);
@@ -555,7 +597,7 @@ public class JavaUtils {
 	 * 找到适合的匹配类型的构建器
 	 * */
 	private static final LruCache<String, Constructor<?>[]> classConstructorsCache = new LruCache<String, Constructor<?>[]>(64);
-	private static Constructor<?> getClassConstructor(Class<?> targetClass, Object ...args){
+	private static Constructor<?> getNewConstructor(Class<?> targetClass, Object ...args){
 		  Constructor<?>[]  classConstructors = classConstructorsCache.get(targetClass.getName());
 		  if(classConstructors == null){
 			  classConstructors =  targetClass.getConstructors();
@@ -566,11 +608,12 @@ public class JavaUtils {
 			  Constructor<?> classConstructor  = classConstructors[m];
 			  Class<?>[] parameterTypes = classConstructor.getParameterTypes();
 			  if (parameterTypes.length != args.length){
+				  //可变参数方法
 				  if(!(parameterTypes.length > 0
-						  && parameterTypes[parameterTypes.length -1].isArray())){
+						  && parameterTypes[parameterTypes.length -1].isArray()
+				          && classConstructor.isVarArgs())){
 					  continue;
 				  }
-				  continue;
 		      }
 			  boolean okConstructor =  true;
 			  int i = 0;
@@ -679,7 +722,7 @@ public class JavaUtils {
 			  /**
 			   * 处理可变参数的情况，如object... args
 			   * */
-			  if(i == parameterTypes.length - 1 && parameterTypes[i].isArray()){
+			  if(i == parameterTypes.length - 1 && parameterTypes[i].isArray() && classConstructor.isVarArgs()){
 				  if(convertLastToVarArgs(parameterTypes, args)){
 					  constructor = classConstructor;
 					  break;
@@ -689,6 +732,61 @@ public class JavaUtils {
 		  return constructor;
 	  }
 
+    /**根据方法签名找到指定的构建函数*/
+	private static Constructor<?> getCallNewConstructor(Class<?> targetClass, String[] types, Object... args){
+		Constructor<?>[]  classConstructors = classConstructorsCache.get(targetClass.getName());
+		if(classConstructors == null){
+			classConstructors =  targetClass.getConstructors();
+			classConstructorsCache.put(targetClass.getName(), classConstructors);
+		}
+		Constructor<?> constructor = null;
+		for(int m = 0; m < classConstructors.length; m++){
+			Constructor<?> classConstructor  = classConstructors[m];
+			Class<?>[] parameterTypes = classConstructor.getParameterTypes();
+			if (parameterTypes.length != types.length){
+				continue;
+			}
+			boolean okConstructor =  true;
+			int i = 0;
+			for (; i < parameterTypes.length; i++){
+				Class<?> parameterType = parameterTypes[i];
+				String   argsType = types[i];
+				if(TextUtils.isEmpty(argsType)){
+					continue;
+				}
+				String name = parameterType.getName();
+				if(name.lastIndexOf(argsType) >= 0){
+					continue;
+				}
+				okConstructor = false;
+				break;
+			}
+			if (okConstructor){
+				constructor = classConstructor;
+				break;
+			}
+		}
+		//未找到直接返回
+		if (constructor == null) {
+			return constructor;
+		}
+
+		//根据参数类型进行强制的类型转换
+		Class<?>[] parameterTypes = constructor.getParameterTypes();
+		for (int i = 0; i < parameterTypes.length; i++) {
+			Class<?> parameterType = parameterTypes[i];
+			try {
+				Object arg = args[i];
+				Object valueObject = compareTypes(parameterType, arg);
+				args[i] = valueObject;
+			} catch (Exception e) {
+				if(i == parameterTypes.length -1 && parameterType.isArray()){
+					convertLastToVarArgs(parameterTypes,args);
+				}
+			}
+		}
+		return  constructor;
+	}
 
 
 
@@ -814,8 +912,10 @@ public class JavaUtils {
 		for (Method targetMethod : targetMethods) {
 			Class<?>[] parameterTypes = targetMethod.getParameterTypes();
 			if(parameterTypes.length != args.length){
+				//可变参数方法
 				if(!(parameterTypes.length > 0
-						&& parameterTypes[parameterTypes.length -1].isArray())){
+						&& parameterTypes[parameterTypes.length -1].isArray()
+				        && targetMethod.isVarArgs())){
 					continue;
 				}
 			}
@@ -880,7 +980,7 @@ public class JavaUtils {
 			//可变参数方法
 			if(i == parameterTypes.length -1){
 				Class<?>  parameterType = parameterTypes[i];
-				if(parameterType.isArray()){
+				if(parameterType.isArray() && targetMethod.isVarArgs()){
 					if(convertLastToVarArgs(parameterTypes, args)){
 						method = targetMethod;
 						break;
@@ -930,7 +1030,7 @@ public class JavaUtils {
 			/**
 			 * 处理可变参数的情况，如object... args
 			 * */
-			if(i == parameterTypes.length - 1 && parameterTypes[i].isArray()){
+			if(i == parameterTypes.length - 1  && parameterTypes[i].isArray() && targetMethod.isVarArgs()){
 				if(convertLastToVarArgs(parameterTypes, args)){
 					method = targetMethod;
 					break;
@@ -1021,10 +1121,14 @@ public class JavaUtils {
 					}else if (value instanceof Boolean) {
 						return Integer.valueOf((Boolean)value ? 1 : 0);
 					}else{
-						if (value == null || value.toString().length() == 0) {
+						if (value == null) {
 							return Integer.valueOf(0);
 						}
-						return Double.valueOf(value.toString()).intValue();
+						String valueString =  value.toString();
+						if(valueString.length() == 0){
+							return Integer.valueOf(0);
+						}
+						return Double.valueOf(valueString).intValue();
 					}
 				}
 
@@ -1036,10 +1140,14 @@ public class JavaUtils {
 					}else if (value instanceof Boolean) {
 						return Float.valueOf((Boolean)value ? 1 : 0);
 					}else{
-						if (value == null || value.toString().length() == 0) {
+						if (value == null) {
 							return Float.valueOf(0);
 						}
-						return Float.valueOf(value.toString());
+						String valueString =  value.toString();
+						if(valueString.length() == 0){
+							return Float.valueOf(0);
+						}
+						return Float.valueOf(valueString);
 					}
 				}
 
@@ -1052,10 +1160,14 @@ public class JavaUtils {
 					else if (value instanceof Boolean) {
 						return Double.valueOf((Boolean)value ? 1 : 0);
 					}else{
-						if (value == null || value.toString().length() == 0) {
+						if (value == null) {
 							return Double.valueOf(0);
 						}
-						return Double.valueOf(value.toString());
+						String valueString =  value.toString();
+						if(valueString.length() == 0){
+							return Double.valueOf(0);
+						}
+						return Double.valueOf(valueString);
 					}
 				}
 
@@ -1086,10 +1198,14 @@ public class JavaUtils {
 					else if (value instanceof Boolean) {
 						return Byte.valueOf((byte)((Boolean)value ? 1 : 0));
 					}else{
-						if (value == null || value.toString().length() == 0) {
+						if (value == null) {
 							return Byte.valueOf((byte)0);
 						}
-						return Byte.valueOf(value.toString()).byteValue();
+						String valueString =  value.toString();
+						if(valueString.length() == 0){
+							return Byte.valueOf((byte)0);
+						}
+						return Double.valueOf(valueString).byteValue();
 					}
 				}
 			}
@@ -1123,10 +1239,14 @@ public class JavaUtils {
 				 else if (value instanceof Boolean) {
 					  return Character.valueOf((char)((Boolean)value ? 1 : 0));
 				 }else{
-					 if (value == null || value.toString().length() == 0) {
+					 if (value == null) {
 						return Character.valueOf((char)0);
 					 }
-					 return new Character(value.toString().charAt(0));
+					 String valueString =  value.toString();
+					 if(valueString.length() == 0){
+						 return Character.valueOf((char) 0);
+					 }
+					 return  Character.valueOf((char) Double.valueOf(valueString).intValue());
 				 }
 			 }
 

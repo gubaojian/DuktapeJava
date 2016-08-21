@@ -3,6 +3,8 @@ importClass("android.content.Intent");
 importClass("junit.framework.Assert");
 importClass("java.lang.String");
 importClass("com.example.duktapetest.Person");
+importClass("com.example.duktapetest.SubPerson");
+importClass("com.example.duktapetest.People");
 importClass("java.util.HashMap");
 importClass("java.util.ArrayList");
 importClass("org.json.JSONObject");
@@ -191,6 +193,21 @@ testCallWithType();
     testArraySetGetMethod();
 
 
+  /**
+   *  测试callNew方法，强制指定构建函数
+   */
+  function testCallNew(){
+     var subPerson = new SubPerson();
+     var people = new People(subPerson);
+     Assert.assertEquals("constructor from subperson", people.from, "SubPerson");
+
+
+     var callNewPeople = JavaUtils.callNew(People, "com.example.duktapetest.Person", person);
+     Assert.assertEquals("constructor from subperson", people.from, "Person");
+
+     var callNewSubPeople = JavaUtils.callNew(People, "com.example.duktapetest.SubPerson", person);
+     Assert.assertEquals("constructor from subperson", people.from, "SubPerson");
+  }
 
  /**
   *

@@ -64,8 +64,7 @@ public class DuktapeEngine {
 	/**
 	 * @param  key  导入java对象在javascript中的名字
 	 * @param  value Java对象
-	 * 引入Java对象到JavaScript引擎，JavaScript可以调用Java对象。
-	 * 此方法可用于初始化一些公共的对象。
+	 * 导入Java对象到JavaScript引擎中供JavaScript调用；此方法可用于初始化一些公共的对象。
 	 * */
 	public void put(String key, Object value){
 		nativeRegister(ptr, key, value);
@@ -75,6 +74,7 @@ public class DuktapeEngine {
 	 * @param jsRef        javascript对象
 	 * @param methodName   js对象的方法名
 	 * @param args         方法参数
+	 * 调用异常返回null，异常信息输出到logcat中
      * 若javascript对象为function，忽略methodName，直接调用该function。对于直接function的调用，methodName可以传null
 	 * 若javascript对象为object，则调用object中的methodName对应的function方法或者属性。
 	 * 这样在javascript 通过两种方式书写回调。 如要写一个setOnClickListener(new OnClickListener())的回调。
@@ -110,7 +110,7 @@ public class DuktapeEngine {
 	 * @param objectName   js对象名字
 	 * @param method       js对象的方法名
 	 * @param args         方法参数
-	 * 直接调用js中的方法
+	 * 直接调用js中的方法, 调用异常返回null，异常信息输出到logcat中
 	 * */
     public  Object call(String objectName, String method, Object... args){
 		if(ptr != 0){
@@ -136,7 +136,11 @@ public class DuktapeEngine {
 		}
 	}
 
-	public void releaseFinalizedJSRefs(){
+	/**
+	 * 释放除了重用的JSRef之外的无用JSRef引用
+	 * @param  resuseRef 重用的JSRef
+	 * */
+	void releaseFinalizedJSRefs(int resuseRef){
 		if (finalizedJSRefList.size() <= FINALIZE_SIZE){
 			return;
 		}
@@ -146,6 +150,9 @@ public class DuktapeEngine {
 				while (it.hasNext()){
 					if (ptr != 0) {
 						int ref = it.next();
+						if(ref == resuseRef){
+							continue;
+						}
 						nativeFinalizeJSRef(ptr, ref);
 					}
 					it.remove();
