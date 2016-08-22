@@ -2,7 +2,7 @@ importClass("android.content.Intent")
 importClass("java.lang.System")
 importClass("android.view.View")
 importClass("android.view.View.OnClickListener")
-
+importClass("android.widget.TextView")
 
 /**
  * 目前性能
@@ -13,7 +13,7 @@ importClass("android.view.View.OnClickListener")
  *
  */
 
-function performanceTest(){
+function performanceTestOne(){
     var times = 10000;
 
     var start = System.currentTimeMillis();
@@ -36,11 +36,56 @@ function performanceTest(){
         intent.putExtra('string' + i,  json);
     }
 
-    print("performance test "+ times + " times used " + (System.currentTimeMillis() - start) + " ms ");
-
+    print("performance test one "+ times + " times used " + (System.currentTimeMillis() - start) + " ms ");
 
 }
 
-performanceTest();
+performanceTestOne();
+
+
+function performanceTestTwo(){
+    var times = 10000;
+    var start = System.currentTimeMillis();
+    for(var i=0; i<times; i++){
+        var view = new TextView(activity);
+        view.setText('设置TextView文字');
+    }
+
+    print("performance test two "+ times + " times used " + (System.currentTimeMillis() - start) + " ms ");
+
+}
+
+performanceTestTwo();
+
+
+function performanceTestThree(){
+    var times = 10000;
+
+    var start = System.currentTimeMillis();
+    var json = {
+        data: 1,
+    };
+    for(var i=0; i<times; i++){
+        var intent = new Intent();
+        var view = new View(activity);
+        var func = function(){
+        };
+        view.setOnClickListener(new OnClickListener(func));
+        view.setOnClickListener(func);
+        intent.putExtra('string' + i,  i);
+        intent.putExtra('string' + i,  i);
+        intent.putExtra('string' + i,  i);
+        intent.putExtra('string' + i,  i);
+        intent.putExtra('string' + i,   view);
+        json.data = json.data + 1;
+        intent.putExtra('string' + i,  json);
+    }
+
+    print("performance test three "+ times + " times used " + (System.currentTimeMillis() - start) + " ms ");
+
+}
+
+performanceTestThree();
+
 
 true;

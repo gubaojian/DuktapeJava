@@ -565,8 +565,8 @@ public class JavaUtils {
 		     if (throwable instanceof InvocationTargetException && throwable.getCause() != null) {
 				 throwable = throwable.getCause();
 			 }
-		     DLog.e("ScriptEngine", "ScriptEngine JavaScript call Java Error", throwable);
-		     return throwable.getMessage();
+		     DLog.e("ScriptEngine", "ScriptEngine Java Runtime Exception StackTrace ", throwable);
+		     return throwable.toString() + " please see logcat above for detail java exception stack";
 	 }
 
 	  private static Class<?>  loadClass(String className) throws ClassNotFoundException{

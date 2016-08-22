@@ -4,6 +4,12 @@
 #include <pthread.h>
 #include "DuktapeEngine.h"
 
+#define duk_peval_javascript(ctx,src)  \
+	((void) duk_push_string((ctx),  "javascript source"), \
+	 duk_eval_raw((ctx), (src), 0, DUK_COMPILE_EVAL | DUK_COMPILE_SAFE | DUK_COMPILE_NOSOURCE | DUK_COMPILE_STRLEN))
+
+
+
 #define convert_to_context(ptr)    ((duk_context *)((intptr_t)ptr))
 
 #define convert_to_ptr(ctx)    ((jlong)((intptr_t)ctx))
@@ -24,7 +30,7 @@
 
 #define JAVA_CLASS_NAME_KEY "__cls"
 
-#define  JAVA_ENGINE_MARK    "__engine"
+#define  JAVA_ENGINE_MARK    "__engine" // put engine in stash
 
 static jclass java_api_class = NULL;
 
@@ -45,12 +51,7 @@ static jmethodID js_ref_new_method = NULL;
 static jmethodID js_ref_get_ref_method = NULL;
 
 static jclass java_boolean_class  = NULL;
-static jclass java_integer_class  = NULL;
-static jclass java_long_class  = NULL;
 static jclass java_double_class  = NULL;
-static jclass java_float_class  = NULL;
-static jclass java_short_class  = NULL;
-static jclass java_byte_class  = NULL;
 static jclass java_number_class  = NULL;
 static jclass java_lang_object_class  = NULL;
 static jmethodID java_number_get_double_value_method  = NULL;
@@ -80,7 +81,7 @@ JNIEnv*  get_java_jni_env();
 
 
 jobject get_engine_from_context(duk_context *ctx){
-	  duk_push_global_object(ctx);
+	  duk_push_global_stash(ctx);
 		if(duk_get_prop_string(ctx, -1, JAVA_ENGINE_MARK)){
 			  jobject  engine =  duk_to_pointer(ctx, -1);
 		    duk_pop_2(ctx);
@@ -98,12 +99,14 @@ const char * duk_js_error_to_string(duk_context *ctx, int index){
 
 	if(duk_get_prop_string(ctx, index, "stack")){
 		 DEBUG_LOG("ScriptEngine","duk_js_error_to_string stack");
+		 /***
 		 duk_get_prop_string(ctx, index - 1, "lineNumber");
 		 int lineNumber = duk_get_int(ctx, -1);
 		 duk_pop(ctx);
 		 duk_push_sprintf(ctx, "javascript source %d line %s", lineNumber, duk_safe_to_string(ctx, -1));
 		 duk_replace(ctx, index-2);
-		 duk_pop(ctx);
+		 duk_pop(ctx);*/
+		 duk_replace(ctx, index-1);
 		 return duk_safe_to_string(ctx, -1);
 	}
 	duk_pop(ctx);
@@ -445,7 +448,7 @@ int duk_import_java_class(duk_context *ctx){
 	 								 jstring exceptionMessage = (*env)->CallStaticObjectMethod(env, java_api_class, java_exception_get_stack_trace_method, exp);
 	 								 jboolean isCopy = JNI_FALSE;
 	 								 const char* cstrMessage = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
-	 								 duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR, "importClass exception \n %s", cstrMessage);
+									 duk_push_error_object(ctx, DUK_ERR_ERROR, "importClass %s Error \n %s", className, cstrMessage);
 	 								 (*env)->DeleteLocalRef(env, fullClassName);
 	 								 duk_throw(ctx);
 	 								 return 0;
@@ -581,20 +584,16 @@ JNIEXPORT jlong JNICALL Java_com_furture_react_DuktapeEngine_nativeInit(JNIEnv *
 	env = get_java_jni_env();
 	duk_context *ctx  = duk_create_heap(NULL, NULL, NULL, NULL, &duk_android_fatal_function);
 	if(ctx){
-		  duk_js_ref_setup(ctx);
+		   //初始化JSRefs引用队列
+		   duk_js_ref_setup(ctx);
 
-		  duk_push_global_object(ctx);
-		  duk_push_c_function(ctx, duk_android_log_print, DUK_VARARGS);
-	    duk_put_prop_string(ctx, -2, "print");
+       //初始化全局函数
+		   duk_push_global_object(ctx);
+		   duk_push_c_function(ctx, duk_android_log_print, DUK_VARARGS);
+	     duk_put_prop_string(ctx, -2, "print");
 
-	    duk_push_c_function(ctx, duk_import_java_class, DUK_VARARGS);
-	    duk_put_prop_string(ctx, -2, "importClass");
-
-
-    	 void* enginePtr = (*env)->NewGlobalRef(env, thisObject);
-    	 duk_push_pointer(ctx, enginePtr);
-    	 duk_put_prop_string(ctx, -2, JAVA_ENGINE_MARK);
-
+	      duk_push_c_function(ctx, duk_import_java_class, DUK_VARARGS);
+	      duk_put_prop_string(ctx, -2, "importClass");
 
 	      duk_get_prototype(ctx, -1);
 	      duk_push_c_function(ctx, invoke_java_method_call, DUK_VARARGS);
@@ -609,6 +608,15 @@ JNIEXPORT jlong JNICALL Java_com_furture_react_DuktapeEngine_nativeInit(JNIEnv *
 		    duk_pop(ctx);
 
 	    	duk_pop(ctx);
+
+
+
+         //存储engine对象
+				 duk_push_global_stash(ctx);
+	    	 void* enginePtr = (*env)->NewGlobalRef(env, thisObject);
+	    	 duk_push_pointer(ctx, enginePtr);
+	    	 duk_put_prop_string(ctx, -2, JAVA_ENGINE_MARK);
+				 duk_pop(ctx);
 	    	DEBUG_LOG("ScriptEngine", "Native Init Success \n");
 		return convert_to_ptr(ctx);
 	}
@@ -636,8 +644,8 @@ JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeExeclute
 	duk_context *ctx  = convert_to_context(ptr);
 	jboolean iscopy = JNI_FALSE;
 	const char* src = ((*env)->GetStringUTFChars(env, script, &iscopy));
-	if(duk_peval_string(ctx, src) != DUK_EXEC_SUCCESS){
-		    LOGE("ScriptEngine", "ScriptEngine eval_string error %s\n", duk_js_error_to_string(ctx, -1));
+	if(duk_peval_javascript(ctx, src) != DUK_EXEC_SUCCESS){
+		    LOGE("ScriptEngine", "ScriptEngine javascript %s\n", duk_js_error_to_string(ctx, -1));
 			  if(src != NULL){
 				  	env = get_java_jni_env();
 		 	     (*env)->ReleaseStringUTFChars(env, script, src);
@@ -804,19 +812,15 @@ static jclass findGlobalRefClass(JNIEnv* env, const char* className){
 
 
 
-JNIEnv*  get_java_jni_env()
-{
-
-        JNIEnv* env;
+JNIEnv*  get_java_jni_env(){
+     JNIEnv* env;
 		 env = pthread_getspecific(jni_env_key);
 		 if(env != NULL){
 			  return env;
 		 }
 	    JavaVMAttachArgs args = {JNI_VERSION_1_6, 0, 0};
-	    //pthread_t thread =  pthread_self();
-	    //pthread_getname_np();
       (*jvm)->AttachCurrentThread(jvm, &env, &args);
-		 if(env == NULL){
+		  if(env == NULL){
 			   LOGE("ScriptEngine","Duktape Engine ScriptEngine AttachCurrentThread  error ");
 				 return NULL;
 		 }
@@ -836,13 +840,11 @@ void clean_jni_env(void* ptr){
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 	jvm  = vm;
 	pthread_key_create (&jni_env_key, clean_jni_env);
-	JNIEnv* 	env = NULL;
-	if ((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_6) != JNI_OK) {
-		env = get_java_jni_env(vm);
-		if(env == NULL){
-			return -1;
-		}
+	JNIEnv* env = get_java_jni_env();
+	if(env == NULL){
+		 return -1;
 	}
+
 	if (java_api_class == NULL) {
 		   java_api_class =  findGlobalRefClass(env, "com/furture/react/JavaUtils");
 	}
@@ -894,28 +896,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 		 java_boolean_class= findGlobalRefClass(env, "java/lang/Boolean");
 	}
 
-	if(java_integer_class  == NULL){
-		java_integer_class = findGlobalRefClass(env, "java/lang/Integer");
-	}
-	if(java_long_class  == NULL){
-		java_long_class = findGlobalRefClass(env, "java/lang/Long");
-	}
-
 	if(java_double_class  == NULL){
 		java_double_class = findGlobalRefClass(env, "java/lang/Double");
 	}
 
-	if(java_float_class  == NULL){
-		java_float_class = findGlobalRefClass(env, "java/lang/Float");
-	}
-
-	if(java_short_class  == NULL){
-		java_short_class = findGlobalRefClass(env, "java/lang/Short");
-	}
-
-	if(java_byte_class == NULL){
-		java_byte_class = findGlobalRefClass(env, "java/lang/Byte");
-	}
 
 	if(java_number_class == NULL){
 		java_number_class = findGlobalRefClass(env, "java/lang/Number");
@@ -953,12 +937,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 }
 
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
-	JNIEnv* env = NULL;
-	if ((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_6) != JNI_OK) {
-		env = get_java_jni_env(vm);
-		if(env == NULL){
-			return;
-		}
+	JNIEnv* env = get_java_jni_env();
+	if(env == NULL){
+		 return;
 	}
 	if (java_api_class != NULL) {
 		 (*env)->DeleteGlobalRef(env, java_api_class);
@@ -975,33 +956,9 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 		 java_boolean_class = NULL;
 	}
 
-	if (java_integer_class != NULL) {
-		 (*env)->DeleteGlobalRef(env, java_integer_class);
-		 java_integer_class = NULL;
-	}
-	if (java_long_class != NULL) {
-		 (*env)->DeleteGlobalRef(env, java_long_class);
-		 java_long_class = NULL;
-	}
-
 	if (java_double_class != NULL) {
 		 (*env)->DeleteGlobalRef(env, java_double_class);
 		 java_double_class = NULL;
-	}
-
-	if (java_float_class != NULL) {
-		 (*env)->DeleteGlobalRef(env, java_float_class);
-		 java_float_class = NULL;
-	}
-
-	if (java_short_class != NULL) {
-		 (*env)->DeleteGlobalRef(env, java_short_class);
-		 java_short_class = NULL;
-	}
-
-	if (java_byte_class != NULL) {
-		(*env)->DeleteGlobalRef(env, java_byte_class);
-		java_byte_class  = NULL;
 	}
 
 	if (java_number_class != NULL) {
