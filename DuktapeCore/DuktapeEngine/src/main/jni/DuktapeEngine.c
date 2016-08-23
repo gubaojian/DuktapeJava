@@ -211,7 +211,7 @@ int invoke_java_method_call(duk_context *ctx) {
 										jstring exceptionMessage = (*env)->CallStaticObjectMethod(env, java_api_class, java_exception_get_stack_trace_method, exp);
 									 jboolean isCopy = JNI_FALSE;
 										const char* cstrMessage = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
-										duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR | 0x01000000L , "invoke java method  %s exception \n %s",  method, cstrMessage);
+										duk_push_error_object(ctx, DUK_ERR_UNCAUGHT_ERROR, "invoke java method  %s exception \n %s",  method, cstrMessage);
 										(*env)->ReleaseStringUTFChars(env, exceptionMessage, cstrMessage);
 										(*env)->DeleteLocalRef(env , exceptionMessage);
 										if(args != NULL){
@@ -237,9 +237,16 @@ int invoke_java_method_call(duk_context *ctx) {
 		duk_insert(ctx, 0);
 		DEBUG_LOG("ScriptEngine","invoke_script_prop call, with args  num %d ", duk_get_top(ctx));
 		if(duk_pcall_prop(ctx, 0, num - 1) != DUK_EXEC_SUCCESS){
-			LOGE("ScriptEngine","ScriptEngine call %s method %s error %s", duk_to_string(ctx, 0), method, duk_js_error_to_string(ctx, -1));
-			duk_pop(ctx);
-			duk_push_null(ctx);
+			if(duk_is_error(ctx, -1)){
+				  duk_get_prop_string(ctx, -1, "message");
+				  duk_push_sprintf(ctx, "call method %s on object %s error %s", method, duk_safe_to_string(ctx, 0), duk_safe_to_string(ctx, -1));
+				  duk_put_prop_string(ctx, -3, "message");
+					duk_pop(ctx);
+					duk_throw(ctx);
+			}else{
+				  duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR, "ScriptEngine call method %s on object %s error %s", method, duk_to_string(ctx, 0), duk_js_error_to_string(ctx, -1));
+			    duk_throw(ctx);
+			}
 		}
 		return 1;
 	}
@@ -303,7 +310,7 @@ static duk_ret_t duk_java_property_get(duk_context *ctx) {
 						 jstring exceptionMessage = (*env)->CallStaticObjectMethod(env, java_api_class, java_exception_get_stack_trace_method, exp);
 							 jboolean isCopy = JNI_FALSE;
 						 const char* cstrMessage = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
-						 duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR, "get java property %s error \n %s",  key, cstrMessage);
+						 duk_push_error_object(ctx, DUK_ERR_UNCAUGHT_ERROR, "get java property %s error \n %s",  key, cstrMessage);
 						 (*env)->ReleaseStringUTFChars(env, exceptionMessage, cstrMessage);
 						 ( *env)->DeleteLocalRef(env , exceptionMessage);
 						 (*env)->DeleteLocalRef(env, value);
@@ -318,9 +325,9 @@ static duk_ret_t duk_java_property_get(duk_context *ctx) {
 		(*env)->DeleteLocalRef(env, fieldName);
 		return 1;
 	}else{
-		duk_get_prop_string(ctx, 1, key);
+		duk_get_prop_string(ctx, -2, key);
 		if(duk_is_undefined(ctx, -1)){
-			LOGW("ScriptEngine", "ScriptEngine warn property  %s not found ", key);
+			 LOGW("ScriptEngine", "ScriptEngine warn property  %s not found on %s", key, duk_safe_to_string(ctx, -3));
 		}
 		return 1;
 	}
@@ -343,7 +350,7 @@ static duk_ret_t duk_java_property_set(duk_context *ctx) {
 					  jstring exceptionMessage = (*env)->CallStaticObjectMethod(env, java_api_class, java_exception_get_stack_trace_method, exp);
 				      jboolean isCopy = JNI_FALSE;
 					  const char* cstrMessage = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
-					  duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR, "get java property %s error \n %s",  key, cstrMessage);
+					  duk_push_error_object(ctx, DUK_ERR_UNCAUGHT_ERROR, "get java property %s error \n %s",  key, cstrMessage);
 					  (*env)->ReleaseStringUTFChars(env, exceptionMessage, cstrMessage);
 					  ( *env)->DeleteLocalRef(env , exceptionMessage);
 					  (*env)->DeleteLocalRef(env, fieldValue);
@@ -507,7 +514,7 @@ int duk_new_java_class(duk_context *ctx){
 									jstring exceptionMessage = (*env)->CallStaticObjectMethod(env, java_api_class, java_exception_get_stack_trace_method, exp);
 									jboolean isCopy = JNI_FALSE;
 									const char* cstrMessage = (*env)->GetStringUTFChars(env, exceptionMessage, &isCopy);
-									duk_push_error_object(ctx, DUK_ERR_EVAL_ERROR, "duk_new_java_class exception \n %s", cstrMessage);
+									duk_push_error_object(ctx, DUK_ERR_UNCAUGHT_ERROR, "duk_new_java_class exception \n %s", cstrMessage);
 									if(instance != NULL){
 										 (*env)->DeleteLocalRef(env, instance);
 									}

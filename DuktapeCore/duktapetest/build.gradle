@@ -1,9 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'hello1'
+            keyPassword 'hello1'
+            storeFile file('./keys/keystore.jks')
+            storePassword 'hello1'
+        }
+    }
+
     compileSdkVersion 23
     buildToolsVersion "24.0.0"
-
     defaultConfig {
         applicationId "com.example.duktapetest"
         minSdkVersion 15
@@ -14,6 +22,7 @@ android {
     }
     buildTypes {
         release {
+            //signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -22,7 +31,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/CodeConvertor.jar')
+    compile files('libs/JSTransformer.jar')
     compile 'com.android.support:appcompat-v7:23.4.0'
     //compile project(path: ':DuktapeEngine')
     compile project(path: ':DuktapeEngine')
@@ -32,5 +41,4 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.4'
     // Set this dependency to build and run Espresso tests
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-
 }

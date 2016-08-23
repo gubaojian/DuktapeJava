@@ -1,0 +1,10 @@
+person.__g("years").__g(0);
+var array = ["item0", "item1", "item2"];
+array.__g(1);
+var item1 = array.__g(0);
+var item2 = array.__g('0');
+Assert.__c("assertEquals", json.__g(0), null);
+person.__g("years").__g(0);
+Assert.__c("assertEquals", person.__g("years").__g(0), null);
+e = {};
+print(e, e.__g("lineNumber"), e.__g("name"), e.__g("message"));

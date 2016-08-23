@@ -3,12 +3,13 @@ DuktapeEngineDemo/.idea/
 */.idea/
 */.settings/
 dev-server/node_modules/
-DuktapeCoreTest/DuktapeEngineTest/build
-DuktapeCoreTest/build/
-DuktapeCoreTest/bin/
-DuktapeCoreTest/obj/
-DuktapeCoreTest/.settings/
-DuktapeCoreTest/.gradle/
+DuktapeDemo/DuktapeEngineDemo/build
+DuktapeDemo/DuktapeEngine/build
+DuktapeDemo/build/
+DuktapeDemo/bin/
+DuktapeDemo/obj/
+DuktapeDemo/.settings/
+DuktapeDemo/.gradle/
 DuktapeCore/DuktapeEngine/build/
 DuktapeCore/DuktapeEngine/.gradle/
 DuktapeCore/build/
@@ -16,4 +17,4 @@ DuktapeCore/.gradle/
 DuktapeCore/bin/
 DuktapeCore/.settings/
 DuktapeCore/captures/
-DuktapeCoreTest/captures/
+DuktapeDemo/captures/

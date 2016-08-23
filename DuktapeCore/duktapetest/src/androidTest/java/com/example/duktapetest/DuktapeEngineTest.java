@@ -102,6 +102,34 @@ public class DuktapeEngineTest extends ActivityInstrumentationTestCase2<MainActi
         Assert.assertNotNull("script run error, please see logcat",result);
         Assert.assertEquals(result.toString(), "true");
         engine.destory();
+    }
 
+    @Test
+    public void testPureJavaScript(){
+        DuktapeEngine engine = new DuktapeEngine();
+        engine.put("activity", getActivity());
+        Object result = engine.execute(AssetScript.toScript(getActivity(), "PureJavaScript.js"));
+        Assert.assertNotNull("script run error, please see logcat",result);
+        Assert.assertEquals(result.toString(), "true");
+        engine.destory();
+    }
+
+    @Test
+    public void testBugMultiError(){
+        DuktapeEngine engine = new DuktapeEngine();
+        engine.put("activity", getActivity());
+        Object result = engine.execute(AssetScript.toScript(getActivity(), "bug/multiError.js"));
+        Assert.assertNotNull("script run error, please see logcat",result);
+        Assert.assertEquals(result.toString(), "true");
+        engine.destory();
+    }
+
+    @Test
+    public void testExpectEqualsErrorRunFail(){
+        DuktapeEngine engine = new DuktapeEngine();
+        engine.put("activity", getActivity());
+        Object result = engine.execute(AssetScript.toScript(getActivity(), "bug/expectEqualsErrorRunFail.js"));
+        Assert.assertNull("script run error, return null",result);
+        engine.destory();
     }
 }
