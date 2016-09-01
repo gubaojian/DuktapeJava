@@ -121,7 +121,7 @@ public class DuktapeEngine {
 	}
 
 
-	
+
 
 	/**
 	 * 销毁引擎，释放引擎对应的naive资源。
@@ -162,8 +162,9 @@ public class DuktapeEngine {
 	}
 
 	/**
-	 * 放到finalizedJSRefList中，然后批量回收。
-	 * 不阻塞finalize java内存回收的进程。
+	 * 放到finalizedJSRefList中，然后在Duktape线程中批量回收。
+	 * 不阻塞finalize java内存回收的进程，当道Duktape执行的线程中回收，
+	 * 防止并发回收。
 	 * */
    void finalizeJSRef(final int jsRef){
 	   synchronized (finalizedJSRefList){

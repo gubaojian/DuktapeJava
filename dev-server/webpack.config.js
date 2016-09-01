@@ -1,7 +1,7 @@
 module.exports = {
 
     entry: {
-      index : './src/js/index.js'
+      index : './src/index.js'
     },
     output: {
         path: './dist',

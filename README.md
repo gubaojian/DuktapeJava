@@ -1,5 +1,5 @@
 ### DuktapeJava
-A Java NDK wrapper for duktape javascript engine on android platform, which is tiny, only 200-300KB so and 1000 line java code. you can use any java method in javascript by just small engine, give you endless power integrating javascript with java.
+A Java NDK wrapper for Duktape javascript engine on android platform, which is tiny, only 200-300KB so and 1000 line java code. you can use any java method in javascript by just small engine, give you endless power integrating javascript with java.
 
 ### Get start
 
@@ -19,8 +19,8 @@ new DuktapeEngnine instance then init it.
     @Override
 	protected void onDestroy() {
 		if (duktapeEngine != null) {
-			duktapeEngine.destory();
-			duktapeEngine = null;
+			 duktapeEngine.destory();
+			 duktapeEngine = null;
 		}
 		super.onDestroy();
 	}
@@ -28,7 +28,7 @@ new DuktapeEngnine instance then init it.
 
 duk.js javascript code
 
-    importClass("com.furture.react.R")
+  importClass("com.furture.react.R")
 	importClass("android.view.View.OnClickListener")
 	importClass("android.widget.Toast")
 	importClass("java.lang.Runnable")
@@ -74,9 +74,9 @@ duk.js javascript code
 		print("activity finish" + num);
 	}
 
-###Seamless Integrating Java with Javascript
+### Seamless Integrating Java with Javascript
 
- javascript can call any javamethod, and new java class instance and interface.
+ javascript can call any java method, and new java class instance and interface.
 
 
      importClass("android.widget.Toast")
@@ -85,8 +85,7 @@ duk.js javascript code
      Toast.makeText(activity, "Javascript toast", Toast.LENGTH_SHORT).show();
 
 
-java can also call any method or get property on javascript object.
-
+java can also call any method or property on javascript object.
 
       importClass("com.efurture.react.DataUtils")
 
@@ -111,6 +110,24 @@ java can also call any method or get property on javascript object.
           }
 
       }   
+
+### Product Usage
+
+  AssetScript class and JSTransformer.jar is only for development usage. for Product, you should not include it on your app. you can use JSTransformer.jar transform JavaScript source, then include js in your app.
+
+    cd JSTransformer/js
+    java -jar JSTransformer.jar  ui.js  transformed/ui.js
+
+   then copy transformed/ui.js to your app.
+
+   you can also use gulp tool. see dev-server.  write source in src/
+   then javascript will auto be transformed in build/ directory
+
+    cd  dev-server
+    npm install
+    npm start
+
+
 
 ### Reference
 
