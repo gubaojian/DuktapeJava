@@ -30,6 +30,7 @@ android {
         exclude{ it.name.startsWith('R$');}
         destinationDir = file('build/libs')
     }
+
     buildJar.dependsOn("compileReleaseSources");
 
     buildTypes {

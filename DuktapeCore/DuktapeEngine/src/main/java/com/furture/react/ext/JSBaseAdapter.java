@@ -13,8 +13,16 @@ public class JSBaseAdapter extends BaseAdapter{
 
 	protected JSRef jsRef;
 
+	private boolean multiType;
+
 	public JSBaseAdapter(JSRef jsRef) {
 		this.jsRef = jsRef;
+		this.multiType = false;
+	}
+
+	public JSBaseAdapter(JSRef jsRef, boolean multiType) {
+		this.jsRef = jsRef;
+		this.multiType = multiType;
 	}
 
 
@@ -45,19 +53,25 @@ public class JSBaseAdapter extends BaseAdapter{
 
 	@Override
 	public int getViewTypeCount() {
-		Object count = jsRef.getEngine().call(jsRef, "getViewTypeCount");
-		if (count == null) {
-			return 1;
+		if(multiType){
+			Object count = jsRef.getEngine().call(jsRef, "getViewTypeCount");
+			if (count == null) {
+				return 1;
+			}
+			return ((Number) count).intValue();
 		}
-		return ((Number) count).intValue();
+		return  super.getViewTypeCount();
 	}
 
 	@Override
 	public int getItemViewType(int position) {
-		Object count = jsRef.getEngine().call(jsRef, "getItemViewType", position);
-		if (count == null) {
-			return 0;
+		if(multiType){
+			Object count = jsRef.getEngine().call(jsRef, "getItemViewType", position);
+			if (count == null) {
+				return 0;
+			}
+			return ((Number) count).intValue();
 		}
-		return ((Number) count).intValue();
+		return  super.getItemViewType(position);
 	}
 }

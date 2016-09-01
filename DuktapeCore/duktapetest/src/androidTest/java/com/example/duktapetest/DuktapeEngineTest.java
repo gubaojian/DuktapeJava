@@ -132,4 +132,13 @@ public class DuktapeEngineTest extends ActivityInstrumentationTestCase2<MainActi
         Assert.assertNull("script run error, return null",result);
         engine.destory();
     }
+
+
+    @Test
+    public  void testErrorMe(){
+        /**
+         * 09-01 15:25:24.108 22890-22890/com.efurture.hybrid.demo E/ScriptEngine: ScriptEngine CallJSRef  1629993456 method getItemViewType exception TypeError: undefined not callable
+         duk_js_call.c:776
+         * */
+    }
 }

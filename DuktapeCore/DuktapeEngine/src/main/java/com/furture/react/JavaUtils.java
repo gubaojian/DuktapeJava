@@ -1179,6 +1179,10 @@ public class JavaUtils {
 								convertValue = number.byteValue();
 							}
 						}
+					}else if (parameterType == Boolean.TYPE || parameterType == Boolean.class) {
+						convertValue = toBoolean(value);
+					}else if (parameterType == Character.TYPE || parameterType == Character.class) {
+						convertValue = toChar(value);
 					}
 
 					if(convertValue != null){
@@ -1193,13 +1197,7 @@ public class JavaUtils {
 
 				Object convertValue = null;
 				if (parameterType == Boolean.TYPE || parameterType == Boolean.class) {
-					if (value instanceof Boolean) {
-						convertValue = value;
-					}else if (value instanceof Number) {
-						convertValue = Boolean.valueOf(((Number)value).intValue() != 0);
-					}else{
-						convertValue = Boolean.valueOf(value != null);
-					}
+					convertValue = toBoolean(value);
 				}else if (parameterType.isArray()) {
 					if(valueClass.isArray()){
 						if(parameterType.getComponentType().isAssignableFrom(valueClass.getComponentType())){
@@ -1207,18 +1205,7 @@ public class JavaUtils {
 						}
 					}
 				}else if (parameterType == Character.TYPE || parameterType == Character.class) {
-					if (value instanceof Character) {
-						convertValue = value;
-					}else if (value instanceof Number) {
-						convertValue = Character.valueOf((char) (((Number)value).intValue()));
-					}else if (value instanceof Boolean) {
-						convertValue = Character.valueOf((char)((Boolean)value ? 1 : 0));
-					}else{
-						Double number = toNumber(value.toString());
-						if(number != null){
-							convertValue = Character.valueOf((char)number.intValue());
-						}
-					}
+					 convertValue = toChar(value);
 				}else if(value.getClass() == JSRef.class){
 					/**
 					 * 如果传入参数是JSRef，且方法参数是接口或者抽象类，自动转换成对应的实例。
@@ -1238,6 +1225,33 @@ public class JavaUtils {
 
 			}catch (Exception convertE){
 				return  false;
+			}
+		}
+
+
+	   private static  Object toChar(Object value){
+		   if (value instanceof Character) {
+			   return  value;
+		   }else if (value instanceof Number) {
+			   return  Character.valueOf((char) (((Number)value).intValue()));
+		   }else if (value instanceof Boolean) {
+			   return   Character.valueOf((char)((Boolean)value ? 1 : 0));
+		   }else{
+			   Double number = toNumber(value.toString());
+			   if(number != null){
+				   return  Character.valueOf((char)number.intValue());
+			   }
+		   }
+		   return  null;
+	   }
+
+	    private static Object toBoolean(Object value){
+			if (value instanceof Boolean) {
+				return  value;
+			}else if (value instanceof Number) {
+				return  Boolean.valueOf(((Number)value).intValue() != 0);
+			}else{
+				return Boolean.valueOf(value != null);
 			}
 		}
 
