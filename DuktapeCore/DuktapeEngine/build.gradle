@@ -1,4 +1,7 @@
+
+
 apply plugin: 'com.android.library'
+
 
 android {
     compileSdkVersion 19
@@ -48,3 +51,47 @@ dependencies {
     testCompile 'com.uphyca:android-junit4:0.5'
     testCompile 'junit:junit:4.12'
 }
+
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'duktape'
+
+    publishedGroupId = 'com.furture.react'
+    libraryName = 'duktape'
+    artifact = 'duktape'
+
+    libraryDescription = 'Java NDK Wrapper For Duktape JavaScript Engine On Android Platform'
+
+    siteUrl = 'https://github.com/gubaojian/DuktapeJava'
+    gitUrl = 'git@github.com:gubaojian/DuktapeJava.git'
+
+    libraryVersion = '0.5.0'
+
+    developerId = 'gubaojian'
+    developerName = 'gubaojian'
+    developerEmail = 'gubaojian@163.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android.libraryVariants.all { variant ->
+    task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
+        title = 'DuktapeEngine API'
+        // description = ''
+        source = variant.javaCompile.source
+        classpath = files(variant.javaCompile.classpath.files, project.android.getBootClasspath())
+        options {
+            links "http://docs.oracle.com/javase/7/docs/api/"
+            linksOffline "http://d.android.com/reference","${android.sdkDirectory}/docs/reference"
+        }
+        exclude '**/BuildConfig.java'
+        exclude '**/R.java'
+        include 'com/furture/react/DuktapeEngine.java'
+    }
+}
+
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
