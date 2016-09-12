@@ -1,5 +1,5 @@
 ### DuktapeJava
-Java NDK wrapper for Duktape javascript engine on android platform, which is tiny, only 200-300KB so and 1000 line java code. you can use any java method in javascript by just small engine, give you endless power integrating javascript with java.
+Java NDK wrapper for Duktape javascript engine on android platform, which is tiny, only 200-300KB so and 1000 line java code. you can use any java method in javascript by just small engine, give you endless power integrating javascript with java with high performance.
 
 ### Get start
 
