@@ -3,39 +3,42 @@ Java NDK wrapper for Duktape javascript engine on android platform, which is tin
 
 ### Get start
 
-new DuktapeEngnine instance then init it.
+new DuktapeEngnine instance then put context
 
-    @Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		duktapeEngine = new DuktapeEngine();
-		duktapeEngine.init();
-		duktapeEngine.register("activity",this);
-		duktapeEngine.execute(AssetScript.toScript(getBaseContext(), "duk.js"));
-		duktapeEngine.call("activityListener", "onCreate", savedInstanceState);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	duktapeEngine = new DuktapeEngine();
+	duktapeEngine.put("activity",this);
+	duktapeEngine.execute(AssetScript.toScript(getBaseContext(), "duk.js"));
+	duktapeEngine.call("activityListener", "onCreate", savedInstanceState);
+}
+
+
+  @Override
+protected void onDestroy() {
+	if (duktapeEngine != null) {
+		 duktapeEngine.destory();
+		 duktapeEngine = null;
 	}
+	super.onDestroy();
+}
 
-
-    @Override
-	protected void onDestroy() {
-		if (duktapeEngine != null) {
-			 duktapeEngine.destory();
-			 duktapeEngine = null;
-		}
-		super.onDestroy();
-	}
+```
 
 
 duk.js javascript code
 
-  importClass("com.furture.react.R")
-	importClass("android.view.View.OnClickListener")
-	importClass("android.widget.Toast")
-	importClass("java.lang.Runnable")
+```javascript
 
+importClass("com.furture.react.R")
+importClass("android.view.View.OnClickListener")
+importClass("android.widget.Toast")
+importClass("java.lang.Runnable")
 
-	var activityListener = {};
-	activityListener.onCreate = function(){
+var activityListener = {};
+activityListener.onCreate = function(){
 			print("activity onCreate onJavaScript");
 			activity.setContentView(R.layout.activity_duk)
 			button1 = activity.findViewById(R.id.button1);
@@ -51,82 +54,84 @@ duk.js javascript code
 			   Toast.makeText(activity, "Button2 Clicked", Toast.LENGTH_SHORT).show();
 			}
 		}));
-    }
+}
 
-	activityListener.onStart = function(){
-		print("activity onStart");
-	}
+activityListener.onStart = function(){
+	print("activity onStart");
+}
 
-	activityListener.onResume = function(){
-		print("activity onResume");
-	}
+activityListener.onResume = function(){
+	print("activity onResume");
+}
 
 
-	activityListener.onPause = function(){
-		print("activity onPause");
-	}
+activityListener.onPause = function(){
+	print("activity onPause");
+}
 
-	activityListener.onStop = function(){
-		print("activity onStop");
-	}
+activityListener.onStop = function(){
+	print("activity onStop");
+}
 
-	activityListener.finish = function(){
-		print("activity finish" + num);
-	}
+activityListener.finish = function(){
+	print("activity finish" + num);
+}
+
+```  
 
 ### Seamless Integrating Java with Javascript
 
  javascript can call any java method, and new java class instance and interface.
 
-
+```javascript
      importClass("android.widget.Toast")
 
-
      Toast.makeText(activity, "Javascript toast", Toast.LENGTH_SHORT).show();
-
+```
 
 java can also call any method or property on javascript object.
 
-      importClass("com.efurture.react.DataUtils")
+```javascript
+  importClass("com.efurture.react.DataUtils")
 
-      var data = {};
-      data.count =  10;
-      data.getItem = function(index){
-             return "Javascript Data " + index;
-      }
-
-      DataUtils.showData(data);
-
+  var data = {};
+  data.count =  10;
+  data.getItem = function(index){
+         return "Javascript Data " + index;
+  }
+  DataUtils.showData(data);
+```
  DataUtils Java Code Sample   
 
-      public class DataUtils{
-
-         public static void showData(JSRef data){
-             DuktapeEngine  engine =  data.getEngine();
-             int count = (Integer)engine.call(data, "count");
-             for(int i=0; i<count; i++){
-                 Log.d("DataUtils", " Get JavaScript Data Success :  " + engine.call(data, "getItem", i));
-             }
-          }
-
-      }   
-
+```java
+public class DataUtils{
+   public static void showData(JSRef data){
+       DuktapeEngine  engine =  data.getEngine();
+       int count = (Integer)engine.call(data, "count");
+       for(int i=0; i<count; i++){
+           Log.d("DataUtils", " Get JavaScript Data Success :  " + engine.call(data, "getItem", i));
+       }
+    }
+}   
+```
 ### Product Usage
 
-  AssetScript class and JSTransformer.jar is only for development usage. for Product, you should not include it on your app. you can use JSTransformer.jar transform JavaScript source, then include js in your app.
+  AssetScript class and JSTransformer.jar is only for development usage. for Product, you should not include it on your app. you can use JSTransformer.jar transform JavaScript source, then use transformed js in your app.
 
-    cd JSTransformer/js
-    java -jar JSTransformer.jar  ui.js  transformed/ui.js
+```bash
+cd JSTransformer/js
+java -jar JSTransformer.jar  ui.js  transformed/ui.js
+```
+   then use transformed/ui.js to your app.
 
-   then copy transformed/ui.js to your app.
-
-   you can also use gulp tool. see dev-server.  write source in src/
+   you can also use gulp tool. see dev-server demo.  write source in src/
    then javascript will auto be transformed in build/ directory
 
-    cd  dev-server
-    npm install
-    npm start
-
+```bash
+cd  dev-server
+npm install
+npm start
+```
 
 
 ### Reference
