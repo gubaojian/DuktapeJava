@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 /**
- * BaseAdapter 抽象类的实现。通过映射到具体的实例实现在JavaScript使用抽象类的功能。
+ *  BaseAdapter 抽象类的实现。JavaScript使用BaseAdapter抽象类时，会映射到该类；
+ *  也可直接使用此类。
  * */
 public class JSBaseAdapter extends BaseAdapter{
 

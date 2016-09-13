@@ -31,7 +31,30 @@ public class JSRef {
 		return ref;
 	}
 
-
+	/**
+	 * @param methodName   js对象的方法名
+	 * @param args         方法参数
+	 *
+	 *
+	 * @return 调用异常返回null，异常信息输出到logcat中
+	 * <br>
+	 * 若javascript对象为function，忽略methodName，直接调用该function。对于直接function的调用，methodName可以传null
+	 * 若javascript对象为object，则调用object中的methodName对应的function方法或者属性。
+	 * 这样在javascript 通过两种方式书写回调。 如要写一个setOnClickListener(new OnClickListener())的回调。
+	 * 在javascript中可以通过一下两种方式书写：
+	 * view.setOnClickListener(new OnClickListener({
+	 *    onClick : function(view){
+	 *
+	 *     }
+	 * }));
+	 *
+	 * 或者采用更为简便的方式书写：
+	 *
+	 * view.setOnClickListener(new OnClickListener(function(view){
+	 *
+	 * }));
+	 *
+	 * */
 	public  Object call(String methodName, Object... args){
 		return  getEngine().call(this, methodName, args);
 	}

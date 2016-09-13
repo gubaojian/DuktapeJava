@@ -1,9 +1,15 @@
 ### DuktapeJava
-Java NDK wrapper for Duktape javascript engine on android platform, which is tiny, only 200-300KB so and 1000 line java code. you can use any java method in javascript by just small engine, give you endless power integrating javascript with java with high performance.
+JavaScript Engine on android platform base on Duktape, which is tiny, powerful, low memory cost. you can use any java method in javascript by just small engine, give you endless power integrating java with javascript on android platform.
 
-### Get start
+#### Quick Start
 
-new DuktapeEngnine instance then put context
+1、use engine in your project
+
+```bash
+compile 'com.furture.react:DuktapeJava:1.0.0'
+```
+
+2、new DuktapeEngine instance,put js context then execute javascript code.
 
 ```java
 @Override
@@ -14,7 +20,6 @@ protected void onCreate(Bundle savedInstanceState) {
 	duktapeEngine.execute(AssetScript.toScript(getBaseContext(), "duk.js"));
 	duktapeEngine.call("activityListener", "onCreate", savedInstanceState);
 }
-
 
   @Override
 protected void onDestroy() {
@@ -27,8 +32,7 @@ protected void onDestroy() {
 
 ```
 
-
-duk.js javascript code
+3、duk.js javascript code sample
 
 ```javascript
 
@@ -48,52 +52,96 @@ activityListener.onCreate = function(){
 				activity.startActivity(intent);
 			}));
 
-		button2 = activity.findViewById(R.id.button2);
-		button2.setOnClickListener(new OnClickListener({
-			onClick:function(){
-			   Toast.makeText(activity, "Button2 Clicked", Toast.LENGTH_SHORT).show();
-			}
-		}));
-}
+			button2 = activity.findViewById(R.id.button2);
+			button2.setOnClickListener(new OnClickListener({
+				onClick:function(){
+				   Toast.makeText(activity, "Button2 Clicked", Toast.LENGTH_SHORT).show();
+				}
+			}));
+};
 
-activityListener.onStart = function(){
-	print("activity onStart");
-}
+ Toast.makeText(activity, "Hello World JavaScript", Toast.LENGTH_SHORT).show();
 
-activityListener.onResume = function(){
-	print("activity onResume");
-}
+```
+### Javascript Guide
 
-
-activityListener.onPause = function(){
-	print("activity onPause");
-}
-
-activityListener.onStop = function(){
-	print("activity onStop");
-}
-
-activityListener.finish = function(){
-	print("activity finish" + num);
-}
-
-```  
-
-### Seamless Integrating Java with Javascript
-
- javascript can call any java method, and new java class instance and interface.
+1、JavaScript call java method like java and support new instance.
 
 ```javascript
      importClass("android.widget.Toast")
-
-     Toast.makeText(activity, "Javascript toast", Toast.LENGTH_SHORT).show();
+     Toast.makeText(activity, "Javascript Hi Toast", Toast.LENGTH_SHORT).show();
 ```
 
-java can also call any method or property on javascript object.
+```javascript
+importClass("android.view.View")
+
+var view = new View(activity);
+```
+2、JavaScript new java Interface
 
 ```javascript
-  importClass("com.efurture.react.DataUtils")
+importClass("android.view.View.OnClickListener")
+view.setOnClickListener(new OnClickListener(function(){
+	Toast.makeText(activity, "Button1 Clicked", Toast.LENGTH_SHORT).show();
+	var intent = new Intent(activity, "com.furture.react.activity.DetailActivity");
+	activity.startActivity(intent);
+}));
 
+view2.setOnClickListener(new OnClickListener({
+	onClick:function(){
+		 Toast.makeText(activity, "Button2 Clicked", Toast.LENGTH_SHORT).show();
+	}
+}));
+```
+
+```javascript
+importClass("android.view.View")
+
+var view = new View(activity);
+```
+
+3、JavaScript new java abstract instance with specific implemation
+
+```javascript
+importClass("com.furture.react.ext.JSBaseAdapter")
+
+
+gridView.setAdapter(new JSBaseAdapter({
+	getCount : function() {
+		return 8;
+	},
+	getView : function(position,  convertView, parent){
+			if(convertView == null){
+					convertView = ui.fromXml(gridItemXml, null);
+			}
+			return convertView;
+	},
+	getViewTypeCount : function () {
+			return 1;
+	}
+}));
+```
+
+
+### Java Guide
+
+1、Java Call JavaScript Method
+
+Java Code Sample   
+
+```java
+public class DataUtils{
+	public static void showData(JSRef ref){
+			int count = ((Number)ref.call("count")).intValue();
+			for(int i=0; i<count; i++){
+					Log.d("DataUtils", "Call JavaScript getItem Method :  " + ref.call("getItem", i));
+			}
+	 }
+}   
+```
+javascript code sample
+```javascript
+  importClass("com.efurture.react.DataUtils")
   var data = {};
   data.count =  10;
   data.getItem = function(index){
@@ -101,19 +149,7 @@ java can also call any method or property on javascript object.
   }
   DataUtils.showData(data);
 ```
- DataUtils Java Code Sample   
 
-```java
-public class DataUtils{
-   public static void showData(JSRef data){
-       DuktapeEngine  engine =  data.getEngine();
-       int count = (Integer)engine.call(data, "count");
-       for(int i=0; i<count; i++){
-           Log.d("DataUtils", " Get JavaScript Data Success :  " + engine.call(data, "getItem", i));
-       }
-    }
-}   
-```
 ### Product Usage
 
   AssetScript class and JSTransformer.jar is only for development usage. for Product, you should not include it on your app. you can use JSTransformer.jar transform JavaScript source, then use transformed js in your app.
@@ -135,6 +171,8 @@ npm start
 
 
 ### Reference
+
+<a href="http://gubaojian.github.io/DuktapeJava/javadoc/">DuktapeJava Java Docs</a>
 
 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Scripting_Java">https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Scripting_Java</a>
 

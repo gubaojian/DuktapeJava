@@ -7,7 +7,12 @@ import android.widget.BaseAdapter;
 
 import com.furture.react.ext.JSBaseAdapter;
 
-public class JSApi {
+
+
+/**
+ * 配置全局JavaScript Context、抽象类映射实现
+ * */
+public class JSConfig {
 
 	
 	 /**

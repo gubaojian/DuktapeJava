@@ -7,11 +7,11 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
- * DuktapeEngine 支持多线程，但单个实例同时仅支持一个线程执行，相当于一个实例仅同时仅支持一个线程执行。
+ * DuktapeEngine 支持多线程，但单个实例同时仅支持一个线程执行，多个线程交替串行执行。
  * 如果需要完全并发，建议利用Java层实现并发，然后把并发结果通过Handler转交给DuktapeEngine。
  * 或者在调用的地方用synchronized (engine){
  *
- * }控制线程并发，但请注意避免死锁。
+ * } 控制线程并发，但请注意避免死锁。
  * */
 public class DuktapeEngine {
 
@@ -41,7 +41,7 @@ public class DuktapeEngine {
 		if (ptr == 0) {
 			throw new RuntimeException("NativeInit Pointer Convert Error");
 		}
-		Set<Entry<String, Object>> entries = JSApi.getContext().entrySet();
+		Set<Entry<String, Object>> entries = JSConfig.getContext().entrySet();
 		for(Entry<String, Object> entry : entries){
 			put(entry.getKey(), entry.getValue());
 		}
@@ -51,7 +51,7 @@ public class DuktapeEngine {
 
 	/**
 	 * @param  script
-	 * 执行JavaScript返回执行结果
+	 * @return  执行JavaScript返回执行结果
 	 * */
 	public Object execute(String script){
 		if(ptr != 0){
@@ -64,6 +64,7 @@ public class DuktapeEngine {
 	/**
 	 * @param  key  导入java对象在javascript中的名字
 	 * @param  value Java对象
+     * <br>
 	 * 导入Java对象到JavaScript引擎中供JavaScript调用；此方法可用于初始化一些公共的对象。
 	 * */
 	public void put(String key, Object value){
@@ -74,7 +75,10 @@ public class DuktapeEngine {
 	 * @param jsRef        javascript对象
 	 * @param methodName   js对象的方法名
 	 * @param args         方法参数
-	 * 调用异常返回null，异常信息输出到logcat中
+	 *
+	 *
+	 * @return 调用异常返回null，异常信息输出到logcat中
+     * <br>
      * 若javascript对象为function，忽略methodName，直接调用该function。对于直接function的调用，methodName可以传null
 	 * 若javascript对象为object，则调用object中的methodName对应的function方法或者属性。
 	 * 这样在javascript 通过两种方式书写回调。 如要写一个setOnClickListener(new OnClickListener())的回调。
@@ -110,6 +114,8 @@ public class DuktapeEngine {
 	 * @param objectName   js对象名字
 	 * @param method       js对象的方法名
 	 * @param args         方法参数
+     * @return   调用异常返回null, 正常返回调用结果
+     * <br>
 	 * 直接调用js中的方法, 调用异常返回null，异常信息输出到logcat中
 	 * */
     public  Object call(String objectName, String method, Object... args){
@@ -124,8 +130,7 @@ public class DuktapeEngine {
 
 
 	/**
-	 * 销毁引擎，释放引擎对应的naive资源。
-	 * 引擎销毁后。调用讲不在生效。
+	 * 销毁引擎，释放引擎对应的native资源；引擎销毁后，调用不在生效。
 	 * */
 	public void destory(){
 		synchronized (this) {

@@ -1,6 +1,7 @@
 package com.example.duktapetest;
 
-import com.furture.react.DLog;
+import android.util.Log;
+
 import com.furture.react.JSRef;
 
 public class TestRef {
@@ -15,13 +16,13 @@ public class TestRef {
 		if(jsRef != args){
 			throw new RuntimeException("TestRef Failed Must Same ref");
 		}
-		DLog.e("ScriptEngine", "ScriptEngine JSRef " + args.getRef());
+		Log.e("ScriptEngine", "ScriptEngine JSRef " + args.getRef());
 		return jsRef;
 	}
 
 
 	public Object javaRef(){
-		DLog.e("ScriptEngine", "ScriptEngine  javaRef ");
+		Log.e("ScriptEngine", "ScriptEngine  javaRef ");
 		return this;
 	}
 

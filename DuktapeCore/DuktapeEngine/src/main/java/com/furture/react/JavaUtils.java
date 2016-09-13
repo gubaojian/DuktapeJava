@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import android.support.v4.util.LruCache;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -218,9 +219,9 @@ public class JavaUtils {
 			return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces, new JSInvocationHandler(args[0]));
 		}
 		if(Modifier.isAbstract(modifiers)){
-			Class<?> sourceClass  = JSApi.getAbstractClassMap().get(targetClass);
+			Class<?> sourceClass  = JSConfig.getAbstractClassMap().get(targetClass);
 			if (sourceClass == null) {
-				throw new RuntimeException(" Cannot find abstract class implemation, please registerAbstractClass to JSApi. class name " + targetClass.getName());
+				throw new RuntimeException(" Cannot find abstract class implemation, please registerAbstractClass to JSConfig. class name " + targetClass.getName());
 			}
 			targetClass = sourceClass;
 		}
@@ -565,7 +566,7 @@ public class JavaUtils {
 		     if (throwable instanceof InvocationTargetException && throwable.getCause() != null) {
 				 throwable = throwable.getCause();
 			 }
-		     DLog.e("ScriptEngine", "ScriptEngine Java Runtime Exception StackTrace ", throwable);
+		     Log.e("ScriptEngine", "ScriptEngine Java Runtime Exception StackTrace ", throwable);
 		     return throwable.toString() + " please see logcat above for detail java exception stack";
 	 }
 
@@ -1078,7 +1079,7 @@ public class JavaUtils {
 	 * 比较类型，并尝试进行类型的转换。
 	 * value为null， 对于基本类型，则转换成0或false，
 	 * */
-	public static boolean compareTypes(Class<?> parameterType, Object[] args, int index){
+	private static boolean compareTypes(Class<?> parameterType, Object[] args, int index){
 			try{
 				Object value = args[index];
 				if (value == null) {
