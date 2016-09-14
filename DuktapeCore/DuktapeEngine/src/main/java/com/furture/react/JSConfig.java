@@ -10,14 +10,15 @@ import com.furture.react.ext.JSBaseAdapter;
 
 
 /**
- * 配置全局JavaScript Context、抽象类映射实现
+ * 配置全局JavaScript Engine的 Context， DuktapeEngine初始化时放入到Engine实例的Context中，供JavaScript调用
  * */
 public class JSConfig {
 
 	
 	 /**
 	  * 抽象类映射，在初始化抽象类时。可用通过映射到具体的实体类完成抽象类的初始化。
-	  * 用于在JavaScript中实现Java抽象类,通过用具体的非抽象类,代替抽象类进行实现
+	  * 用于在JavaScript中实现Java抽象类,通过用具体的非抽象类,代替抽象类进行实现。
+	  * 你可以直接importClass使用实现类， 无需注册
 	  * */
 	 private static Map<Class<?>, Class<?>> javaClassMap = new HashMap<Class<?>, Class<?>>();
 	 static{
@@ -27,6 +28,7 @@ public class JSConfig {
 	 /**
 	  * @param  abstractClass 抽象类
 	  * @param  targetClass   抽象类的具体实现
+	  *你可以直接importClass使用实现类， 无需注册
 	  * */
 	 public static void registerAbstractClass(Class<?> abstractClass, Class<?> targetClass){
 		    javaClassMap.put(abstractClass, targetClass);
@@ -42,15 +44,14 @@ public class JSConfig {
 	 /**
 	  * @param  name 对象的名字
 	  * @param  object java对象
-	  * 所有引擎共享的全局对象以及Java对象。
-	  * 对象会在DuktapeEngine初始化时放入到全局对象中供JavaScript调用
+	  * 所有引擎共享的全局上下文，上下文会在DuktapeEngine初始化时放入到Engine的Context中，供JavaScript调用
 	  * */
 	 public static void put(String name, Object object){
 		 globalContextMap.put(name, object);
 	 }
 
 	 /**
-	  * 返回全局的Context对象，DuktapeEngine会在初始化时自动导入对象。供JavaScript引擎使用
+	  * 返回所有Engine共享的全局的Context对象，DuktapeEngine会在初始化时自动导入对象。供JavaScript引擎使用
 	  * */
 	 public static Map<String, Object> getContext(){
 		 return globalContextMap;

@@ -150,6 +150,14 @@ javascript code sample
   DataUtils.showData(data);
 ```
 
+### Config Common Context For Multi Engine Instance
+
+JSConfig  Config Share Context For Multi DuktapeEngine, All Context Will Auto Be Import To DuktapeEngine. code sample
+
+```java
+JSConfig.put("application", application);
+```
+
 ### Product Usage
 
   AssetScript class and JSTransformer.jar is only for development usage. for Product, you should not include it on your app. you can use JSTransformer.jar transform JavaScript source, then use transformed js in your app.
