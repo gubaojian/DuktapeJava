@@ -10,8 +10,8 @@ DuktapeDemo/bin/
 DuktapeDemo/obj/
 DuktapeDemo/.settings/
 DuktapeDemo/.gradle/
-DuktapeCore/DuktapeEngine/build/
-DuktapeCore/DuktapeEngine/.gradle/
+DuktapeCore/DuktapeJava/build/
+DuktapeCore/DuktapeJava/.gradle/
 DuktapeCore/build/
 DuktapeCore/.gradle/
 DuktapeCore/bin/

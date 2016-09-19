@@ -1,1 +1,1 @@
-include ':DuktapeEngine', ':duktapetest'
+include ':DuktapeJava', ':DuktapeJavaTest'

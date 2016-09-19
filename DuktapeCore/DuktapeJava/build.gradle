@@ -86,7 +86,7 @@ ext {
 
 android.libraryVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
-        title = 'DuktapeEngine API'
+        title = 'DuktapeJava API'
         description = 'Java NDK Wrapper For Duktape'
         source = variant.javaCompile.source
         classpath = files(variant.javaCompile.classpath.files, project.android.getBootClasspath())
