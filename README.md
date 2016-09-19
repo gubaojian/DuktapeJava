@@ -65,11 +65,11 @@ activityListener.onCreate = function(){
 ```
 ### Javascript Guide
 
-1、JavaScript call java method like java and support new instance.
+1、JavaScript call java method like java
 
 ```javascript
-     importClass("android.widget.Toast")
-     Toast.makeText(activity, "Javascript Hi Toast", Toast.LENGTH_SHORT).show();
+ importClass("android.widget.Toast")
+ Toast.makeText(activity, "Javascript Hi Toast", Toast.LENGTH_SHORT).show();
 ```
 
 ```javascript
@@ -77,7 +77,6 @@ importClass("android.view.View")
 
 var view = new View(activity);
 ```
-2、JavaScript new java Interface
 
 ```javascript
 importClass("android.view.View.OnClickListener")
@@ -94,17 +93,10 @@ view2.setOnClickListener(new OnClickListener({
 }));
 ```
 
-```javascript
-importClass("android.view.View")
-
-var view = new View(activity);
-```
-
-3、JavaScript new java abstract instance with specific implemation
+2、JavaScript new java abstract instance with specific implemation
 
 ```javascript
 importClass("com.furture.react.ext.JSBaseAdapter")
-
 
 gridView.setAdapter(new JSBaseAdapter({
 	getCount : function() {
@@ -121,7 +113,6 @@ gridView.setAdapter(new JSBaseAdapter({
 	}
 }));
 ```
-
 
 ### Java Guide
 
@@ -150,9 +141,9 @@ javascript code sample
   DataUtils.showData(data);
 ```
 
-### Config Common Context For Multi Engine Instance
+### Share Common Context For Multi Engine Instance
 
-JSConfig  Config Share Context For Multi DuktapeEngine, All Context Will Auto Be Import To DuktapeEngine. code sample
+JSConfig Provide Share Context For Multi DuktapeEngine, All Context Will Auto Be Imported To DuktapeEngine when Instance Created. you can use it share context.
 
 ```java
 JSConfig.put("application", application);
