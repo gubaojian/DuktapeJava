@@ -10,7 +10,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 9
         targetSdkVersion 21
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -66,7 +66,7 @@ ext {
     libraryName = 'DuktapeJava'
     artifact = 'DuktapeJava'
 
-    libraryDescription = 'Java NDK Wrapper For Duktape JavaScript Engine On Android Platform'
+    libraryDescription = 'JavaScript Engine On Android Platform'
 
     siteUrl = 'https://github.com/gubaojian/DuktapeJava'
     gitUrl = 'git@github.com:gubaojian/DuktapeJava.git'
