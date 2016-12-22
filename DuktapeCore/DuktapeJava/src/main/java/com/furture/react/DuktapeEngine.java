@@ -58,6 +58,7 @@ public class DuktapeEngine {
 		for(Entry<String, Object> entry : entries){
 			put(entry.getKey(), entry.getValue());
 		}
+        finalizedJSRefList = new ArrayList<Integer>(FINALIZE_SIZE*2);
 	}
 
 
