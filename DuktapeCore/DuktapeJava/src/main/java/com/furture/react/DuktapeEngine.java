@@ -1,5 +1,6 @@
 package com.furture.react;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +59,7 @@ public class DuktapeEngine {
 		for(Entry<String, Object> entry : entries){
 			put(entry.getKey(), entry.getValue());
 		}
+		finalizedJSRefList = new ArrayList<Integer>(FINALIZE_SIZE*2);
 	}
 
 
