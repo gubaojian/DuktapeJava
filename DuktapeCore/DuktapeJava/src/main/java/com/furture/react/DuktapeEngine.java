@@ -1,6 +1,5 @@
 package com.furture.react;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +15,18 @@ import java.util.Map.Entry;
 public class DuktapeEngine {
 
 	static{
-	    System.loadLibrary("DuktapeEngine");
+		try {
+			System.loadLibrary("DuktapeEngine");
+			soLoaded = true;
+		} catch (Throwable e) {
+			soLoaded = false;
+		}
 	}
+
+	/**
+	 * 某些环境so会失败
+	 * */
+	private static boolean soLoaded;
 
 	/**
 	 * 引擎的JNI指针地址
@@ -37,15 +46,18 @@ public class DuktapeEngine {
 	 * 引擎使用完成后，调用destory()销毁引擎
 	 * */
 	public DuktapeEngine() {
+		if (!soLoaded) {
+			ptr = 0;
+			return;
+		}
 		ptr = nativeInit();
 		if (ptr == 0) {
 			throw new RuntimeException("NativeInit Pointer Convert Error");
 		}
-		Set<Entry<String, Object>> entries = JSConfig.getContext().entrySet();
+		Set<Entry<String, Object>> entries = JSContext.getContext().entrySet();
 		for(Entry<String, Object> entry : entries){
 			put(entry.getKey(), entry.getValue());
 		}
-		finalizedJSRefList = new ArrayList<Integer>(FINALIZE_SIZE*2);
 	}
 
 

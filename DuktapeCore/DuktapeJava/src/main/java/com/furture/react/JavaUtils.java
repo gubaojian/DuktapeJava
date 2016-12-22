@@ -219,9 +219,9 @@ public class JavaUtils {
 			return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces, new JSInvocationHandler(args[0]));
 		}
 		if(Modifier.isAbstract(modifiers)){
-			Class<?> sourceClass  = JSConfig.getAbstractClassMap().get(targetClass);
+			Class<?> sourceClass  = JSContext.getAbstractClassMap().get(targetClass);
 			if (sourceClass == null) {
-				throw new RuntimeException(" Cannot find abstract class implemation, please registerAbstractClass to JSConfig. class name " + targetClass.getName());
+				throw new RuntimeException(" Cannot find abstract class implemation, please registerAbstractClass to JSContext. class name " + targetClass.getName());
 			}
 			targetClass = sourceClass;
 		}

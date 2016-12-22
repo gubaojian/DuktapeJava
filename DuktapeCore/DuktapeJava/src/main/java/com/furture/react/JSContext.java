@@ -12,7 +12,7 @@ import com.furture.react.ext.JSBaseAdapter;
 /**
  * 配置全局JavaScript Engine的 Context， DuktapeEngine初始化时放入到Engine实例的Context中，供JavaScript调用
  * */
-public class JSConfig {
+public class JSContext {
 
 	
 	 /**
