@@ -6,8 +6,8 @@ import org.json.JSONObject;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
-import com.furture.react.DLog;
 import com.furture.react.JSRef;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
@@ -52,7 +52,7 @@ public class HttpApi {
 						}
 					});
 				} catch (Exception e) {
-					DLog.e("Http Client Parse JSON Error",  e.getMessage());
+					Log.e("Http Client Parse JSON Error",  e.getMessage());
 					handler.post(new Runnable() {
 						@Override
 						public void run() {

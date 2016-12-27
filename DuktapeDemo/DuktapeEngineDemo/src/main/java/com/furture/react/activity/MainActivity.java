@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.furture.react.JSApi;
+import com.furture.react.JSContext;
 import com.furture.react.demo.R;
 
 
@@ -25,9 +25,9 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		  
-		 JSApi.put("http", new HttpApi());
-		 JSApi.put("map", new MapApi(getApplicationContext()));
-		 JSApi.put("network", new NetworkApi(getApplicationContext()));
+		 JSContext.put("http", new HttpApi());
+		 JSContext.put("map", new MapApi(getApplicationContext()));
+		 JSContext.put("network", new NetworkApi(getApplicationContext()));
 		
 		
 		findViewById(R.id.button1).setOnClickListener(new OnClickListener() {
