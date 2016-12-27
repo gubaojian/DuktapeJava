@@ -3,10 +3,14 @@ JavaScript Engine on android platform base on Duktape, which is tiny, powerful, 
 
 #### Quick Start
 
-1、use engine in your project
+1、how to use engine in your studio project
 
 ```bash
-compile 'com.furture.react:DuktapeJava:1.0.0@aar'
+compile 'com.furture.react:DuktapeJava:1.1.0'
+
+or
+
+compile 'com.furture.react:DuktapeJava:1.1.0@aar'
 ```
 
 2、new DuktapeEngine instance,put js context then execute javascript code.
