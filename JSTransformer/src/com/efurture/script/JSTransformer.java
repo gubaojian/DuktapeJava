@@ -3,6 +3,7 @@ package com.efurture.script;
 import java.io.*;
 
 import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 
@@ -23,12 +24,17 @@ public class JSTransformer {
 	public static String parse(Reader reader) throws IOException{
 		try {
 		       CompilerEnvirons env = new CompilerEnvirons();
-		       env.setRecordingLocalJsDocComments(true);
-		       env.setAllowSharpComments(true);
-		       env.setRecordingComments(true);
-		       AstRoot node = new Parser(env).parse(reader,  "script.js", 1);
+			   env.setLanguageVersion(Context.VERSION_1_5);
+		       env.setRecordingLocalJsDocComments(false);
+		       env.setAllowSharpComments(false);
+		       env.setRecordingComments(false);
+			   env.setXmlAvailable(false);
+			   env.setGenerateDebugInfo(false);
+		       AstRoot node = new Parser().parse(reader,  "script.js", 1);
 		       node.visit(new JSTransformerVisitor());
-		       return node.toSource();
+		       String source =  node.toSource();
+			   node = null;
+			   return  source;
 		  } finally {
 		      reader.close();
 		  }

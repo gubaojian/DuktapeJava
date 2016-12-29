@@ -55,11 +55,11 @@ public class DuktapeEngine {
 		if (ptr == 0) {
 			throw new RuntimeException("NativeInit Pointer Convert Error");
 		}
+		finalizedJSRefList = new ArrayList<Integer>(FINALIZE_SIZE*2);
 		Set<Entry<String, Object>> entries = JSContext.getContext().entrySet();
 		for(Entry<String, Object> entry : entries){
 			put(entry.getKey(), entry.getValue());
 		}
-		finalizedJSRefList = new ArrayList<Integer>(FINALIZE_SIZE*2);
 	}
 
 
