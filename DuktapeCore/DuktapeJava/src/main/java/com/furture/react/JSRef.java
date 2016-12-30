@@ -60,7 +60,50 @@ public class JSRef {
 	}
 
 
-	
+	/**
+	 * 获取JavaScript的对象的属性的值。
+	 * var value  = jsRef.propName
+	 */
+	public   Object get(String propName){
+		return  getEngine().get(this, propName);
+	}
+
+	/**
+	 * 获取JavaScript的对象的属性的值。
+	 * var value  = jsRef.propName
+	 */
+	public   String getString(String propName){
+		Object value = get(propName);
+		if(value == null){
+			return  null;
+		}
+		return  value.toString();
+	}
+
+	/**
+	 * 获取JavaScript的对象的属性的值。
+	 * var value  = jsRef.propName
+	 */
+	public  double getNumber(String propName){
+		Object value = get(propName);
+		if(value == null){
+			return  0;
+		}
+		if(value instanceof  Number){
+			return  ((Number) value).doubleValue();
+		}
+		return Double.parseDouble(value.toString());
+	}
+
+	/**
+	 * 设置JavaScript的对象的属性的值。
+	 * jsRef.propName = propValue
+	 */
+	public   void set(String propName, Object propValue){
+		getEngine().set(this, propName, propValue);
+	}
+
+
 	@Override
 	public String toString() {
 		if(ref != 0){

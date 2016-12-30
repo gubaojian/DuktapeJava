@@ -480,6 +480,9 @@ jobjectArray duk_to_java_object_array(duk_context *ctx, int start, int num, JNIE
 		  return NULL;
 	 }
 	 jobjectArray args = (*env)->NewObjectArray(env, num, java_lang_object_class, NULL);
+	 if(args == NULL){
+		 return NULL;
+	 }
 	 for(int i=0; i< num; i++){
 	    	  jobject   value = duk_to_java_object(ctx, env, i + start);
 	    	  DEBUG_LOG("ScriptEngine","duk_to_java_object_array duk_to_java_object %d   success %d", i, value == NULL);
@@ -644,6 +647,21 @@ JNIEXPORT void JNICALL Java_com_furture_react_DuktapeEngine_nativeRegister
 	(*env)->ReleaseStringUTFChars(env, key, src);
 }
 
+JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeGet
+		(JNIEnv *env, jobject thisObject, jlong ptr, jstring key){
+	env = get_java_jni_env();
+	duk_context *ctx  = convert_to_context(ptr);
+	jboolean iscopy = JNI_FALSE;
+	const char* src =  ((*env)->GetStringUTFChars(env, key, &iscopy));
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, src);
+	jobject  value = duk_to_java_object(ctx, env, -1);
+	(*env)->ReleaseStringUTFChars(env, key, src);
+	duk_pop_2(ctx);
+	return  value;
+}
+
+
 
 JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeExeclute
   (JNIEnv *env, jobject thisObject, jlong  ptr, jstring script){
@@ -714,9 +732,6 @@ JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeCallJSRef
 	 env = get_java_jni_env();
    duk_context *ctx  = convert_to_context(ptr);
    duk_push_js_ref(ctx, jsRef);
-
-
-
    if(duk_is_function(ctx, -1)){
 	    jsize length = duk_push_java_object_array(ctx, env, args);
 	    if(duk_pcall(ctx, length) != DUK_EXEC_SUCCESS){
@@ -749,6 +764,33 @@ JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeCallJSRef
    jobject  value =  duk_to_java_object(ctx, env, -1);
    duk_pop_2(ctx);
    return value;
+}
+
+
+JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeGetJSRef
+		(JNIEnv *env, jobject thisObject, jlong ptr, jint jsRef, jstring propName){
+	env = get_java_jni_env();
+	duk_context *ctx  = convert_to_context(ptr);
+	jboolean iscopy = JNI_FALSE;
+	const char* key = ((*env)->GetStringUTFChars(env, propName, &iscopy));
+	duk_push_js_ref(ctx, jsRef);
+	duk_get_prop_string(ctx, -1, key);
+	(*env)->ReleaseStringUTFChars(env, propName, key);
+	jobject  value =  duk_to_java_object(ctx, env, -1);
+	duk_pop_2(ctx);
+	return  value;
+}
+
+
+JNIEXPORT void JNICALL Java_com_furture_react_DuktapeEngine_nativeSetJSRef(JNIEnv *env, jobject thisObject, jlong ptr, jint jsRef, jstring propName, jobject propValue){
+	env = get_java_jni_env();
+	duk_context *ctx  = convert_to_context(ptr);
+	jboolean iscopy = JNI_FALSE;
+	const char* key = ((*env)->GetStringUTFChars(env, propName, &iscopy));
+	duk_push_js_ref(ctx, jsRef);
+	duk_push_java_object(ctx, env, propValue);
+	duk_put_prop_string(ctx, -2, key);
+	duk_pop(ctx);
 }
 
 

@@ -3,6 +3,7 @@ package com.furture.react;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -82,7 +83,19 @@ public class DuktapeEngine {
 	 * 导入Java对象到JavaScript引擎中供JavaScript调用；此方法可用于初始化一些公共的对象。
 	 * */
 	public void put(String key, Object value){
-		nativeRegister(ptr, key, value);
+		if(ptr != 0){
+			nativeRegister(ptr, key, value);
+		}
+	}
+
+	/**
+	 * 获取JavaScript的公共的对象。
+	 */
+	public  Object get(String propName){
+		if(ptr != 0){
+			return nativeGet(ptr, propName);
+		}
+		return  null;
 	}
 
 	/**
@@ -119,9 +132,26 @@ public class DuktapeEngine {
 	}
 
 
+	/**
+	 * 获取JavaScript的对象的属性的值。
+	 * var value  = jsRef.propName
+	 */
+	public   Object get(JSRef jsRef, String propName){
+		if(ptr != 0){
+			return nativeGetJSRef(ptr, jsRef.getRef(), propName);
+		}
+		return null;
+	}
 
-
-
+	/**
+	 * 设置JavaScript的对象的属性的值。
+	 * jsRef.propName = propValue
+	 */
+	public   void set(JSRef jsRef, String propName, Object propValue){
+		if(ptr != 0){
+			nativeSetJSRef(ptr, jsRef.getRef(), propName, propValue);
+		}
+	}
 
 
 	/**
@@ -196,9 +226,12 @@ public class DuktapeEngine {
 	 * */
 	private  native long nativeInit();
 	private  native void nativeRegister(long ptr, String key, Object value);
+	private  native Object nativeGet(long ptr, String key);
 	private  native Object nativeExeclute(long ptr, String script);
 	private  native Object nativeCallJs(long ptr, String target, String method, Object... args);
 	private  native Object nativeCallJSRef(long ptr, int jsRef, String methodName, Object... args);
+	private  native Object nativeGetJSRef(long ptr, int jsRef, String propName);
+	private  native void nativeSetJSRef(long ptr, int jsRef, String propName, Object value);
 	private native void nativeFinalizeJSRef(long ptr, int jsRef);
 	private native void nativeDestory(long ptr);
 }

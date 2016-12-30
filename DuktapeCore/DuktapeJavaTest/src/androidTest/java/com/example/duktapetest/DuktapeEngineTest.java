@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Created by furture on 16/7/30.
+ *
  */
 @RunWith(AndroidJUnit4.class)
 public class DuktapeEngineTest extends ActivityInstrumentationTestCase2<MainActivity> {
@@ -134,8 +135,20 @@ public class DuktapeEngineTest extends ActivityInstrumentationTestCase2<MainActi
     }
 
 
+
+    @Test
+    public void testJSRefGetSet(){
+        DuktapeEngine engine = new DuktapeEngine();
+        Object result = engine.execute(AssetScript.toScript(getActivity(), "GetJSRef.js"));
+        Assert.assertNotNull("script run error, please see logcat",result);
+        Assert.assertEquals(result.toString(), "true");
+        engine.destory();
+    }
+
     @Test
     public  void testErrorMe(){
+
+
         /**
          * 09-01 15:25:24.108 22890-22890/com.efurture.hybrid.demo E/ScriptEngine: ScriptEngine CallJSRef  1629993456 method getItemViewType exception TypeError: undefined not callable
          duk_js_call.c:776

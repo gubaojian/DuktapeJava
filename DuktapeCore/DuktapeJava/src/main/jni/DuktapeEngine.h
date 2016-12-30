@@ -28,6 +28,15 @@ JNIEXPORT jlong JNICALL Java_com_furture_react_DuktapeEngine_nativeInit
 JNIEXPORT void JNICALL Java_com_furture_react_DuktapeEngine_nativeRegister
   (JNIEnv *, jobject, jlong, jstring, jobject);
 
+
+/*
+ * Class:     com_furture_react_DuktapeEngine
+ * Method:    nativeGet
+ * Signature: (JLjava/lang/String;)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeGet
+        (JNIEnv *, jobject, jlong, jstring);
+
 /*
  * Class:     com_furture_react_DuktapeEngine
  * Method:    nativeExeclute
@@ -51,6 +60,25 @@ JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeCallJs
  */
 JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeCallJSRef
   (JNIEnv *, jobject, jlong, jint, jstring, jobjectArray);
+
+
+/*
+ * Class:     com_furture_react_DuktapeEngine
+ * Method:    nativeGetJSRef
+ * Signature: (JILjava/lang/String;)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_com_furture_react_DuktapeEngine_nativeGetJSRef
+        (JNIEnv *, jobject, jlong, jint, jstring);
+
+
+/*
+ * Class:     com_furture_react_DuktapeEngine
+ * Method:    nativeSetJSRef
+ * Signature: (JILjava/lang/String;Ljava/lang/Object;)V
+ */
+JNIEXPORT void JNICALL Java_com_furture_react_DuktapeEngine_nativeSetJSRef
+        (JNIEnv *, jobject, jlong, jint, jstring, jobject);
+
 
 /*
  * Class:     com_furture_react_DuktapeEngine
