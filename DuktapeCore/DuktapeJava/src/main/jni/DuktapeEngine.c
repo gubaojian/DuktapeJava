@@ -867,7 +867,7 @@ JNIEnv*  get_java_jni_env(){
 		 if(env != NULL){
 			  return env;
 		 }
-	    JavaVMAttachArgs args = {JNI_VERSION_1_6, 0, 0};
+	    JavaVMAttachArgs args = {JNI_VERSION_1_4, 0, 0};
       (*jvm)->AttachCurrentThread(jvm, &env, &args);
 		  if(env == NULL){
 			   LOGE("ScriptEngine","Duktape Engine ScriptEngine AttachCurrentThread  error ");
@@ -982,7 +982,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
 
 	DEBUG_LOG("ScriptEngine","JNI_OnLoad Success");
-	return JNI_VERSION_1_6;
+	return JNI_VERSION_1_4;
 }
 
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
