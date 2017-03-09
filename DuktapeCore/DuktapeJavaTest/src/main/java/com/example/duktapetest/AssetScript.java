@@ -28,7 +28,7 @@ public class AssetScript {
 				 output.write(buffer, 0, length);
 			}
 			String script = output.toString();
-			Log.e("compiled ScriptEngine", script);
+			Log.e("Read " + fileName, script);
 			return script;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

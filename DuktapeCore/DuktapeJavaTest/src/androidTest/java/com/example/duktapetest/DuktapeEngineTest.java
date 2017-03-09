@@ -8,6 +8,8 @@ import com.furture.react.DuktapeEngine;
 
 import junit.framework.Assert;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -154,4 +156,19 @@ public class DuktapeEngineTest extends ActivityInstrumentationTestCase2<MainActi
          duk_js_call.c:776
          * */
     }
+
+
+
+    @Test
+    public void testJSONObject() throws JSONException {
+        DuktapeEngine engine = new DuktapeEngine();
+        engine.put("data", new JSONObject(AssetScript.read(getActivity(), "data/format.json")));
+        Object result = engine.execute(AssetScript.toScript(getActivity(), "TestJSONObject.js"));
+        Assert.assertNotNull("script run error, please see logcat",result);
+        Assert.assertEquals(result.toString(), "true");
+        engine.destory();
+    }
+
+
+
 }
