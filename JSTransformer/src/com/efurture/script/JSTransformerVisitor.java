@@ -217,20 +217,24 @@ public class JSTransformerVisitor implements NodeVisitor {
 		 }else if(node instanceof Assignment){
 			  Assignment  assignment =  (Assignment) node;
 			  if (assignment.getLeft() instanceof PropertyGet) {
-				  ExpressionStatement parent = (ExpressionStatement) assignment.getParent();
-				  PropertyGet left = (PropertyGet) assignment.getLeft();
-				  Name   leftRight = (Name) left.getRight();
-				  StringLiteral literal = new StringLiteral();
-				  literal.setValue(leftRight.getIdentifier());
-				  literal.setQuoteCharacter('"');
-				  FunctionCall call = new FunctionCall();
-				  ArrayList<AstNode>  arguments = new ArrayList<AstNode>();
-				  arguments.add(literal);
-				  arguments.add(assignment.getRight());
-	    		  call.setArguments(arguments);
-	    		  call.setTarget(left);
-	    		  leftRight.setIdentifier("__s");
-	    		  parent.setExpression(call);
+				  if(assignment.getParent() instanceof  ExpressionStatement){
+					  ExpressionStatement parent = (ExpressionStatement) assignment.getParent();
+					  PropertyGet left = (PropertyGet) assignment.getLeft();
+					  Name   leftRight = (Name) left.getRight();
+					  StringLiteral literal = new StringLiteral();
+					  literal.setValue(leftRight.getIdentifier());
+					  literal.setQuoteCharacter('"');
+					  FunctionCall call = new FunctionCall();
+					  ArrayList<AstNode>  arguments = new ArrayList<AstNode>();
+					  arguments.add(literal);
+					  arguments.add(assignment.getRight());
+					  call.setArguments(arguments);
+					  call.setTarget(left);
+					  leftRight.setIdentifier("__s");
+					  parent.setExpression(call);
+				   }else if(assignment.getParent() instanceof FunctionCall){
+
+				   }
 			  }else{
 				  JSTransformer.log("Assignment " + node.toSource()  +   assignment.getParent().getClass());
 			  }

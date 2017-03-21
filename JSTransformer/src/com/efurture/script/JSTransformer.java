@@ -53,6 +53,7 @@ public class JSTransformer {
 			try{
 				inputStream = new FileInputStream(file);
 			}catch (Exception e){
+				//e.printStackTrace();
 				if(!file.startsWith("/")){
 					file = "/" + file;
 				}
