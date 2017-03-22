@@ -85,5 +85,8 @@ public class JSTransformer {
 		//System.out.println(msg);
 	}
 
+	public static void warn(String msg){
+		System.out.println(msg);
+	}
 
 }

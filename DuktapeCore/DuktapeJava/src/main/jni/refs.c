@@ -45,7 +45,7 @@ int duk_js_ref(duk_context *ctx) {
   duk_remove(ctx, -2);
  duk_insert(ctx, -2);
  void* pointer = duk_get_heapptr(ctx, -1);
- ref  = abs((intptr_t)pointer)&0x7fffffff;
+ ref  = labs((intptr_t)pointer)&0x7fffffff;
  DEBUG_LOG("ScriptEngine","duk_js_ref %d pointer %p", ref, pointer);
  while(duk_get_prop_index(ctx, -2, ref)){
      ref = hash(ref)&0x7fffffff;

@@ -9,15 +9,31 @@ public class JSTransformerVisitor implements NodeVisitor {
 	
 	
 	public static final String  PREFIX = "__";
+
+
+	public static final String WEBPACK_PREFIX = "__webpack_require__";
+
+
+	public boolean isLeftOk(PropertyGet  get){
+		boolean leftOk = true;
+		if(get.getLeft() instanceof  Name){
+			Name left = (Name) get.getLeft();
+			if(left.getIdentifier().contains(WEBPACK_PREFIX)){
+				leftOk = false;
+			}
+		}
+		return leftOk;
+	}
+
     @Override 
     public boolean visit(AstNode node) {
       if (node.getParent() != null) {
     		JSTransformer.log("visit xxx " + node.getClass()  + "  " + node.toSource()
    				    + " " + node.getParent().getClass()); 
-	}
+	 }
      if (node instanceof NewExpression) {
     	 NewExpression expression = (NewExpression) node;
-    	 
+
     	 JSTransformer.log("new xxx " + expression.toSource());
     	 JSTransformer.log("new xxx " + expression.getInitializer() + "  "   +
     			 expression.getTarget().toSource());
@@ -34,7 +50,7 @@ public class JSTransformerVisitor implements NodeVisitor {
   		   if (tatget instanceof PropertyGet) {
   			   PropertyGet  get = (PropertyGet)tatget;
   			   Name right = (Name) get.getRight();
-  			   if (right != null && !right.getIdentifier().contains(PREFIX)) {
+  			   if (right != null && !right.getIdentifier().contains(PREFIX) && isLeftOk(get)) {
   				   StringLiteral literal = new StringLiteral();
   				   literal.setValue(right.getIdentifier());
   				   literal.setQuoteCharacter('"');
@@ -49,8 +65,9 @@ public class JSTransformerVisitor implements NodeVisitor {
   		   }
   	 }else if (node instanceof PropertyGet) {
   		     PropertyGet  get = (PropertyGet) node;
-  		      Name right = (Name) get.getRight();
-  		      if (!right.getIdentifier().contains(PREFIX)) {
+		       Name right = (Name) get.getRight();
+
+  		      if (!right.getIdentifier().contains(PREFIX) && isLeftOk(get)) {
   	  		     if (get.getParent() instanceof  ExpressionStatement) {
   	  			      ExpressionStatement parent = (ExpressionStatement) get.getParent();
   		    		  FunctionCall call = new FunctionCall();
@@ -133,15 +150,16 @@ public class JSTransformerVisitor implements NodeVisitor {
   		    		  right.setIdentifier("__g");
   		    		  parent.setElement(call);
   				 }else{
-  					 
+
   					JSTransformer.log("get xxx " + node.getClass()  + "  " + node.toSource()
-  					    + " " + node.getParent().getClass()); 
+  					    + " " + node.getParent().getClass());
   				 }
 			 }else{
 				 JSTransformer.log("get out " + node.getClass()  + "  " + node.toSource()
-	  					    + " " + node.getParent().getClass()); 
+	  					    + " " + node.getParent().getClass());
 			 }
 		 }else if(node instanceof ElementGet){
+
 			 ElementGet get = (ElementGet) node;
 			 if (node.getParent() instanceof NewExpression) {
 				 NewExpression parent = (NewExpression) get.getParent();
@@ -198,9 +216,6 @@ public class JSTransformerVisitor implements NodeVisitor {
 				 target.setLeft(get.getTarget());
 				 target.setRight(name);
 				 call.setTarget(target);
-
-
-
 				 FunctionCall  parent = (FunctionCall) get.getParent();
 				 ArrayList<AstNode>  parentArguments = new ArrayList<AstNode>();
 				 parentArguments.addAll(parent.getArguments());
@@ -208,12 +223,6 @@ public class JSTransformerVisitor implements NodeVisitor {
 				 parentArguments.set(index, call);
 				 parent.setArguments(parentArguments);
 			 }
-
-
-
-
-
-
 		 }else if(node instanceof Assignment){
 			  Assignment  assignment =  (Assignment) node;
 			  if (assignment.getLeft() instanceof PropertyGet) {
@@ -221,6 +230,7 @@ public class JSTransformerVisitor implements NodeVisitor {
 					  ExpressionStatement parent = (ExpressionStatement) assignment.getParent();
 					  PropertyGet left = (PropertyGet) assignment.getLeft();
 					  Name   leftRight = (Name) left.getRight();
+
 					  StringLiteral literal = new StringLiteral();
 					  literal.setValue(leftRight.getIdentifier());
 					  literal.setQuoteCharacter('"');
@@ -233,7 +243,7 @@ public class JSTransformerVisitor implements NodeVisitor {
 					  leftRight.setIdentifier("__s");
 					  parent.setExpression(call);
 				   }else if(assignment.getParent() instanceof FunctionCall){
-
+					  JSTransformer.warn("untranformed javascript source: \n" + assignment.getParent().toSource());
 				   }
 			  }else{
 				  JSTransformer.log("Assignment " + node.toSource()  +   assignment.getParent().getClass());

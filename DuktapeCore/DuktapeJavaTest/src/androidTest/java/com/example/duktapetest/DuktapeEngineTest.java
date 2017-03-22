@@ -170,5 +170,15 @@ public class DuktapeEngineTest extends ActivityInstrumentationTestCase2<MainActi
     }
 
 
+    @Test
+    public void testWebpack() throws JSONException {
+        DuktapeEngine engine = new DuktapeEngine();
+        Object result = engine.execute(AssetScript.toScript(getActivity(), "webpack.js"));
+        Assert.assertNotNull("script run error, please see logcat",result);
+        Assert.assertEquals(result.toString(), "true");
+        engine.destory();
+    }
+
+
 
 }
