@@ -243,7 +243,18 @@ public class JSTransformerVisitor implements NodeVisitor {
 					  leftRight.setIdentifier("__s");
 					  parent.setExpression(call);
 				   }else if(assignment.getParent() instanceof FunctionCall){
-					  JSTransformer.warn("untranformed javascript source\n (please ensure this code not use java object): \n" + assignment.getParent().toSource());
+					  FunctionCall call = ((FunctionCall) assignment.getParent());
+					  boolean webpack = false;
+					  if(call.getTarget() instanceof  Name){
+						  if(((Name) call.getTarget()).getIdentifier().contains(WEBPACK_PREFIX)){
+							  webpack = true;
+						  }
+					  }
+					  if(!webpack){
+						   String  tips = "please remove bad code sample: \n function(a=b) \nedit this code like below and remove warning:\n a=b;\nfunction(a)";
+						   tips +=  "\nwarning untranformed ( equal assignment in function args ) javascript source.\n please ensure below code not use java object. if none use, has no affect on pure javascript, if not, move equal assignment out function args: \n" + assignment.getParent().toSource();
+						   JSTransformer.warn(tips);
+					  }
 				   }
 			  }else{
 				  JSTransformer.log("Assignment " + node.toSource()  +   assignment.getParent().getClass());
