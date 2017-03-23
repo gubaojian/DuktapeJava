@@ -243,7 +243,7 @@ public class JSTransformerVisitor implements NodeVisitor {
 					  leftRight.setIdentifier("__s");
 					  parent.setExpression(call);
 				   }else if(assignment.getParent() instanceof FunctionCall){
-					  JSTransformer.warn("untranformed javascript source: \n" + assignment.getParent().toSource());
+					  JSTransformer.warn("untranformed javascript source\n (please ensure this code not use java object): \n" + assignment.getParent().toSource());
 				   }
 			  }else{
 				  JSTransformer.log("Assignment " + node.toSource()  +   assignment.getParent().getClass());
