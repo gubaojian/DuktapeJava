@@ -147,10 +147,10 @@ javascript code sample
 
 ### Share Common Context For Multi Engine Instance
 
-JSConfig Provide Share Context For Multi DuktapeEngine, All Context Will Auto Be Imported To DuktapeEngine when Instance Created. you can use it share context.
+JSContext Provide Share Context For Multi DuktapeEngine, All Context Will Auto Be Imported To DuktapeEngine when Instance Created. you can use it share context.
 
 ```java
-JSConfig.put("application", application);
+JSContext.put("application", application);
 ```
 
 ### Product Usage
