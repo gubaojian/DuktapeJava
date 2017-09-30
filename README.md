@@ -172,6 +172,9 @@ npm install
 npm start
 ```
 
+## License
+
+DuktapeJava is [MIT licensed](./LICENSE)
 
 ### Reference
 
@@ -180,6 +183,5 @@ npm start
 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Scripting_Java">https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Scripting_Java</a>
 
 <a href="http://www.w3schools.com/js/default.asp">http://www.w3schools.com/js/default.asp</a>
-
 
 <a href="https://github.com/jasonsantos/luajava">https://github.com/jasonsantos/luajava</a>
