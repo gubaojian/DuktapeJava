@@ -658,7 +658,10 @@ public class ScriptRuntime {
         for(int i = 0, L = s.length(); i != L; ++i) {
             int c = s.charAt(i);
 
-            if (' ' <= c && c <= '~' && c != escapeQuote && c != '\\') {
+            if ((' ' <= c
+                    && c <= '~' || c > 128)
+                    && c != escapeQuote
+                    && c != '\\') {
                 // an ordinary print character (like C isprint()) and not "
                 // or \ .
                 if (sb != null) {

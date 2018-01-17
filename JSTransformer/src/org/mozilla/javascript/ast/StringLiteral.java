@@ -78,6 +78,13 @@ public class StringLiteral extends AstNode {
 
     @Override
     public String toSource(int depth) {
+        if(value.indexOf(quoteChar)  > 0){
+            if(quoteChar == '"'){
+                quoteChar = '\'';
+            }else{
+                quoteChar = '"';
+            }
+        }
         return new StringBuilder(makeIndent(depth))
                 .append(quoteChar)
                 .append(ScriptRuntime.escapeString(value, quoteChar))
