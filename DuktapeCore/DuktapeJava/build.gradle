@@ -68,7 +68,7 @@ ext {
     siteUrl = 'https://github.com/gubaojian/DuktapeJava'
     gitUrl = 'git@github.com:gubaojian/DuktapeJava.git'
 
-    libraryVersion = '1.2.0'
+    libraryVersion = '1.2.1'
 
     developerId = 'gubaojian'
     developerName = 'gubaojian'
