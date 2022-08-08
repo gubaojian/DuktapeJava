@@ -185,3 +185,5 @@ DuktapeJava is [MIT licensed](./LICENSE)
 <a href="http://www.w3schools.com/js/default.asp">http://www.w3schools.com/js/default.asp</a>
 
 <a href="https://github.com/jasonsantos/luajava">https://github.com/jasonsantos/luajava</a>
+
+<a href="https://www.scaler.com/topics/javascript/">https://www.scaler.com/topics/javascript/</a>
